@@ -26,7 +26,7 @@ class CMECreditCompleteMailMessage extends AccountMailMessage
 	protected $credit;
 
 	/**
-	 * @var QuizResponse
+	 * @var CMEQuizResponse
 	 */
 	protected $response;
 
