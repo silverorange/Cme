@@ -1,0 +1,11 @@
+##
+## Static Web-resource dependencies for CME
+##
+## Copyright (c) 2011-2014 silverorange
+##
+
+CME:
+  Provides:
+    javascript/cme-disclosure.js:
+
+# vim: set expandtab tabstop=2 shiftwidth=2 softtabstop=2:
