@@ -6,6 +6,7 @@ require_once 'Admin/pages/AdminDBEdit.php';
 require_once 'Admin/exceptions/AdminNotFoundException.php';
 require_once 'Inquisition/dataobjects/InquisitionQuestion.php';
 require_once 'Inquisition/dataobjects/InquisitionQuestionOption.php';
+require_once 'CME/CME.php';
 require_once 'CME/dataobjects/CMECredit.php';
 require_once 'CME/dataobjects/CMECreditType.php';
 require_once 'CME/dataobjects/CMECreditTypeWrapper.php';

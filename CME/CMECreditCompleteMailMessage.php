@@ -3,6 +3,7 @@
 require_once 'SwatI18N/SwatI18NLocale.php';
 require_once 'Site/SiteReplacementMarkerMailMessage.php';
 require_once 'Site/dataobjects/SiteAccount.php';
+require_once 'CME/CME.php';
 require_once 'CME/dataobjects/CMECredit.php';
 
 /**
