@@ -9,7 +9,7 @@ require_once 'CME/dataobjects/CMECredit.php';
  * @package   CME
  * @copyright 2011-2014 silverorange
  */
-class CMECreditCompleteMailMessage extends AccountMailMessage
+abstract class CMECreditCompleteMailMessage extends AccountMailMessage
 {
 	// {{{ protected properties
 
