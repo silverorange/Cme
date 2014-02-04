@@ -6,6 +6,10 @@
 
 CME:
   Provides:
+    # LESS Style Sheets
+    styles/cme-disclosure.css:
+
+    # JavaScript
     javascript/cme-disclosure.js:
 
 # vim: set expandtab tabstop=2 shiftwidth=2 softtabstop=2:

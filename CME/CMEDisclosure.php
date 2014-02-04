@@ -47,7 +47,7 @@ class CMEDisclosure extends SwatControl
 		);
 
 		$this->addJavaScript('javascript/cme-disclosure.js');
-		$this->html_head_entry_set->addEntry('styles/cme-disclosure.less');
+		$this->html_head_entry_set->addEntry('styles/cme-disclosure.css');
 	}
 
 	// }}}
