@@ -76,7 +76,11 @@ class CMEQuizResponse extends InquisitionResponse
 			$this->db->quote($inquisition_id, 'integer')
 		);
 
-		return SwatDB::query($this->db, $sql, 'CMECreditWrapper')->getFirst();
+		return SwatDB::query(
+			$this->db,
+			$sql,
+			SwatDBClassMap::get('CMECreditWrapper')
+		)->getFirst();
 	}
 
 	// }}}

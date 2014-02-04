@@ -106,9 +106,20 @@ class CMECredit extends SwatDBDataObject
 		$this->table = 'CMECredit';
 		$this->id_field = 'integer:id';
 
-		$this->registerInternalProperty('credit_type', 'CMECreditType');
-		$this->registerInternalProperty('quiz', 'CMEQuiz');
-		$this->registerInternalProperty('evaluation', 'CMEEvaluation');
+		$this->registerInternalProperty(
+			'credit_type',
+			SwatDBClassMap::get('CMECreditType')
+		);
+
+		$this->registerInternalProperty(
+			'quiz',
+			SwatDBClassMap::get('CMEQuiz')
+		);
+
+		$this->registerInternalProperty(
+			'evaluation',
+			SwatDBClassMap::get('CMEEvaluation')
+		);
 
 		$this->registerDateProperty('review_date');
 	}

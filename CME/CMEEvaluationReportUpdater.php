@@ -115,7 +115,7 @@ abstract class CMEEvaluationReportUpdater extends SiteCommandLineApplication
 		$this->credit_types = SwatDB::query(
 			$this->db,
 			'select * from CMECreditType order by title, id',
-			'CMECreditTypeWrapper'
+			SwatDBClassMap::get('CMECreditTypeWrapper')
 		);
 	}
 

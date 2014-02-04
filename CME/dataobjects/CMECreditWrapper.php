@@ -17,7 +17,7 @@ class CMECreditWrapper extends SwatDBRecordsetWrapper
 	protected function init()
 	{
 		parent::init();
-		$this->row_wrapper_class = 'CMECredit';
+		$this->row_wrapper_class = SwatDBClassMap::get('CMECredit');
 		$this->index_field = 'id';
 	}
 

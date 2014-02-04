@@ -85,7 +85,7 @@ abstract class CMECreditEdit extends AdminDBEdit
 		return SwatDB::query(
 			$this->app->db,
 			$available_credit_types_sql,
-			'CMECreditTypeWrapper'
+			SwatDBClassMap::get('CMECreditTypeWrapper')
 		);
 	}
 
@@ -121,7 +121,8 @@ HTML;
 
 	protected function initCredit()
 	{
-		$this->credit = new CMECredit();
+		$class_name = SwatDBClassMap::get('CMECredit');
+		$this->credit = new $class_name();
 		$this->credit->setDatabase($this->app->db);
 
 		if ($this->id !== null) {
@@ -162,7 +163,7 @@ HTML;
 				'select * from CMECreditType where id = %s',
 				$this->app->db->quote($credit_type_widget->value, 'integer')
 			),
-			'CMECreditTypeWrapper'
+			SwatDBClassMap::get('CMECreditTypeWrapper')
 		)->getFirst();
 
 		if ($this->id === null &&
