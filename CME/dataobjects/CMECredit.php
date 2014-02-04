@@ -55,48 +55,33 @@ class CMECredit extends SwatDBDataObject
 	{
 		$link = null;
 
-		if ($this->credit_type->shortname === 'aaem') {
-			if ($this->quiz instanceof InquisitionInquisition &&
-				!$account->isQuizPassed($this)) {
-				// quiz needs to be completed or retaken
-				$link = $this->episode->getUri(
-					$time_zone,
-					'/quiz/'.$this->credit_type->shortname
-				);
-			} elseif ($this->evaluation instanceof InquisitionInquisition &&
-				!$account->isEvaluationComplete($this)) {
-				// evaluation needs to be taken
-				$link = $this->episode->getUri(
-					$time_zone,
-					'/evaluation/'.$this->credit_type->shortname
-				);
-			} else {
-				// CME agreement needs to be completed
-				$link = $this->episode->getUri($time_zone);
-			}
+		if ($this->quiz instanceof InquisitionInquisition &&
+			!$account->isQuizPassed($this)) {
+			$link = $this->getQuizLink();
+		} elseif ($this->evaluation instanceof InquisitionInquisition &&
+			!$account->isEvaluationComplete($this)) {
+			$link = $this->getEvaluationLink();
 		} else {
-			if ($this->evaluation instanceof InquisitionInquisition &&
-				!$account->isEvaluationComplete($this)) {
-				// evaluation needs to be taken
-				$link = $this->episode->getUri(
-					$time_zone,
-					'/evaluation/'.$this->credit_type->shortname
-				);
-			} elseif ($this->quiz instanceof InquisitionInquisition &&
-				!$account->isQuizPassed($this)) {
-				// quiz needs to be completed or retaken
-				$link = $this->episode->getUri(
-					$time_zone,
-					'/quiz/'.$this->credit_type->shortname
-				);
-			} else {
-				// CME agreement needs to be completed
-				$link = $this->episode->getUri($time_zone);
-			}
+			$link = $this->getCMEDisclosureLink();
 		}
 
 		return $link;
 	}
+
+	// }}}
+	// {{{ abstract protected function getCMEDisclosureLink()
+
+	abstract protected function getCMEDisclosureLink();
+
+	// }}}
+	// {{{ abstract protected function getEvaluationLink()
+
+	abstract protected function getEvaluationLink();
+
+	// }}}
+	// {{{ abstract protected function getQuizLink()
+
+	abstract protected function getQuizLink();
 
 	// }}}
 	// {{{ protected function init()
