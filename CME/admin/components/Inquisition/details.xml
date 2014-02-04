@@ -1,0 +1,127 @@
+<?xml version="1.0" standalone="no"?>
+<!DOCTYPE swatml SYSTEM "http://swat.silverorange.com/swatml1.dtd">
+<swatml>
+	<widget class="SwatMessageDisplay" id="message_display" />
+	<widget class="SwatFrame" id="details_frame">
+		<widget class="SwatToolbar" id="details_toolbar">
+			<widget class="SwatToolLink">
+				<property name="title" translatable="yes">Edit</property>
+				<property name="link">Inquisition/Edit?id=%s</property>
+				<property name="stock_id">edit</property>
+			</widget>
+			<widget class="SwatToolLink" id="delete_link">
+				<property name="title" translatable="yes">Delete</property>
+				<property name="link">Inquisition/Delete?id=%s</property>
+				<property name="stock_id">delete</property>
+			</widget>
+		</widget>
+		<!-- {{{ Details -->
+
+		<widget class="SwatDetailsView" id="details_view">
+			<object class="SwatDetailsViewField">
+				<property name="title" translatable="yes">Title</property>
+				<object class="SwatNullTextCellRenderer">
+					<property name="text" type="data">title</property>
+				</object>
+			</object>
+			<object class="SwatDetailsViewField" id="createdate">
+				<property name="title" translatable="yes">Created On</property>
+				<object class="SwatDateCellRenderer">
+					<property name="date" type="data">createdate</property>
+				</object>
+			</object>
+			<object class="SwatDetailsViewField" id="resettable_field">
+				<property name="title" translatable="yes">This quiz can be retaken by users</property>
+				<object class="SwatBooleanCellRenderer">
+					<property name="stock_id">yes-no</property>
+					<property name="value" type="data">resettable</property>
+				</object>
+			</object>
+			<object class="SwatDetailsViewField" id="passing_grade_field">
+				<property name="title" translatable="yes">Passing Grade</property>
+				<object class="SwatPercentageCellRenderer">
+					<property name="value" type="data">passing_grade</property>
+				</object>
+			</object>
+			<object class="SwatDetailsViewVerticalField">
+				<property name="title" translatable="yes">Description</property>
+				<object class="SwatNullTextCellRenderer">
+					<property name="text" type="data">description</property>
+					<property name="content_type">text/xml</property>
+				</object>
+			</object>
+			<object class="SwatDetailsViewVerticalField" id="email_content_pass_field">
+				<property name="title" translatable="yes">Pass Email Content</property>
+				<object class="SwatNullTextCellRenderer">
+					<property name="text" type="data">email_content_pass</property>
+				</object>
+			</object>
+			<object class="SwatDetailsViewVerticalField" id="email_content_fail_field">
+				<property name="title" translatable="yes">Fail Email Content</property>
+				<object class="SwatNullTextCellRenderer">
+					<property name="text" type="data">email_content_fail</property>
+				</object>
+			</object>
+		</widget>
+
+		<!-- }}} -->
+		<!-- {{{ Questions -->
+
+		<widget class="SwatFrame">
+			<property name="title" translatable="yes">Questions</property>
+			<widget class="SwatForm">
+				<widget class="SwatToolbar" id="question_toolbar">
+					<widget class="SwatToolLink">
+						<property name="title" translatable="yes">Add Question</property>
+						<property name="link">Question/Add?id=%s</property>
+						<property name="stock_id">add</property>
+					</widget>
+					<widget class="SwatToolLink" id="question_order">
+						<property name="title" translatable="yes">Change Question Order</property>
+						<property name="link">Question/Order?id=%s</property>
+						<property name="stock_id">change-order</property>
+					</widget>
+				</widget>
+				<widget class="SwatTableView" id="question_view">
+					<object class="SwatTableViewCheckboxColumn">
+						<object class="SwatCheckboxCellRenderer" id="items">
+							<property name="value" type="data">id</property>
+						</object>
+					</object>
+					<object class="SwatTableViewColumn">
+						<object class="AdminTitleLinkCellRenderer">
+							<property name="text" type="data">title</property>
+							<property name="link">Question/Details?id=%s</property>
+							<property name="link_value[]" type="data">id</property>
+						</object>
+					</object>
+					<object class="SwatTableViewColumn">
+						<property name="title" translatable="yes"># of Options</property>
+						<object class="SwatNumericCellRenderer">
+							<property name="value" type="data">option_count</property>
+						</object>
+					</object>
+					<object class="SwatTableViewColumn" id="image_count_column">
+						<property name="title" translatable="yes"># of Images</property>
+						<object class="SwatNumericCellRenderer">
+							<property name="value" type="data">image_count</property>
+						</object>
+					</object>
+					<object class="SwatTableViewSpanningColumn">
+						<object class="SwatTextCellRenderer">
+							<property name="text" type="data">bodytext</property>
+							<property name="content_type">text/xml</property>
+						</object>
+					</object>
+				</widget>
+				<widget class="SwatActions" id="question_actions">
+					<widget class="SwatActionItem" id="question_delete">
+						<property name="title" translatable="yes">delete…</property>
+					</widget>
+				</widget>
+			</widget>
+		</widget>
+
+		<!-- }}} -->
+	</widget>
+</swatml>

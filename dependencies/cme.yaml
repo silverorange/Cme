@@ -6,8 +6,9 @@
 
 CME:
   Provides:
-    # LESS Style Sheets
+    # Style-Sheets
     styles/cme-disclosure.css:
+    admin/styles/inquisition-edit.css:
 
     # JavaScript
     javascript/cme-disclosure.js:
