@@ -48,9 +48,9 @@ class CMEDisclosureServerPage extends SiteArticlePage
 	}
 
 	// }}}
-	// {{{ protected function getCMECredit()
+	// {{{ protected function getCredit()
 
-	protected function getCMECredit()
+	protected function getCredit()
 	{
 		$credit_id = $this->getArgument('credit');
 
