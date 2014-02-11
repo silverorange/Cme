@@ -19,7 +19,7 @@ class CMEEvaluationWrapper extends InquisitionInquisitionWrapper
 	protected function init()
 	{
 		parent::init();
-		$this->row_wrapper_class = 'CMEEvaluation';
+		$this->row_wrapper_class = SwatDBClassMap::get('CMEEvaluation');
 		$this->index_field = 'id';
 	}
 

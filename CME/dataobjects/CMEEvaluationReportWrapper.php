@@ -18,7 +18,7 @@ class CMEEvaluationReportWrapper extends SwatDBRecordsetWrapper
 	protected function init()
 	{
 		parent::init();
-		$this->row_wrapper_class = 'CMEEvaluationReport';
+		$this->row_wrapper_class = SwatDBClassMap::get('CMEEvaluationReport');
 		$this->index_field = 'id';
 	}
 
