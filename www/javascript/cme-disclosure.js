@@ -10,6 +10,12 @@ function CMEDisclosure(id, class_name, server, title, content, cancel_uri)
 	YAHOO.util.Event.onDOMReady(this.init, this, true);
 }
 
+CMEDisclosure.accept_text =
+	'I Have Read the CME Information / Continue';
+
+CMEDisclosure.cancel_text =
+	'Cancel and Return';
+
 CMEDisclosure.confirm_text =
 	'Before you view %s, please attest to reading the following:';
 
@@ -25,7 +31,7 @@ CMEDisclosure.prototype.init = function()
 
 	var continue_button = document.createElement('input');
 	continue_button.type = 'button';
-	continue_button.value = 'I Have Read the CME Information / Continue';
+	continue_button.value = CMEDisclosure.accept_text;
 	continue_button.className = 'button swat-primary-button';
 	YAHOO.util.Event.on(continue_button, 'click', function(e) {
 		continue_button.disabled = true;
@@ -34,7 +40,7 @@ CMEDisclosure.prototype.init = function()
 
 	var cancel_button = document.createElement('input');
 	cancel_button.type = 'button';
-	cancel_button.value = 'Cancel and Return to Episode Guide';
+	cancel_button.value = CMEDisclosure.cancel_text;
 	cancel_button.className = 'button cancel-button';
 	YAHOO.util.Event.on(cancel_button, 'click', function(e) {
 		var base = document.getElementsByTagName('base')[0];

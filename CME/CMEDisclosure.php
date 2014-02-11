@@ -81,7 +81,16 @@ class CMEDisclosure extends SwatControl
 
 	protected function getInlineJavaScript()
 	{
-		return sprintf(
+		static $shown = false;
+
+		if (!$shown) {
+			$javascript = $this->getInlineJavaScriptTranslations();
+			$shown = true;
+		} else {
+			$javascript = '';
+		}
+
+		$javascript.= sprintf(
 			'%s_obj = new CMEDisclosure(%s, %s, %s, %s, %s, %s);',
 			$this->id,
 			SwatString::quoteJavaScriptString($this->id),
@@ -91,6 +100,24 @@ class CMEDisclosure extends SwatControl
 			SwatString::quoteJavaScriptString($this->content),
 			SwatString::quoteJavaScriptString($this->cancel_uri)
 		);
+
+		return $javascript;
+	}
+
+	// }}}
+	// {{{ protected function getInlineJavaScriptTranslations()
+
+	protected function getInlineJavaScriptTranslations()
+	{
+		$accept_text = CME::_('I Have Read the CME Information / Continue');
+		$cancel_text = CME::_('Cancel and Return');
+		$confirm_text = CME::_(
+			'Before you view %s, please attest to reading the following:'
+		);
+
+		return "CMEDisclosure.accept_text = '{$accept_text}';\n".
+			"CMEDisclosure.cancel_text = {$cancel_text};\n".
+			"CMEDisclosure.confirm_text = {$confirm_text};\n";
 	}
 
 	// }}}
