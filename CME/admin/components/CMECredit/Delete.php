@@ -102,10 +102,12 @@ class CMECreditDelete extends AdminDBDelete
 
 		$this->navbar->popEntries(1);
 
-		$this->navbar->createEntry(CME::ngettext(
-			'Delete CME Credit',
-			'Delete CME Credits',
-			count($this->items)
+		$this->navbar->createEntry(
+			CME::ngettext(
+				'Delete CME Credit',
+				'Delete CME Credits',
+				count($this->items)
+			)
 		);
 	}
 

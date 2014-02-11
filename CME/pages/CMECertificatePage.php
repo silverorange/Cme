@@ -146,7 +146,7 @@ abstract class CMECertificatePage extends SiteUiPage
 	// }}}
 	// {{{ abstract protected function getCreditTitle()
 
-	abstract protected function getCreditTitle(CMECredit $credit)
+	abstract protected function getCreditTitle(CMECredit $credit);
 
 	// }}}
 	// {{{ protected function getCreditDetails()
