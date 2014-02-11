@@ -1,7 +1,7 @@
 <?php
 
-require_once 'Site/dataobjects/SiteAccount.php';
 require_once 'Inquisition/dataobjects/InquisitionInquisition.php';
+require_once 'CME/dataobjects/CMEAccount.php';
 
 /**
  * @package   CME
@@ -45,7 +45,7 @@ class CMEQuiz extends InquisitionInquisition
 	// }}}
 	// {{{ public function getResponseByAccount()
 
-	public function getResponseByAccount(SiteAccount $account)
+	public function getResponseByAccount(CMEAccount $account)
 	{
 		$this->checkDB();
 

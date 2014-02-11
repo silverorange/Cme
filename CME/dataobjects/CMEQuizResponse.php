@@ -1,7 +1,7 @@
 <?php
 
 require_once 'Inquisition/dataobjects/InquisitionResponse.php';
-require_once 'Site/dataobjects/SiteAccount.php';
+require_once 'CME/dataobjects/CMEAccount.php';
 require_once 'CME/dataobjects/CMEQuiz.php';
 
 /**
@@ -93,7 +93,7 @@ class CMEQuizResponse extends InquisitionResponse
 		$this->registerDateProperty('reset_date');
 		$this->registerInternalProperty(
 			'account',
-			SwatDBClassMap::get('SiteAccount')
+			SwatDBClassMap::get('CMEAccount')
 		);
 	}
 

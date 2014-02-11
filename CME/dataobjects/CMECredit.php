@@ -52,7 +52,7 @@ class CMECredit extends SwatDBDataObject
 	// }}}
 	// {{{ public function getActionLink()
 
-	public function getActionLink(Account $account, DateTimeZone $time_zone)
+	public function getActionLink(CMEAccount $account, DateTimeZone $time_zone)
 	{
 		$link = null;
 
