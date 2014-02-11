@@ -7,6 +7,7 @@ require_once 'Swat/SwatTableStore.php';
 require_once 'Swat/SwatDetailsStore.php';
 require_once 'Admin/pages/AdminIndex.php';
 require_once 'Admin/AdminTitleLinkCellRenderer.php';
+require_once 'CME/CME.php';
 require_once 'CME/dataobjects/CMECreditTypeWrapper.php';
 require_once 'CME/dataobjects/CMEEvaluationReportWrapper.php';
 
@@ -42,7 +43,11 @@ class CMEEvaluationReportIndex extends AdminIndex
 	protected function initInternal()
 	{
 		parent::initInternal();
-		$this->ui->loadFromXML(__DIR__.'/index.xml');
+
+		$this->ui->loadFromXML(
+			'CME/admin/components/EvaluationReport/index.xml'
+		);
+
 		$this->initStartDate();
 		$this->initCreditTypes();
 		$this->initReportsByQuarter();
