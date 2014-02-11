@@ -6,6 +6,7 @@ require_once 'CME/dataobjects/CMECreditType.php';
 /**
  * @package   CME
  * @copyright 2011-2014 silverorange
+ * @license   http://www.opensource.org/licenses/mit-license.html MIT License
  */
 class CMEQuizReport extends SwatDBDataObject
 {
