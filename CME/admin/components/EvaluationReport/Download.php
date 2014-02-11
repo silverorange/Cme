@@ -77,7 +77,7 @@ class CMEEvaluationReportDownload extends AdminPage
 			SwatDBClassMap::get('CMEEvaluationReportWrapper')
 		)->getFirst();
 
-		if ($this->report === null) {
+		if (!$this->report instanceof CMEEvaluationReport) {
 			throw new AdminNotFoundException(
 				sprintf(
 					'Report not found for quarter %s.',
