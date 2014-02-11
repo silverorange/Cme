@@ -10,7 +10,7 @@ require_once 'CME/dataobjects/CMECreditWrapper.php';
  * @copyright 2011-2014 silverorange
  * @license   http://www.opensource.org/licenses/mit-license.html MIT License
  */
-class CMEPieceServerPage extends SiteArticlePage
+class CMEDisclosureServerPage extends SiteArticlePage
 {
 	// {{{ public function __construct()
 
