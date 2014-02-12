@@ -108,20 +108,6 @@ class CME
 	}
 
 	// }}}
-	// {{{ public static function getDependencies()
-
-	/**
-	 * Gets the packages this package depends on
-	 *
-	 * @return array an array of package IDs that this package depends on.
-	 */
-	public static function getDependencies()
-	{
-		require_once 'Swat/SwatYUI.php';
-		return array(SwatYUI::PACKAGE_ID);
-	}
-
-	// }}}
 	// {{{ private function __construct()
 
 	/**
