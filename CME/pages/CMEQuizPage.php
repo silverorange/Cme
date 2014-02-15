@@ -84,6 +84,16 @@ abstract class CMEQuizPage extends SiteDBEditPage
 	}
 
 	// }}}
+	// {{{ abstract protected function getEvaluationURI()
+
+	abstract protected function getEvaluationURI();
+
+	// }}}
+	// {{{ abstract protected function getCertificateURI()
+
+	abstract protected function getCertificateURI();
+
+	// }}}
 
 	// init phase
 	// {{{ protected function initInternal()
@@ -414,14 +424,20 @@ abstract class CMEQuizPage extends SiteDBEditPage
 	abstract protected function relocate(SwatForm $form);
 
 	// }}}
-	// {{{ abstract protected function relocateToCertificate()
+	// {{{  protected function relocateToCertificate()
 
-	abstract protected function relocateToCertificate();
+	 protected function relocateToCertificate()
+	 {
+		 $this->app->relocate($this->getCertificateURI());
+	 }
 
 	// }}}
-	// {{{ abstract protected function relocateToEvaluation()
+	// {{{  protected function relocateToEvaluation()
 
-	abstract protected function relocateToEvaluation();
+	 protected function relocateToEvaluation()
+	 {
+		 $this->app->relocate($this->getEvaluationURI());
+	 }
 
 	// }}}
 
@@ -528,13 +544,13 @@ abstract class CMEQuizPage extends SiteDBEditPage
 
 				$certificate_link = new SwatHtmlTag('a');
 				$certificate_link->class = 'button';
-				$certificate_link->href = $this->getCertificateLink();
+				$certificate_link->href = $this->getCertificateURI();
 				$certificate_link->setContent(CME::_('Print Certificate'));
 				$certificate_link->display();
 			} else {
 				$evaluation_link = new SwatHtmlTag('a');
 				$evaluation_link->class = 'button';
-				$evaluation_link->href = $this->getEvaluationLink();
+				$evaluation_link->href = $this->getEvaluationURI();
 				$evaluation_link->setContent(CME::_('Complete Evaluation'));
 				$evaluation_link->display();
 			}
@@ -780,16 +796,6 @@ abstract class CMEQuizPage extends SiteDBEditPage
 
 		echo '</ol>';
 	}
-
-	// }}}
-	// {{{ abstract protected function getEvaluationLink()
-
-	abstract protected function getEvaluationLink();
-
-	// }}}
-	// {{{ abstract protected function getCertificateLink()
-
-	abstract protected function getCertificateLink();
 
 	// }}}
 
