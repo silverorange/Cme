@@ -12,5 +12,6 @@ CME:
 
     # JavaScript
     javascript/cme-disclosure.js:
+    javascript/cme-quiz-page.js:
 
 # vim: set expandtab tabstop=2 shiftwidth=2 softtabstop=2:

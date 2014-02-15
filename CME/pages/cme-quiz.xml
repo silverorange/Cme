@@ -1,0 +1,35 @@
+<?xml version="1.0" standalone="no"?>
+<!DOCTYPE swatml SYSTEM "http://swat.silverorange.com/swatml1.dtd">
+<swatml>
+	<widget class="SwatFrame" id="quiz_response_container">
+		<property name="title" translatable="yes">Results</property>
+		<property name="visible" type="boolean">false</property>
+		<widget class="SwatContentBlock" id="quiz_response_description" />
+		<widget class="SwatContentBlock" id="quiz_response" />
+		<widget class="SwatForm" id="reset_form">
+			<property name="visible" type="boolean">false</property>
+			<widget class="SwatButton" id="reset_button">
+				<property name="title" translatable="yes">Retake Quiz</property>
+				<property name="classes[]">button</property>
+			</widget>
+		</widget>
+	</widget>
+	<widget class="SwatFrame" id="quiz_frame">
+		<widget class="SwatForm" id="quiz_form">
+			<widget class="SwatMessageDisplay" id="message_display" />
+			<widget class="SwatDisplayableContainer" id="quiz_info">
+				<widget class="SwatContentBlock" id="quiz_content" />
+			</widget>
+			<widget class="SwatDisplayableContainer" id="quiz_container">
+				<widget class="SwatDisplayableContainer" id="question_container" />
+			</widget>
+			<widget class="SwatFooterFormField" id="quiz_footer">
+				<property name="classes[]">quiz-footer</property>
+				<widget class="SwatButton" id="submit_button">
+					<property name="title" translatable="yes">Submit Quiz</property>
+					<property name="classes[]">button</property>
+				</widget>
+			</widget>
+		</widget>
+	</widget>
+</swatml>
