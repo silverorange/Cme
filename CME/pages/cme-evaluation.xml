@@ -1,0 +1,17 @@
+<?xml version="1.0" standalone="no"?>
+<!DOCTYPE swatml SYSTEM "http://swat.silverorange.com/swatml1.dtd">
+<swatml>
+	<widget class="SwatForm" id="evaluation_form">
+		<widget class="SwatMessageDisplay" id="message_display" />
+		<widget class="SwatFrame" id="evaluation_frame">
+			<widget class="SwatDisplayableContainer" id="question_container" />
+			<widget class="SwatFooterFormField" id="evaluation_footer">
+				<property name="classes[]">evaluation-footer</property>
+				<widget class="SwatButton" id="submit_button">
+					<property name="classes[]">button</property>
+					<property name="title" translatable="yes">Submit Evaluation</property>
+				</widget>
+			</widget>
+		</widget>
+	</widget>
+</swatml>
