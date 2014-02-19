@@ -526,10 +526,13 @@ abstract class CMEQuizPage extends SiteDBEditPage
 		echo '</p>';
 
 		if (!$this->quiz->resettable) {
-			echo CME::_(
-				'<p class="quiz-response-status">Once you have taken '.
-				'the quiz, it may not be taken again.</p>'
+			echo '<p class="quiz-response-status">';
+			echo SwatString::minimizeEntities(
+				CME::_(
+					'Once you have taken the quiz, it may not be taken again.'
+				)
 			);
+			echo '</p>';
 		}
 
 		if ($this->response->isPassed()) {
