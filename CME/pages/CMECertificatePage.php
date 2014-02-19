@@ -44,7 +44,8 @@ abstract class CMECertificatePage extends SiteUiPage
 		}
 
 		// If no hours are earned and no CME access is available, go to account
-		// details
+		// details. Not using strict equality because $hours can be a float
+		// value.
 		if (!$account->hasCMEAccess() && $hours == 0) {
 			$this->app->relocate('account');
 		}
