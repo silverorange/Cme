@@ -312,14 +312,27 @@ abstract class CMEEvaluationReportUpdater extends SiteCommandLineApplication
 		$year    = $quarter->getYear();
 		$quarter = intval($quarter->formatLikeIntl('qq'));
 
-		$report = new CMEEvaluationReportGenerator(
-			$this,
+		$report = $this->getReportGenerator(
 			$credit_type,
 			$year,
 			$quarter
 		);
 
 		$report->saveFile($filepath);
+	}
+
+	// }}}
+	// {{{ protected function getReportGenerator()
+
+	protected function getReportGenerator(CMECreditType $credit_type,
+		$year, $quarter)
+	{
+		return new CMEEvaluationReportGenerator(
+			$this,
+			$credit_type,
+			$year,
+			$quarter
+		);
 	}
 
 	// }}}

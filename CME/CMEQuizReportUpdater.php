@@ -316,7 +316,7 @@ abstract class CMEQuizReportUpdater extends SiteCommandLineApplication
 		$year    = $quarter->getYear();
 		$quarter = intval($quarter->formatLikeIntl('qq'));
 
-		$report = new CMEQuizReportGenerator(
+		$report = $this->getReportGenerator(
 			$this,
 			$credit_type,
 			$year,
@@ -324,6 +324,20 @@ abstract class CMEQuizReportUpdater extends SiteCommandLineApplication
 		);
 
 		$report->saveFile($filepath);
+	}
+
+	// }}}
+	// {{{ protected function getReportGenerator()
+
+	protected function getReportGenerator(CMECreditType $credit_type,
+		$year, $quarter)
+	{
+		return new CMEQuizReportGenerator(
+			$this,
+			$credit_type,
+			$year,
+			$quarter
+		);
 	}
 
 	// }}}
