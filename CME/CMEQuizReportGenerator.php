@@ -133,7 +133,7 @@ abstract class CMEQuizReportGenerator
 			'inquisition',
 			$this->app->db,
 			$quiz_sql,
-			'CMEQuizWrapper'
+			SwatDBClassMap::get('CMEQuizWrapper')
 		);
 
 		// efficiently load credits
