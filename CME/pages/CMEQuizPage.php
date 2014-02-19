@@ -768,7 +768,7 @@ abstract class CMEQuizPage extends SiteDBEditPage
 			// your option
 			if ($option !== null && $response_option_id !== null) {
 				$dt_tag = new SwatHtmlTag('dt');
-				$dt_tag->setContent(CME::_('Your Answer'));
+				$dt_tag->setContent(CME::_('Your Answer:'));
 				$dt_tag->display();
 				$response_option = $question->options[$response_option_id];
 				$dd_tag = new SwatHtmlTag('dd');
@@ -786,7 +786,9 @@ abstract class CMEQuizPage extends SiteDBEditPage
 
 			// correct option (shown if your option is wrong)
 			if ($option !== null && $option->id !== $response_option_id) {
-				echo CME::_('<dt>Correct Answer:</dt>');
+				$dt_tag = new SwatHtmlTag('dt');
+				$dt_tag->setContent(CME::_('Correct Answer:'))
+				$dt_tag->display();
 				$dd_tag = new SwatHtmlTag('dd');
 				$dd_tag->class =
 					'quiz-question-option quiz-question-option-correct';
