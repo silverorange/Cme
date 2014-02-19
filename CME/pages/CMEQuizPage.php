@@ -767,7 +767,9 @@ abstract class CMEQuizPage extends SiteDBEditPage
 
 			// your option
 			if ($option !== null && $response_option_id !== null) {
-				echo CME::_('<dt>Your Answer:</dt>');
+				$dt_tag = new SwatHtmlTag('dt');
+				$dt_tag->setContent(CME::_('Your Answer'));
+				$dt_tag->display();
 				$response_option = $question->options[$response_option_id];
 				$dd_tag = new SwatHtmlTag('dd');
 				if ($option->id !== $response_option_id) {
