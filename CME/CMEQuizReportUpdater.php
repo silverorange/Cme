@@ -290,7 +290,8 @@ abstract class CMEQuizReportUpdater extends SiteCommandLineApplication
 	protected function getDataObject(SwatDate $quarter,
 		CMECreditType $credit_type, $filename)
 	{
-		$report = new CMEQuizReport();
+		$class_name = SwatDBClassMap::get('CMEQuizReport');
+		$report = new $class_name();
 		$report->setDatabase($this->db);
 		$report->setFileBase($this->getFileBase());
 
