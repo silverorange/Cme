@@ -680,6 +680,15 @@ abstract class CMEQuizPage extends SiteDBEditPage
 
 	protected function getInlineJavaScript()
 	{
+		static $shown = false;
+
+		if (!$shown) {
+			$javascript = $this->getInlineJavaScriptTranslations();
+			$shown = true;
+		} else {
+			$javascript = '';
+		}
+
 		$quiz_uri = $this->app->getBaseHref(true).$this->source;
 		$response_server = $quiz_uri.'/response';
 
@@ -703,11 +712,75 @@ abstract class CMEQuizPage extends SiteDBEditPage
 			count($quiz->question_bindings) - 1
 		);
 
-		return sprintf(
-			"var quiz_page = new CMEQuizPage('quiz_container', %s, %s);\n",
+		$javascript.= sprintf(
+			"var quiz_page = new %s('quiz_container', %s, %s);\n",
+			$this->getJavaScriptClassName(),
 			SwatString::quoteJavaScriptString($response_server),
 			$current_question
 		);
+
+		return $javascript;
+	}
+
+	// }}}
+	// {{{ protected function getInlineJavaScriptTranslations()
+
+	protected function getInlineJavaScriptTranslations()
+	{
+		$strings = array(
+			'start_text'                  => CME::_('Start Quiz'),
+			'continue_text'               => CME::_('Continue Quiz'),
+			'next_text'                   => CME::_('Next Question'),
+			'previous_text'               => CME::_('Previous Question'),
+			'quiz_status_text'            => CME::_('Question %s of %s'),
+			'submit_text'                 => CME::_('Submit Quiz'),
+			'review_text'                 => CME::_('Review Answers'),
+			'intro_text'                  => CME::_('Return to Introduction'),
+			'close_text'                  => CME::_('Close'),
+			'question_title_text'         => CME::_('Question %s'),
+			'change_text'                 => CME::_('Change'),
+			'answer_text'                 => CME::_('Answer'),
+			'intro_status_review_text'    => CME::_(
+				'%s of %s questions completed'
+			),
+			'intro_status_start_text'     => CME::_('%s questions, about %s'),
+			'intro_status_continue_text'  => CME::_(
+				'%s of %s questions completed, about %s remaining'
+			),
+			'review_status_text_0'        => CME::_(
+				'All questions are answered.'
+			),
+			'review_status_text_1'        => CME::_('%s is not answered'),
+			'review_status_text_2_to_5'   => CME::_('%s are unanswered.'),
+			'review_status_text_many'     => CME::_(
+				'%s questions are unanswered.'
+			),
+			'review_status_required_text' => CME::_(
+				'All questions must be answered before the quiz can be '.
+				'submitted.'
+			),
+			'time_hours_text_1'           => CME::_('one hour'),
+			'time_hours_text_many'        => CME::_('%s hours'),
+			'time_minutes_text_many'      => CME::_('%s minutes'),
+		);
+
+		$javascript = '';
+		foreach ($strings as $key => $text) {
+			$javscript.= sprintf(
+				"CMEQuizText.%s = %s;\n",
+				$key,
+				SwatString::quoteJavaScriptString($text)
+			);
+		}
+		return $javascript;
+	}
+
+	// }}}
+	// {{{ protected function getJavaScriptClassName()
+
+	protected function getJavaScriptClassName()
+	{
+		return 'CMEQuizPage';
 	}
 
 	// }}}

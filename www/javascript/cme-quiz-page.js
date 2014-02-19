@@ -32,7 +32,7 @@ CMEQuizPage.dialog_fade_period = 0.25; // seconds
 CMEQuizPage.start_text          = 'Start Quiz';
 CMEQuizPage.continue_text       = 'Continue Quiz';
 CMEQuizPage.next_text           = 'Next Question';
-CMEQuizPage.prev_text           = 'Previous Question';
+CMEQuizPage.previous_text       = 'Previous Question';
 CMEQuizPage.quiz_status_text    = 'Question %s of %s';
 CMEQuizPage.submit_text         = 'Submit Quiz';
 CMEQuizPage.review_text         = 'Review Answers';
@@ -47,13 +47,17 @@ CMEQuizPage.intro_status_start_text    = '%s questions, about %s';
 CMEQuizPage.intro_status_continue_text = '%s of %s questions completed, ' +
                                          'about %s remaining';
 
-CMEQuizPage.review_status_text_0      = 'All questions are answered.';
-CMEQuizPage.review_status_text_1      = ' is not answered.';
-CMEQuizPage.review_status_text_2_to_5 = ' are unanswered.';
-CMEQuizPage.review_status_text_many   = '%s questions are unanswered.';
-CMEQuizPage.review_status_required    = 'All questions must be ' +
-                                        'answered before the quiz can ' +
-                                        'be submitted.';
+CMEQuizPage.review_status_text_0        = 'All questions are answered.';
+CMEQuizPage.review_status_text_1        = '%s is not answered.';
+CMEQuizPage.review_status_text_2_to_5   = '%s are unanswered.';
+CMEQuizPage.review_status_text_many     = '%s questions are unanswered.';
+CMEQuizPage.review_status_required_text = 'All questions must be ' +
+                                          'answered before the quiz can ' +
+                                          'be submitted.';
+
+CMEQuizPage.hours_text_1 = 'one hour';
+CMEQuizPage.hours_text_many = '%s hours';
+CMEQuizPage.minutes_text_many = '%s minutes';
 
 (function() {
 
@@ -314,7 +318,7 @@ proto.drawQuizPage = function()
 	this.prev_button = document.createElement('input');
 	this.prev_button.className = 'swat-button quiz-button quiz-button-prev';
 	this.prev_button.type = 'button';
-	this.prev_button.value = CMEQuizPage.prev_text;
+	this.prev_button.value = CMEQuizPage.previous_text;
 	Event.on(this.prev_button, 'click', function(e) {
 		Event.preventDefault(e);
 		this.previousQuestion();
@@ -625,13 +629,15 @@ proto.updateIntroPage = function()
 	if (remaining > 30) {
 		time_estimate = Math.round(remaining * 2 / 30) / 2;
 		if (time_estimate === 1) {
-			time_estimate_str = 'one hour';
+			time_estimate_str = CMEQuizPage.hours_text_1;
 		} else {
-			time_estimate_str = time_estimate + ' hours';
+			time_estimate_str = CMEQuizPage.hours_text_many
+				.replace(/%s/, time_estimate);
 		}
 	} else {
 		time_estimate = Math.ceil(remaining * 2 / 10) * 10;
-		time_estimate_str = time_estimate + ' minutes';
+		time_estimate_str = CMEQuizPage.minutes_text_many
+			.replace(/%s/, time_estimate);
 	}
 
 	if (completed === 0) {
@@ -750,6 +756,12 @@ proto.updateReviewPage = function()
 		this.submit_button.disabled = true;
 
 		if (unanswered.length === 1) {
+			var parts = CMEQuizPage.review_status_text_1.split(/%s/, 2);
+			this.review_status.appendChild(
+				document.createTextNode(
+					parts[0]
+				)
+			);
 
 			anchor = document.createElement('a');
 			anchor.href = '#question' + (unanswered[0] + 1);
@@ -764,13 +776,22 @@ proto.updateReviewPage = function()
 				this.openDialog(unanswered[0]);
 			}, this, true);
 			this.review_status.appendChild(anchor);
-			this.review_status.appendChild(
-				document.createTextNode(
-					CMEQuizPage.review_status_text_1
-				)
-			);
+
+			if (parts.length > 1) {
+				this.review_status.appendChild(
+					document.createTextNode(
+						parts[1]
+					)
+				);
+			}
 
 		} else if (unanswered.length < 6) {
+			var parts = CMEQuizPage.review_status_text_2_to_5.split(/%s/, 2);
+			this.review_status.appendChild(
+				document.createTextNode(
+					parts[0]
+				)
+			);
 
 			var that = this;
 			for (var i = 0; i < unanswered.length; i++) {
@@ -802,11 +823,13 @@ proto.updateReviewPage = function()
 				}
 			}
 
-			this.review_status.appendChild(
-				document.createTextNode(
-					CMEQuizPage.review_status_text_2_to_5
-				)
-			);
+			if (parts.length > 1) {
+				this.review_status.appendChild(
+					document.createTextNode(
+						parts[1]
+					)
+				);
+			}
 
 		} else {
 
