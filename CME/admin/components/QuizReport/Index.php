@@ -36,6 +36,14 @@ class CMEQuizReportIndex extends AdminIndex
 	protected $start_date;
 
 	// }}}
+	// {{{ protected function getUiXml()
+
+	protected function getUiXml()
+	{
+		return 'CME/admin/components/QuizReport/index.xml';
+	}
+
+	// }}}
 
 	// init phase
 	// {{{ protected function initInternal()
@@ -43,7 +51,7 @@ class CMEQuizReportIndex extends AdminIndex
 	protected function initInternal()
 	{
 		parent::initInternal();
-		$this->ui->loadFromXML('CME/admin/components/QuizReport/index.xml');
+		$this->ui->loadFromXML($this->getUiXml());
 		$this->initStartDate();
 		$this->initCreditTypes();
 		$this->initReportsByQuarter();
