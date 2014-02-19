@@ -469,7 +469,7 @@ STYLESHEET;
 		$end_date->subtractMonths(1);
 
 		printf(
-			'<h1>Program Evaluation Report for %s to %s</h1>',
+			CME::_('<h1>Program Evaluation Report for %s to %s</h1>'),
 			$this->start_date->formatLikeIntl('MMMM yyyy'),
 			$end_date->formatLikeIntl('MMMM yyyy')
 		);
@@ -598,11 +598,11 @@ STYLESHEET;
 		// every text question. As a consequence it means we'll end up
 		// displaying A LOT of text. We don't want to do that right now.
 		echo $question->bodytext;
-		echo '<p>Comments are not listed in this report.</p>';
+		echo CME::_('<p>Comments are not listed in this report.</p>');
 
 		/*
 		if (count($response_values) > 0) {
-			echo '<p>The following answers were provided:</p>';
+			echo CME::_('<p>The following answers were provided:</p>');
 			echo '<ul>';
 			$count = 0;
 			foreach ($response_values as $value) {
@@ -613,7 +613,7 @@ STYLESHEET;
 			}
 			echo '</ul>';
 		} else {
-			echo '<p>There were no responses for this question.</p>';
+			echo CME::_('<p>There were no responses for this question.</p>');
 		}
 		*/
 	}
