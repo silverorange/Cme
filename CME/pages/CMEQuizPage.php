@@ -776,6 +776,7 @@ abstract class CMEQuizPage extends SiteDBEditPage
 					$dd_tag->class =
 						'quiz-question-option quiz-question-option-incorrect';
 				} else {
+					$dd_tag->class =
 						'quiz-question-option';
 				}
 
