@@ -118,7 +118,7 @@ abstract class CMEQuizReportUpdater extends SiteCommandLineApplication
 		$this->credit_types = SwatDB::query(
 			$this->db,
 			'select * from CMECreditType order by title, id',
-			'CMECreditTypeWrapper'
+			SwatDBClassMap::get('CMECreditTypeWrapper')
 		);
 	}
 
@@ -133,7 +133,7 @@ abstract class CMEQuizReportUpdater extends SiteCommandLineApplication
 		$reports = SwatDB::query(
 			$this->db,
 			$sql,
-			'CMEQuizReportWrapper'
+			SwatDBClassMap::get('CMEQuizReportWrapper')
 		);
 
 		$reports->attachSubDataObjects(
