@@ -274,7 +274,7 @@ class CMEQuizResponseServer extends SiteArticlePage
 			$this->app->db->quote($option_id, 'integer')
 		);
 
-		if (SwatDB::queryOne($this->app->db, $sql) == 1) {
+		if (SwatDB::queryOne($this->app->db, $sql) === 1) {
 
 			// check for existing response
 			$sql = sprintf(
