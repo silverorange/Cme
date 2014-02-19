@@ -27,6 +27,14 @@ abstract class CMECreditEdit extends AdminDBEdit
 	protected $credit;
 
 	// }}}
+	// {{{ protected function getUiXml()
+
+	protected function getUiXml()
+	{
+		return 'CME/admin/components/CMECredit/edit.xml';
+	}
+
+	// }}}
 
 	// init phase
 	// {{{ abstract protected function getDefaultCreditTypeShortname()
@@ -47,7 +55,7 @@ abstract class CMECreditEdit extends AdminDBEdit
 
 		$this->initCredit();
 
-		$this->ui->loadFromXML('CME/admin/components/CMECredit/edit.xml');
+		$this->ui->loadFromXML($this->getUiXml());
 
 		// add available credit types
 		$credit_type_widget = $this->ui->getWidget('credit_type');
