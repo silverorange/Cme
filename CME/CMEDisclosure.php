@@ -92,8 +92,9 @@ class CMEDisclosure extends SwatControl
 		}
 
 		$javascript.= sprintf(
-			'%s_obj = new CMEDisclosure(%s, %s, %s, %s, %s, %s);',
+			'%s_obj = new %s(%s, %s, %s, %s, %s, %s);',
 			$this->id,
+			$this->getJavaScriptClassName(),
 			SwatString::quoteJavaScriptString($this->id),
 			SwatString::quoteJavaScriptString($this->getCSSClassString()),
 			SwatString::quoteJavaScriptString($this->server),
@@ -116,9 +117,22 @@ class CMEDisclosure extends SwatControl
 			'Before you view %s, please attest to reading the following:'
 		);
 
-		return "CMEDisclosure.accept_text = '{$accept_text}';\n".
-			"CMEDisclosure.cancel_text = {$cancel_text};\n".
-			"CMEDisclosure.confirm_text = {$confirm_text};\n";
+		return sprintf(
+			"CMEDisclosure.accept_text = %s;\n".
+			"CMEDisclosure.cancel_text = %s;\n".
+			"CMEDisclosure.confirm_text = %s;\n",
+			SwatString::quoteJavaScriptString($acept_text),
+			SwatString::quoteJavaScriptString($cancel_text),
+			SwatString::quoteJavaScriptString($confirm_text)
+		);
+	}
+
+	// }}}
+	// {{{ protected function getJavaScriptClassName()
+
+	protected function getJavaScriptClassName()
+	{
+		return 'CMEDisclosure';
 	}
 
 	// }}}
