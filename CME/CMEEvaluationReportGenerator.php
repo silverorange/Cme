@@ -264,7 +264,7 @@ abstract class CMEEvaluationReportGenerator
 
 				$black        = array(0, 0, 0);
 				$size         = 9;
-				$metrics_text = "Page 1 of 1";
+				$metrics_text = CME::_("Page 1 of 1");
 
 				if ($PAGE_NUM > 9) {
 					$metrics_text.= "0";
@@ -279,7 +279,7 @@ abstract class CMEEvaluationReportGenerator
 					$metrics_text.= "0";
 				}
 
-				$text        = "Page {PAGE_NUM} of {PAGE_COUNT}";
+				$text        = CME::_("Page {PAGE_NUM} of {PAGE_COUNT}");
 
 				$width = Font_Metrics::get_text_width(
 					$metrics_text,
