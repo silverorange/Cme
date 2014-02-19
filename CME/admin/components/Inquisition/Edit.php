@@ -242,14 +242,26 @@ class CMEInquisitionEdit extends InquisitionInquisitionEdit
 
 	protected function getHelpText()
 	{
-		return <<<HTML
-			<p>The following variables may be used in email content:</p>
+		return sprintf(
+			'<p>%s</p>
 			<ul>
-				<li><strong>[account-full-name]</strong> - the full name of the account holder</li>
-				<li><strong>[quiz-grade]</strong> - the grade the account holder got on the quiz</li>
-				<li><strong>[quiz-passing-grade]</strong> - the grade required to pass the quiz</li>
-			</ul>
-HTML;
+				<li><strong>[account-full-name]</strong>%s</li>
+				<li><strong>[quiz-grade]</strong>%s</li>
+				<li><strong>[quiz-passing-grade]</strong>%s</li>
+			</ul>',
+			SwatString::minimizeEntities(
+				CME::_('The following variables may be used in email content:')
+			),
+			SwatString::minimizeEntities(
+				CME::_(' - the full name of the account holder')
+			),
+			SwatString::minimizeEntities(
+				CME::_(' - the grade the account holder got on the quiz')
+			),
+			SwatString::minimizeEntities(
+				CME::_(' - the grade required to pass the quiz')
+			)
+		);
 	}
 
 	// }}}
