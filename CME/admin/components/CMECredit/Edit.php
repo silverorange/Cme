@@ -179,7 +179,7 @@ HTML;
 			!$this->validateCreditType($credit_type)) {
 			$message = new SwatMessage(
 				sprintf(
-					'%s already has %s CME.',
+					CME::_('%s already has %s CME.'),
 					$this->getTitle(),
 					$credit_type->title
 				),
