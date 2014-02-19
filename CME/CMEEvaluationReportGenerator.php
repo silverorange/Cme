@@ -468,11 +468,15 @@ STYLESHEET;
 		$end_date = clone $this->end_date;
 		$end_date->subtractMonths(1);
 
-		printf(
-			CME::_('<h1>Program Evaluation Report for %s to %s</h1>'),
-			$this->start_date->formatLikeIntl('MMMM yyyy'),
-			$end_date->formatLikeIntl('MMMM yyyy')
+		$header = new SwatHtmlTag('h1');
+		$header->setContent(
+			sprintf(
+				CME::_('Program Evaluation Report for %s to %s'),
+				$this->start_date->formatLikeIntl('MMMM yyyy'),
+				$end_date->formatLikeIntl('MMMM yyyy')
+			)
 		);
+		$header->display();
 	}
 
 	// }}}
@@ -483,7 +487,14 @@ STYLESHEET;
 	{
 		echo  '<div class="question">';
 
-		printf(CME::_('<h3>Question %s</h3>'), $index);
+		$header = new SwatHtmlTag('h3');
+		$header->setContent(
+			sprintf(
+				CME::_('Question %s'),
+				$index
+			)
+		);
+		$header->display();
 
 		switch ($question->question_type) {
 		case InquisitionQuestion::TYPE_RADIO_LIST:
@@ -564,7 +575,11 @@ STYLESHEET;
 				}
 			}
 		} else {
-			echo CME::_('<li>There were no responses for this question.</li>');
+			$li_tag = new SwatHtmlTag('li');
+			$li_tag->setContent(
+				CME::_('There were no responses for this question.')
+			);
+			$li_tag->display();
 		}
 
 		echo '</ul>';
@@ -598,11 +613,21 @@ STYLESHEET;
 		// every text question. As a consequence it means we'll end up
 		// displaying A LOT of text. We don't want to do that right now.
 		echo $question->bodytext;
-		echo CME::_('<p>Comments are not listed in this report.</p>');
+
+		$p_tag = new SwatHtmlTag('p');
+		$p_tag->setContent(
+			CME::_('Comments are not listed in this report.')
+		);
+		$p_tag->display();
 
 		/*
 		if (count($response_values) > 0) {
-			echo CME::_('<p>The following answers were provided:</p>');
+			$p_tag = new SwatHtmlTag('p');
+			$p_tag->setContent(
+				CME::_('The following answers were provided:')
+			);
+			$p_tag->display();
+
 			echo '<ul>';
 			$count = 0;
 			foreach ($response_values as $value) {
@@ -613,7 +638,11 @@ STYLESHEET;
 			}
 			echo '</ul>';
 		} else {
-			echo CME::_('<p>There were no responses for this question.</p>');
+			$p_tag = new SwatHtmlTag('p');
+			$p_tag->setContent(
+				CME::_('There were no responses for this question.')
+			);
+			$p_tag->display();
 		}
 		*/
 	}
