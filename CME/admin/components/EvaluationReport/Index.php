@@ -36,6 +36,14 @@ class CMEEvaluationReportIndex extends AdminIndex
 	protected $start_date;
 
 	// }}}
+	// {{{ protected function getUiXml()
+
+	protected function getUiXml()
+	{
+		return 'CME/admin/components/EvaluationReport/index.xml'
+	}
+
+	// }}}
 
 	// init phase
 	// {{{ protected function initInternal()
@@ -44,9 +52,7 @@ class CMEEvaluationReportIndex extends AdminIndex
 	{
 		parent::initInternal();
 
-		$this->ui->loadFromXML(
-			'CME/admin/components/EvaluationReport/index.xml'
-		);
+		$this->ui->loadFromXML($this->getUiXml());
 
 		$this->initStartDate();
 		$this->initCreditTypes();
