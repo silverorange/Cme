@@ -55,7 +55,7 @@ class CMECreditDelete extends AdminDBDelete
 		$item_list = $this->getItemList('integer');
 
 		$dep = new AdminListDependency();
-		$dep->setTitle('CME credit', 'CME credits');
+		$dep->setTitle(CME::_('CME credit'), CME::_('CME credits'));
 
 		$sql = sprintf(
 			'select CMECredit.id, CMECredit.hours, CMECreditType.title
