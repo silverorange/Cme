@@ -1,0 +1,21 @@
+##
+## Static Web-resource dependencies for CME
+##
+## Copyright (c) 2011-2014 silverorange
+##
+
+CME:
+  Depends:
+    - Inquisiton
+
+  Provides:
+    # Style-Sheets
+    styles/cme-disclosure.css:
+    admin/styles/inquisition-edit.css:
+
+    # JavaScript
+    javascript/cme-disclosure.js:
+    javascript/cme-evaluation-page.js:
+    javascript/cme-quiz-page.js:
+
+# vim: set expandtab tabstop=2 shiftwidth=2 softtabstop=2:

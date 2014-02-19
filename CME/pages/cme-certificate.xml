@@ -1,0 +1,27 @@
+<?xml version="1.0" standalone="no"?>
+<!DOCTYPE swatml SYSTEM "http://swat.silverorange.com/swatml1.dtd">
+<swatml>
+	<widget class="SwatMessageDisplay" id="message_display" />
+	<widget class="SwatFrame" id="certificate_frame">
+		<widget class="SwatForm" id="certificate_form">
+		<widget class="SwatDisplayableContainer" id="article_bodytext_container">
+			<widget class="SwatContentBlock" id="article_bodytext">
+				<property name="content_type">text/xml</property>
+			</widget>
+		</widget>
+			<widget class="SwatFormField" id="credits_field">
+				<widget class="EpisodeCheckboxList" id="credits">
+					<property name="columns" type="integer">2</property>
+				</widget>
+			</widget>
+			<widget class="SwatFooterFormField" id="submit_field">
+				<widget class="SwatButton" id="submit_button">
+					<property name="title" translatable="yes">Print Certificates</property>
+				</widget>
+			</widget>
+		</widget>
+	</widget>
+	<widget class="SwatContentBlock" id="certificate">
+		<property name="content_type">text/xml</property>
+	</widget>
+</swatml>
