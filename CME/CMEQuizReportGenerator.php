@@ -145,7 +145,7 @@ abstract class CMEQuizReportGenerator
 				where quiz in (%s)',
 				$this->app->db->implodeArray($quizzes->getIndexes(), 'integer')
 			),
-			'CMECreditWrapper'
+			SwatDBClassMap::get('CMECreditWrapper')
 		);
 
 		$credits->attachSubDataObjects('quiz', $quizzes);
