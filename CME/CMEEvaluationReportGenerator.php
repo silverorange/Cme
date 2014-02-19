@@ -83,7 +83,7 @@ abstract class CMEEvaluationReportGenerator
 		$responses = SwatDB::query(
 			$this->app->db,
 			$sql,
-			'InquisitionResponseWrapper'
+			SwatDBClassMap::get('InquisitionResponseWrapper')
 		);
 
 		// efficiently load response values
@@ -121,7 +121,7 @@ abstract class CMEEvaluationReportGenerator
 			'inquisition',
 			$this->app->db,
 			$evaluation_sql,
-			'EvaluationWrapper'
+			SwatDBClassMap::get('CMEEvaluationWrapper')
 		);
 
 		// efficiently load question bindings
