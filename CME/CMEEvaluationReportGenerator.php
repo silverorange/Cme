@@ -483,7 +483,7 @@ STYLESHEET;
 	{
 		echo  '<div class="question">';
 
-		printf('<h3>Question %s</h3>', $index);
+		printf(CME::_('<h3>Question %s</h3>'), $index);
 
 		switch ($question->question_type) {
 		case InquisitionQuestion::TYPE_RADIO_LIST:
