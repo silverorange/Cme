@@ -131,7 +131,7 @@ abstract class CMEEvaluationReportUpdater extends SiteCommandLineApplication
 		$reports = SwatDB::query(
 			$this->db,
 			$sql,
-			'CMEEvaluationReportWrapper'
+			SwatDBClassMap::get('CMEEvaluationReportWrapper')
 		);
 
 		$reports->attachSubDataObjects(
@@ -286,7 +286,8 @@ abstract class CMEEvaluationReportUpdater extends SiteCommandLineApplication
 	protected function getDataObject(SwatDate $quarter,
 		CMECreditType $credit_type, $filename)
 	{
-		$report = new CMEEvaluationReport();
+		$class_name = SwatDBClassMap::get('CMEEvaluationReport');
+		$report = new $class_name();
 		$report->setDatabase($this->db);
 		$report->setFileBase(__DIR__);
 
