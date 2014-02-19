@@ -564,7 +564,7 @@ STYLESHEET;
 				}
 			}
 		} else {
-			echo '<li>There were no responses for this question.</li>';
+			echo CME::_('<li>There were no responses for this question.</li>');
 		}
 
 		echo '</ul>';
