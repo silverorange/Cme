@@ -896,8 +896,8 @@ abstract class CMEQuizPage extends SiteDBEditPage
 		));
 		$this->layout->addHtmlHeadEntrySet($yui->getHtmlHeadEntrySet());
 		$this->layout->addHtmlHeadEntry(
-			'packages/swat/javascript/swat-z-index-manager.js',
-			Swat::PACKAGE_ID);
+			'packages/swat/javascript/swat-z-index-manager.js'
+		);
 
 		$this->layout->addHtmlHeadEntry('javascript/cme-quiz-page.js');
 
