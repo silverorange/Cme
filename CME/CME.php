@@ -14,11 +14,6 @@ class CME
 	// {{{ constants
 
 	/**
-	 * The package identifier
-	 */
-	const PACKAGE_ID = 'CME';
-
-	/**
 	 * The gettext domain for CME
 	 *
 	 * This is used to support multiple locales.
