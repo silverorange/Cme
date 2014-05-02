@@ -1,18 +1,16 @@
 create table CMECredit (
 	id serial,
 
-	enabled boolean not null default true,
-	hours numeric(5, 2) not null,
-	objectives text,
-	planning_committee_no_disclosures text,
-	support_staff_no_disclosures text,
-	review_date timestamp,
-
 	quiz integer references Inquisition(id) on delete set null,
-	evaluation integer references Inquisition(id) on delete set null,
-	provider integer not null references CMEProvider(id) on delete cascade,
+	front_matter integer not null references CMEFrontMatter(id) on delete cascade,
+
+	hours numeric(5, 2) not null,
+	passing_grade decimal(5, 2),
+	email_content_pass text,
+	email_content_fail text,
+	resettable boolean not null default true,
 
 	primary key (id)
 );
 
-create index CMECredit_provider_index on CMECredit(provider);
+create index CMECredit_front_matter_index on CMECredit(front_matter);
