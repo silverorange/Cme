@@ -665,12 +665,12 @@ abstract class CMEQuizPage extends SiteDBEditPage
 	{
 		$this->layout->data->title = sprintf(
 			CME::_('%s Quiz'),
-			SwatString::minimizeEntities($this->credit->credit_type->title)
+			SwatString::minimizeEntities($this->credit->provider->title)
 		);
 
 		$this->layout->data->html_title = sprintf(
 			CME::_('%s Quiz - %s'),
-			$this->credit->credit_type->title,
+			$this->credit->provider->title,
 			$this->app->getHtmlTitle()
 		);
 	}

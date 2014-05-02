@@ -58,10 +58,10 @@ class CMECreditDelete extends AdminDBDelete
 		$dep->setTitle(CME::_('CME credit'), CME::_('CME credits'));
 
 		$sql = sprintf(
-			'select CMECredit.id, CMECredit.hours, CMECreditType.title
+			'select CMECredit.id, CMECredit.hours, CMEProvider.title
 			from CMECredit
-				inner join CMECreditType on
-					CMECredit.credit_type = CMECreditType.id
+				inner join CMEProvider on
+					CMECredit.provider = CMEProvider.id
 			where CMECredit.id in (%s)',
 			$item_list
 		);

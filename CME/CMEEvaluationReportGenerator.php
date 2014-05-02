@@ -4,7 +4,7 @@ require_once 'Swat/SwatDate.php';
 require_once 'SwatDB/SwatDB.php';
 require_once 'Site/SiteApplication.php';
 require_once 'Inquisition/dataobjects/InquisitionResponseWrapper.php';
-require_once 'CME/dataobjects/CMECreditType.php';
+require_once 'CME/dataobjects/CMEProvider.php';
 require_once 'CME/dataobjects/EvaluationWrapper.php';
 require_once 'CME/dataobjects/EvaluationReport.php';
 
@@ -28,9 +28,9 @@ abstract class CMEEvaluationReportGenerator
 	protected $end_date;
 
 	/**
-	 * @var CMECreditType
+	 * @var CMEProvider
 	 */
-	protected $credit_type;
+	protected $provider;
 
 	/**
 	 * @var SiteApplication
@@ -41,10 +41,10 @@ abstract class CMEEvaluationReportGenerator
 	// {{{ public function __construct()
 
 	public function __construct(SiteApplication $app,
-		CMECreditType $credit_type, $year, $quarter)
+		CMEProvider $provider, $year, $quarter)
 	{
 		$this->app = $app;
-		$this->credit_type = $credit_type;
+		$this->provider = $provider;
 
 		$start_month = ((intval($quarter) - 1) * 3) + 1;
 
@@ -70,14 +70,14 @@ abstract class CMEEvaluationReportGenerator
 				and convertTZ(complete_date, %1$s) >= %2$s
 				and convertTZ(complete_date, %1$s) < %3$s
 				and inquisition in (
-					select evaluation from CMECredit where credit_type = %4$s
+					select evaluation from CMECredit where provider = %4$s
 				) and account in (
 					select id from Account where Account.delete_date is null
 				)',
 			$this->app->db->quote($this->app->config->date->time_zone, 'text'),
 			$this->app->db->quote($this->start_date->getDate(), 'date'),
 			$this->app->db->quote($this->end_date->getDate(), 'date'),
-			$this->app->db->quote($this->credit_type->id, 'integer')
+			$this->app->db->quote($this->provider->id, 'integer')
 		);
 
 		$responses = SwatDB::query(

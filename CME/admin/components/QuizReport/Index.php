@@ -8,7 +8,7 @@ require_once 'Swat/SwatDetailsStore.php';
 require_once 'Admin/pages/AdminIndex.php';
 require_once 'Admin/AdminTitleLinkCellRenderer.php';
 require_once 'CME/CME.php';
-require_once 'CME/dataobjects/CMECreditTypeWrapper.php';
+require_once 'CME/dataobjects/CMEProviderWrapper.php';
 require_once 'CME/dataobjects/QuizReportWrapper.php';
 
 /**
@@ -26,9 +26,9 @@ class CMEQuizReportIndex extends AdminIndex
 	protected $reports_by_quarter = array();
 
 	/**
-	 * @var CMECreditTypeWrapper
+	 * @var CMEProviderWrapper
 	 */
-	protected $credit_types;
+	protected $providers;
 
 	/**
 	 * @var SwatDate
@@ -79,10 +79,10 @@ class CMEQuizReportIndex extends AdminIndex
 
 	protected function initCreditTypes()
 	{
-		$this->credit_types = SwatDB::query(
+		$this->providers = SwatDB::query(
 			$this->app->db,
-			'select * from CMECreditType order by title, id',
-			SwatDBClassMap::get('CMECreditTypeWrapper')
+			'select * from CMEProvider order by title, id',
+			SwatDBClassMap::get('CMEProviderWrapper')
 		);
 	}
 
@@ -99,19 +99,19 @@ class CMEQuizReportIndex extends AdminIndex
 		);
 
 		$reports->attachSubDataObjects(
-			'credit_type',
-			$this->credit_types
+			'provider',
+			$this->providers
 		);
 
 		foreach ($reports as $report) {
 			$quarter = clone $report->quarter;
 			$quarter->convertTZ($this->app->default_time_zone);
 			$quarter = $quarter->formatLikeIntl('yyyy-qq');
-			$credit_type = $report->credit_type->shortname;
+			$provider = $report->provider->shortname;
 			if (!isset($this->reports_by_quarter[$quarter])) {
 				$this->reports_by_quarter[$quarter] = array();
 			}
-			$this->reports_by_quarter[$quarter][$credit_type] = $report;
+			$this->reports_by_quarter[$quarter][$provider] = $report;
 		}
 	}
 
@@ -121,17 +121,17 @@ class CMEQuizReportIndex extends AdminIndex
 	protected function initTableViewColumns()
 	{
 		$view = $this->ui->getWidget('index_view');
-		foreach ($this->credit_types as $credit_type) {
+		foreach ($this->providers as $provider) {
 			$renderer = new AdminTitleLinkCellRenderer();
 			$renderer->link = sprintf(
 				'QuizReport/Download?type=%s&quarter=%%s',
-				$credit_type->shortname
+				$provider->shortname
 			);
 			$renderer->stock_id = 'download';
-			$renderer->text = $credit_type->title;
+			$renderer->text = $provider->title;
 
 			$column = new SwatTableViewColumn();
-			$column->id = 'credit_type_'.$credit_type->shortname;
+			$column->id = 'provider_'.$provider->shortname;
 			$column->addRenderer($renderer);
 			$column->addMappingToRenderer(
 				$renderer,
@@ -141,7 +141,7 @@ class CMEQuizReportIndex extends AdminIndex
 
 			$column->addMappingToRenderer(
 				$renderer,
-				'is_'.$credit_type->shortname.'_sensitive',
+				'is_'.$provider->shortname.'_sensitive',
 				'sensitive'
 			);
 
@@ -192,9 +192,9 @@ class CMEQuizReportIndex extends AdminIndex
 					$display_end_date->formatLikeIntl('MMMM yyyy')
 				);
 
-				foreach ($this->credit_types as $credit_type) {
-					$ds->{'is_'.$credit_type->shortname.'_sensitive'} =
-						(isset($this->reports_by_quarter[$quarter][$credit_type->shortname]));
+				foreach ($this->providers as $provider) {
+					$ds->{'is_'.$provider->shortname.'_sensitive'} =
+						(isset($this->reports_by_quarter[$quarter][$provider->shortname]));
 				}
 
 				$store->add($ds);

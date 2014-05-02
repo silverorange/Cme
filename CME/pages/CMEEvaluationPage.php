@@ -313,7 +313,7 @@ abstract class CMEEvaluationPage extends SiteDBEditPage
 					'Thank you for completing the <em>%s</em> %s evaluation.'
 				),
 				SwatString::minimizeEntities($this->getTitle()),
-				SwatString::minimizeEntities($this->credit->credit_type->title)
+				SwatString::minimizeEntities($this->credit->provider->title)
 			)
 		);
 
@@ -350,12 +350,12 @@ abstract class CMEEvaluationPage extends SiteDBEditPage
 	{
 		$this->layout->data->title = sprintf(
 			CME::_('%s Evaluation'),
-			SwatString::minimizeEntities($this->credit->credit_type->title)
+			SwatString::minimizeEntities($this->credit->provider->title)
 		);
 
 		$this->layout->data->html_title = sprintf(
 			CME::_('%s Evaluation - %s'),
-			$this->credit->credit_type->title,
+			$this->credit->provider->title,
 			$this->app->getHtmlTitle()
 		);
 	}

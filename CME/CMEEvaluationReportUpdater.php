@@ -7,7 +7,7 @@ require_once 'Site/SiteCommandLineApplication.php';
 require_once 'Site/SiteCommandLineArgument.php';
 require_once 'Site/SiteCommandLineConfigModule.php';
 require_once 'Site/SiteDatabaseModule.php';
-require_once 'CME/dataobjects/CMECreditTypeWrapper.php';
+require_once 'CME/dataobjects/CMEProviderWrapper.php';
 require_once 'CME/dataobjects/CMEEvaluationReport.php';
 require_once 'CME/dataobjects/CMEEvaluationReportWrapper.php';
 require_once 'CME/CMEEvaluationReportGenerator.php';
@@ -27,9 +27,9 @@ abstract class CMEEvaluationReportUpdater extends SiteCommandLineApplication
 	protected $start_date;
 
 	/**
-	 * @var CMECreditTypeWrapper
+	 * @var CMEProviderWrapper
 	 */
-	protected $credit_types;
+	protected $providers;
 
 	/**
 	 * @var array
@@ -52,11 +52,11 @@ abstract class CMEEvaluationReportUpdater extends SiteCommandLineApplication
 
 		$this->lock();
 
-		foreach ($this->credit_types as $credit_type) {
-			$this->debug("{$credit_type->title}:\n", true);
-			$shortname = $credit_type->shortname;
+		foreach ($this->providers as $provider) {
+			$this->debug("{$provider->title}:\n", true);
+			$shortname = $provider->shortname;
 
-			foreach ($this->getQuarters($credit_type) as $quarter) {
+			foreach ($this->getQuarters($provider) as $quarter) {
 				$quarter_id = $quarter->formatLikeIntl('qqq-yyyy');
 				$this->debug("=> Quarter {$quarter_id}:\n");
 				if (isset($this->reports_by_quarter[$quarter_id][$shortname])) {
@@ -67,14 +67,14 @@ abstract class CMEEvaluationReportUpdater extends SiteCommandLineApplication
 					// generated.
 					$report = $this->getDataObject(
 						$quarter,
-						$credit_type,
-						$this->getFilename($quarter, $credit_type)
+						$provider,
+						$this->getFilename($quarter, $provider)
 					);
 
 					$this->debug("   => generating report ... ");
 					$this->saveReport(
 						$quarter,
-						$credit_type,
+						$provider,
 						$report->getFilePath()
 					);
 					$this->debug("[done]\n");
@@ -113,10 +113,10 @@ abstract class CMEEvaluationReportUpdater extends SiteCommandLineApplication
 
 	protected function initCreditTypes()
 	{
-		$this->credit_types = SwatDB::query(
+		$this->providers = SwatDB::query(
 			$this->db,
-			'select * from CMECreditType order by title, id',
-			SwatDBClassMap::get('CMECreditTypeWrapper')
+			'select * from CMEProvider order by title, id',
+			SwatDBClassMap::get('CMEProviderWrapper')
 		);
 	}
 
@@ -135,26 +135,26 @@ abstract class CMEEvaluationReportUpdater extends SiteCommandLineApplication
 		);
 
 		$reports->attachSubDataObjects(
-			'credit_type',
-			$this->credit_types
+			'provider',
+			$this->providers
 		);
 
 		foreach ($reports as $report) {
 			$quarter = clone $report->quarter;
 			$quarter->convertTZ($this->default_time_zone);
 			$quarter = $quarter->formatLikeIntl('qqq-yyyy');
-			$credit_type = $report->credit_type->shortname;
+			$provider = $report->provider->shortname;
 			if (!isset($this->reports_by_quarter[$quarter])) {
 				$this->reports_by_quarter[$quarter] = array();
 			}
-			$this->reports_by_quarter[$quarter][$credit_type] = $report;
+			$this->reports_by_quarter[$quarter][$provider] = $report;
 		}
 	}
 
 	// }}}
 	// {{{ protected function getQuarters()
 
-	protected function getQuarters(CMECreditType $credit_type)
+	protected function getQuarters(CMEProvider $provider)
 	{
 		$quarters = array();
 
@@ -186,13 +186,13 @@ abstract class CMEEvaluationReportUpdater extends SiteCommandLineApplication
 				}
 
 				$num_credits = $this->getQuarterCredits(
-					$credit_type,
+					$provider,
 					$year,
 					$quarter
 				);
 
 				$num_responses = $this->getQuarterResponses(
-					$credit_type,
+					$provider,
 					$year,
 					$quarter
 				);
@@ -215,7 +215,7 @@ abstract class CMEEvaluationReportUpdater extends SiteCommandLineApplication
 	// }}}
 	// {{{ protected function getQuarterCredits()
 
-	protected function getQuarterCredits(CMECreditType $credit_type, $year,
+	protected function getQuarterCredits(CMEProvider $provider, $year,
 		$quarter)
 	{
 		$start_month = (($quarter - 1) * 3) + 1;
@@ -235,11 +235,11 @@ abstract class CMEEvaluationReportUpdater extends SiteCommandLineApplication
 				where complete_date is not null
 				and convertTZ(complete_date, %1$s) >= %2$s
 				and convertTZ(complete_date, %1$s) < %3$s
-			) and credit_type = %4$s',
+			) and provider = %4$s',
 			$this->db->quote($this->config->date->time_zone, 'text'),
 			$this->db->quote($start_date->getDate(), 'date'),
 			$this->db->quote($end_date->getDate(), 'date'),
-			$this->db->quote($credit_type->id, 'integer')
+			$this->db->quote($provider->id, 'integer')
 		);
 
 		return SwatDB::queryOne($this->db, $sql);
@@ -248,7 +248,7 @@ abstract class CMEEvaluationReportUpdater extends SiteCommandLineApplication
 	// }}}
 	// {{{ protected function getQuarterResponses()
 
-	protected function getQuarterResponses(CMECreditType $credit_type, $year,
+	protected function getQuarterResponses(CMEProvider $provider, $year,
 		$quarter)
 	{
 		$start_month = (($quarter - 1) * 3) + 1;
@@ -267,14 +267,14 @@ abstract class CMEEvaluationReportUpdater extends SiteCommandLineApplication
 				and convertTZ(complete_date, %1$s) >= %2$s
 				and convertTZ(complete_date, %1$s) < %3$s
 				and inquisition in (
-					select evaluation from CMECredit where credit_type = %4$s
+					select evaluation from CMECredit where provider = %4$s
 				) and account in (
 					select id from Account where Account.delete_date is null
 				)',
 			$this->db->quote($this->config->date->time_zone, 'text'),
 			$this->db->quote($start_date->getDate(), 'date'),
 			$this->db->quote($end_date->getDate(), 'date'),
-			$this->db->quote($credit_type->id, 'integer')
+			$this->db->quote($provider->id, 'integer')
 		);
 
 		return SwatDB::queryOne($this->db, $sql);
@@ -284,7 +284,7 @@ abstract class CMEEvaluationReportUpdater extends SiteCommandLineApplication
 	// {{{ protected function getDataObject()
 
 	protected function getDataObject(SwatDate $quarter,
-		CMECreditType $credit_type, $filename)
+		CMEProvider $provider, $filename)
 	{
 		$class_name = SwatDBClassMap::get('CMEEvaluationReport');
 		$report = new $class_name();
@@ -295,7 +295,7 @@ abstract class CMEEvaluationReportUpdater extends SiteCommandLineApplication
 		$quarter->toUTC();
 
 		$report->quarter     = $quarter;
-		$report->credit_type = $credit_type;
+		$report->provider = $provider;
 		$report->filename    = $filename;
 		$report->createdate  = new SwatDate();
 		$report->createdate->toUTC();
@@ -306,14 +306,14 @@ abstract class CMEEvaluationReportUpdater extends SiteCommandLineApplication
 	// }}}
 	// {{{ protected function saveReport()
 
-	protected function saveReport(SwatDate $quarter, CMECreditType $credit_type,
+	protected function saveReport(SwatDate $quarter, CMEProvider $provider,
 		$filepath)
 	{
 		$year    = $quarter->getYear();
 		$quarter = intval($quarter->formatLikeIntl('qq'));
 
 		$report = $this->getReportGenerator(
-			$credit_type,
+			$provider,
 			$year,
 			$quarter
 		);
@@ -324,12 +324,12 @@ abstract class CMEEvaluationReportUpdater extends SiteCommandLineApplication
 	// }}}
 	// {{{ protected function getReportGenerator()
 
-	protected function getReportGenerator(CMECreditType $credit_type,
+	protected function getReportGenerator(CMEProvider $provider,
 		$year, $quarter)
 	{
 		return new CMEEvaluationReportGenerator(
 			$this,
-			$credit_type,
+			$provider,
 			$year,
 			$quarter
 		);
@@ -339,10 +339,10 @@ abstract class CMEEvaluationReportUpdater extends SiteCommandLineApplication
 	// {{{ protected function getFilename()
 
 	protected function getFilename(SwatDate $quarter,
-		CMECreditType $credit_type)
+		CMEProvider $provider)
 	{
 		// replace spaces with dashes
-		$title = str_replace(' ', '-', $credit_type->title);
+		$title = str_replace(' ', '-', $provider->title);
 
 		// strip non-word or dash characters
 		$title = preg_replace('/[^\w-]/', '', $title);

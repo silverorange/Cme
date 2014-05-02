@@ -10,9 +10,9 @@ create table CMECredit (
 
 	quiz integer references Inquisition(id) on delete set null,
 	evaluation integer references Inquisition(id) on delete set null,
-	credit_type integer not null references CMECreditType(id) on delete cascade,
+	provider integer not null references CMEProvider(id) on delete cascade,
 
 	primary key (id)
 );
 
-create index CMECredit_type_index on CMECredit(credit_type);
+create index CMECredit_provider_index on CMECredit(provider);

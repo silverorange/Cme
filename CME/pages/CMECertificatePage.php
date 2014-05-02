@@ -4,7 +4,7 @@ require_once 'Site/pages/SiteUiPage.php';
 require_once 'Swat/SwatDetailsStore.php';
 require_once 'CME/CME.php';
 require_once 'CME/dataobjects/CMECreditWrapper.php';
-require_once 'CME/dataobjects/CMECreditTypeWrapper.php';
+require_once 'CME/dataobjects/CMEProviderWrapper.php';
 
 /**
  * Page for generating and viewing certificates
@@ -126,7 +126,7 @@ abstract class CMECertificatePage extends SiteUiPage
 					$locale->formatNumber($credit->hours)
 				),
 				SwatString::minimizeEntities(
-					$credit->credit_type->title
+					$credit->provider->title
 				)
 			),
 			'text/xml'

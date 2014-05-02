@@ -158,7 +158,7 @@ class CMEAccount extends StoreAccount
 				from CMECredit
 				where CMECredit.hours > 0 and
 					CMECredit.enabled = %s
-				order by CMECredit.credit_type',
+				order by CMECredit.provider',
 				$this->db->quote(true, 'boolean')
 			);
 
@@ -187,7 +187,7 @@ class CMEAccount extends StoreAccount
 	protected function loadCMECredits()
 	{
 		require_once 'CME/dataobjects/CMECreditWrapper.php';
-		require_once 'CME/dataobjects/CMECreditTypeWrapper.php';
+		require_once 'CME/dataobjects/CMEProviderWrapper.php';
 
 		$sql = sprintf(
 			'select CMECredit.* from CMECredit
@@ -195,7 +195,7 @@ class CMEAccount extends StoreAccount
 					CMECredit.id = AccountCMECreditBinding.credit and
 						account = %s
 			where CMECredit.hours > 0
-			order by CMECredit.credit_type',
+			order by CMECredit.provider',
 			$this->db->quote($this->id, 'integer')
 		);
 
@@ -205,11 +205,11 @@ class CMEAccount extends StoreAccount
 			SwatDBClassMap::get('CMECreditWrapper')
 		);
 
-		$credit_types = $credits->loadAllSubDataObjects(
-			'credit_type',
+		$providers = $credits->loadAllSubDataObjects(
+			'provider',
 			$this->db,
-			'select * from CMECreditType where id in(%s)',
-			SwatDBClassMap::get('CMECreditTypeWrapper')
+			'select * from CMEProvider where id in(%s)',
+			SwatDBClassMap::get('CMEProviderWrapper')
 		);
 
 		return $credits;

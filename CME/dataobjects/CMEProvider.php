@@ -7,7 +7,7 @@ require_once 'SwatDB/SwatDBDataObject.php';
  * @copyright 2013-2014 silverorange
  * @license   http://www.opensource.org/licenses/mit-license.html MIT License
  */
-class CMECreditType extends SwatDBDataObject
+class CMEProvider extends SwatDBDataObject
 {
 	// {{{ public properties
 
@@ -61,7 +61,7 @@ class CMECreditType extends SwatDBDataObject
 
 	protected function init()
 	{
-		$this->table = 'CMECreditType';
+		$this->table = 'CMEProvider';
 		$this->id_field = 'integer:id';
 	}
 

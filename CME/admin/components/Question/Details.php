@@ -140,14 +140,14 @@ class CMEQuestionDetails extends InquisitionQuestionDetails
 		case 'evaluation':
 			return sprintf(
 				CME::_('% Evaluation'),
-				$this->credit->credit_type->title
+				$this->credit->provider->title
 			);
 
 		default:
 		case 'quiz':
 			return sprintf(
 				CME::_('%s Quiz'),
-				$this->credit->credit_type->title
+				$this->credit->provider->title
 			);
 		}
 	}

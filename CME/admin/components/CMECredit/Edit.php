@@ -8,8 +8,8 @@ require_once 'Inquisition/dataobjects/InquisitionQuestion.php';
 require_once 'Inquisition/dataobjects/InquisitionQuestionOption.php';
 require_once 'CME/CME.php';
 require_once 'CME/dataobjects/CMECredit.php';
-require_once 'CME/dataobjects/CMECreditType.php';
-require_once 'CME/dataobjects/CMECreditTypeWrapper.php';
+require_once 'CME/dataobjects/CMEProvider.php';
+require_once 'CME/dataobjects/CMEProviderWrapper.php';
 require_once 'CME/dataobjects/CMEEvaluation.php';
 
 /**
@@ -58,11 +58,11 @@ abstract class CMECreditEdit extends AdminDBEdit
 		$this->ui->loadFromXML($this->getUiXml());
 
 		// add available credit types
-		$credit_type_widget = $this->ui->getWidget('credit_type');
-		foreach ($this->getAvailableCreditTypes() as $credit_type) {
-			$credit_type_widget->addOption(
-				$credit_type->id,
-				$credit_type->title
+		$provider_widget = $this->ui->getWidget('provider');
+		foreach ($this->getAvailableCreditTypes() as $provider) {
+			$provider_widget->addOption(
+				$provider->id,
+				$provider->title
 			);
 		}
 
@@ -74,27 +74,27 @@ abstract class CMECreditEdit extends AdminDBEdit
 
 	protected function getAvailableCreditTypes()
 	{
-		$available_credit_types_sql =
-			'select * from CMECreditType where id not in (
-				select credit_type from CMECredit
+		$available_providers_sql =
+			'select * from CMEProvider where id not in (
+				select provider from CMECredit
 			)';
 
 		if ($this->credit->id !== null) {
-			$available_credit_types_sql.= sprintf(
+			$available_providers_sql.= sprintf(
 				' or id = %s',
 				$this->app->db->quote(
-					$this->credit->credit_type->id,
+					$this->credit->provider->id,
 					'integer'
 				)
 			);
 		}
 
-		$available_credit_types_sql.= ' order by title';
+		$available_providers_sql.= ' order by title';
 
 		return SwatDB::query(
 			$this->app->db,
-			$available_credit_types_sql,
-			SwatDBClassMap::get('CMECreditTypeWrapper')
+			$available_providers_sql,
+			SwatDBClassMap::get('CMEProviderWrapper')
 		);
 	}
 
@@ -104,7 +104,7 @@ abstract class CMECreditEdit extends AdminDBEdit
 	protected function setDefaultValues()
 	{
 		$sql = sprintf(
-			'select id from CMECreditType where shortname = %s',
+			'select id from CMEProvider where shortname = %s',
 			$this->app->db->quote(
 				$this->getDefaultCreditTypeShortname(),
 				'text'
@@ -113,7 +113,7 @@ abstract class CMECreditEdit extends AdminDBEdit
 
 		$default_type_id = SwatDB::queryOne($this->app->db, $sql);
 
-		$this->ui->getWidget('credit_type')->value = $default_type_id;
+		$this->ui->getWidget('provider')->value = $default_type_id;
 		$this->ui->getWidget('hours')->value = $this->getDefaultCreditHours();
 		$this->ui->getWidget('enabled')->value = true;
 		$this->ui->getWidget('objectives')->value = <<<HTML
@@ -165,34 +165,34 @@ HTML;
 
 	protected function validate()
 	{
-		$credit_type_widget = $this->ui->getWidget('credit_type');
-		$credit_type = SwatDB::query(
+		$provider_widget = $this->ui->getWidget('provider');
+		$provider = SwatDB::query(
 			$this->app->db,
 			sprintf(
-				'select * from CMECreditType where id = %s',
-				$this->app->db->quote($credit_type_widget->value, 'integer')
+				'select * from CMEProvider where id = %s',
+				$this->app->db->quote($provider_widget->value, 'integer')
 			),
-			SwatDBClassMap::get('CMECreditTypeWrapper')
+			SwatDBClassMap::get('CMEProviderWrapper')
 		)->getFirst();
 
 		if ($this->id === null &&
-			!$this->validateCreditType($credit_type)) {
+			!$this->validateCreditType($provider)) {
 			$message = new SwatMessage(
 				sprintf(
 					CME::_('%s already has %s CME.'),
 					$this->getTitle(),
-					$credit_type->title
+					$provider->title
 				),
 				'error'
 			);
-			$credit_type_widget->addMessage($message);
+			$provider_widget->addMessage($message);
 		}
 	}
 
 	// }}}
 	// {{{ protected function validateCreditType()
 
-	protected function validateCreditType(CMECreditType $credit_type)
+	protected function validateCreditType(CMEProvider $provider)
 	{
 		return true;
 	}
@@ -204,7 +204,7 @@ HTML;
 	{
 		$values = $this->ui->getValues(
 			array(
-				'credit_type',
+				'provider',
 				'hours',
 				'objectives',
 				'review_date',
@@ -220,9 +220,9 @@ HTML;
 
 		// Required because of weird behaviour with sub-data-objects in
 		// SwatDBDataObject.
-		$this->credit->credit_type = null;
+		$this->credit->provider = null;
 
-		$this->credit->credit_type = $values['credit_type'];
+		$this->credit->provider = $values['provider'];
 		$this->credit->hours       = $values['hours'];
 		$this->credit->objectives  = $values['objectives'];
 		$this->credit->enabled     = $values['enabled'];
@@ -254,7 +254,7 @@ HTML;
 			new SwatMessage(
 				sprintf(
 					CME::_('%s CME Credit for %s has been saved.'),
-					$this->credit->credit_type->title,
+					$this->credit->provider->title,
 					$this->getTitle()
 				)
 			)
@@ -309,8 +309,8 @@ HTML;
 	protected function loadDBData()
 	{
 		$this->ui->setValues(get_object_vars($this->credit));
-		$this->ui->getWidget('credit_type')->value =
-			$this->credit->getInternalValue('credit_type');
+		$this->ui->getWidget('provider')->value =
+			$this->credit->getInternalValue('provider');
 
 		if ($this->credit->review_date instanceof SwatDate) {
 			$date = clone $this->credit->review_date;

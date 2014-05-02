@@ -60,17 +60,17 @@ class CMEQuizReportDownload extends AdminPage
 			SiteApplication::VAR_GET
 		);
 
-		$credit_type = new CMECreditType();
-		$credit_type->setDatabase($this->app->db);
-		if (!$credit_type->loadByShortname($type)) {
+		$provider = new CMEProvider();
+		$provider->setDatabase($this->app->db);
+		if (!$provider->loadByShortname($type)) {
 			throw new AdminNotFoundException('Invalid credit type');
 		}
 
 		$sql = sprintf(
 			'select * from QuizReport
-			where quarter = %s and credit_type = %s',
+			where quarter = %s and provider = %s',
 			$this->app->db->quote($quarter->getDate(), 'date'),
-			$this->app->db->quote($credit_type->id, 'integer')
+			$this->app->db->quote($provider->id, 'integer')
 		);
 
 		$this->report = SwatDB::query(

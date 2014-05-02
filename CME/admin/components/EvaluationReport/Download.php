@@ -57,18 +57,18 @@ class CMEEvaluationReportDownload extends AdminPage
 			SiteApplication::VAR_GET
 		);
 
-		$class_name = SwatDBClassMap::get('CMECreditType');
-		$credit_type = new $class_name();
-		$credit_type->setDatabase($this->app->db);
-		if (!$credit_type->loadByShortname($type)) {
+		$class_name = SwatDBClassMap::get('CMEProvider');
+		$provider = new $class_name();
+		$provider->setDatabase($this->app->db);
+		if (!$provider->loadByShortname($type)) {
 			throw new AdminNotFoundException('Invalid credit type');
 		}
 
 		$sql = sprintf(
 			'select * from EvaluationReport
-			where quarter = %s and credit_type = %s',
+			where quarter = %s and provider = %s',
 			$this->app->db->quote($quarter->getDate(), 'date'),
-			$this->app->db->quote($credit_type->id, 'integer')
+			$this->app->db->quote($provider->id, 'integer')
 		);
 
 		$this->report = SwatDB::query(
