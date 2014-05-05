@@ -69,17 +69,7 @@ abstract class CMECertificatePage extends SiteUiPage
 	protected function initCredits()
 	{
 		$account = $this->app->session->account;
-
-		$wrapper = SwatDBClassMap::get('CMECreditWrapper');
-		$this->credits = new $wrapper();
-
-		foreach ($account->cme_credits as $credit) {
-			if ($account->isCertificateEarned($credit)) {
-				$this->credits->add($credit);
-			}
-		}
-
-		$this->credits = $earned_credits;
+		return $account->earned_cme_credits;
 	}
 
 	// }}}
