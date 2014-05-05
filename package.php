@@ -125,6 +125,13 @@ $package->addPackageDepWithChannel(
 	'0.0.28'
 );
 
+$package->addPackageDepWithChannel(
+	'optional',
+	'DOMPDF',
+	'pear.silverorange.com',
+	'0.6.0'
+);
+
 $package->setPhpDep('5.2.1');
 $package->setPearInstallerDep('1.4.0');
 $package->generateContents();
