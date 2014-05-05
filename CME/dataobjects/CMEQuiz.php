@@ -10,41 +10,11 @@ require_once 'CME/dataobjects/CMEAccount.php';
  */
 class CMEQuiz extends InquisitionInquisition
 {
-	// {{{ public properties
-
-	/**
-	 * @var string
-	 */
-	public $description;
-
-	/**
-	 * @var integer
-	 */
-	public $passing_grade;
-
-	/**
-	 * @var string
-	 */
-	public $email_content_pass;
-
-	/**
-	 * @var string
-	 */
-	public $email_content_fail;
-
-	/**
-	 * @var boolean
-	 */
-	public $enabled;
-
-	/**
-	 * @var boolean
-	 */
-	public $resettable;
-
-	// }}}
 	// {{{ public function getResponseByAccount()
 
+	/**
+	 * Adds resettable check to account quiz response fetching
+	 */
 	public function getResponseByAccount(CMEAccount $account)
 	{
 		$this->checkDB();

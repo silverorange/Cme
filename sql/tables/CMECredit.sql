@@ -9,6 +9,7 @@ create table CMECredit (
 	email_content_pass text,
 	email_content_fail text,
 	resettable boolean not null default true,
+	displayorder integer not null default 0,
 
 	primary key (id)
 );

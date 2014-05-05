@@ -1,6 +1,10 @@
 <?php
 
 require_once 'Store/dataobjects/StoreAccount.php';
+require_once 'CME/dataobjects/CMECredit.php';
+require_once 'CME/dataobjects/CMEEvaluation.php';
+require_once 'CME/dataobjects/CMEFrontMatter.php';
+require_once 'CME/dataobjects/CMEQuiz.php';
 
 /**
  * CME specific Account object
@@ -52,9 +56,9 @@ class CMEAccount extends StoreAccount
 	}
 
 	// }}}
-	// {{{ public function getCMEAttestedCredits()
+	// {{{ public function getCMEAttestedFrontMatter()
 
-	public function getCMEAttestedCredits(SwatDate $start_date = null,
+	public function getCMEAttestedFrontMatter(SwatDate $start_date = null,
 		SwatDate $end_date = null)
 	{
 		return $this->cme_credits->getArray();
@@ -63,15 +67,15 @@ class CMEAccount extends StoreAccount
 	// }}}
 	// {{{ public function hasCMEAttested()
 
-	public function hasCMEAttested(CMECredit $credit)
+	public function hasAttested(CMEFrontMatter $front_matter)
 	{
 		$this->checkDB();
 
 		$sql = sprintf(
-			'select count(1) from AccountCMECreditBinding
-			where account = %s and credit = %s',
+			'select count(1) from AccountAttestedCMEFrontMatter
+			where account = %s and front_matter = %s',
 			$this->db->quote($this->id, 'integer'),
-			$this->db->quote($credit->id, 'integer')
+			$this->db->quote($front_matter->id, 'integer')
 		);
 
 		return (SwatDB::queryOne($this->db, $sql) > 0);
@@ -80,12 +84,12 @@ class CMEAccount extends StoreAccount
 	// }}}
 	// {{{ public function isEvaluationComplete()
 
-	public function isEvaluationComplete(CMECredit $credit)
+	public function isEvaluationComplete(CMEFrontMatter $front_matter)
 	{
 		$complete = false;
 
-		$evaluation = $credit->evaluation;
-		if ($evaluation instanceof InquisitionInquisition) {
+		$evaluation = $front_matter->evaluation;
+		if ($evaluation instanceof CMEEvaluation) {
 			$evaluation_response = $evaluation->getResponseByAccount($this);
 			$complete = ($evaluation_response instanceof InquisitionResponse &&
 				$evaluation_response->complete_date instanceof SwatDate);
@@ -101,7 +105,7 @@ class CMEAccount extends StoreAccount
 	{
 		$complete = false;
 
-		if ($credit->quiz instanceof InquisitionInquisition) {
+		if ($credit->quiz instanceof CMEQuiz) {
 			$quiz_response = $credit->quiz->getResponseByAccount($this);
 			$complete = ($quiz_response instanceof InquisitionResponse &&
 				$quiz_response->complete_date instanceof SwatDate);
@@ -132,11 +136,11 @@ class CMEAccount extends StoreAccount
 	{
 		// assume the evaluation is always required
 		return (
-				!$credit->quiz instanceof InquisitionInquisition ||
+				!$credit->quiz instanceof CMEQuiz ||
 				$this->isQuizPassed($credit)
 			) && (
-				!$credit->evaluation instanceof InquisitionInquisition ||
-				$this->isEvaluationComplete($credit)
+				!$credit->front_matter->evaluation instanceof CMEEvaluation ||
+				$this->isEvaluationComplete($credit->front_matter)
 			);
 	}
 
@@ -156,9 +160,11 @@ class CMEAccount extends StoreAccount
 			$sql = sprintf(
 				'select CMECredit.*
 				from CMECredit
+					inner join CMEFrontMatter
+						on CMECredit.front_matter = CMEFrontMatter.id
 				where CMECredit.hours > 0 and
-					CMECredit.enabled = %s
-				order by CMECredit.provider',
+					CMEFrontMatter.enabled = %s
+				order by CMEFrontMatter.provider, CMECredit.displayorder',
 				$this->db->quote(true, 'boolean')
 			);
 
@@ -187,15 +193,19 @@ class CMEAccount extends StoreAccount
 	protected function loadCMECredits()
 	{
 		require_once 'CME/dataobjects/CMECreditWrapper.php';
+		require_once 'CME/dataobjects/CMEFrontMatterWrapper.php';
 		require_once 'CME/dataobjects/CMEProviderWrapper.php';
 
 		$sql = sprintf(
 			'select CMECredit.* from CMECredit
-				inner join AccountCMECreditBinding on
-					CMECredit.id = AccountCMECreditBinding.credit and
+				inner join CMEFrontMatter
+					on CMECredit.front_matter = CMEFrontMatter.id
+				inner join AccountAttestedCMEFrontMatter on
+					CMEFrontMatter.id =
+						AccountAttestedCMEFrontMatter.front_matter and
 						account = %s
 			where CMECredit.hours > 0
-			order by CMECredit.provider',
+			order by CMEFrontMatter.provider, CMECredit.displayorder',
 			$this->db->quote($this->id, 'integer')
 		);
 
@@ -205,7 +215,14 @@ class CMEAccount extends StoreAccount
 			SwatDBClassMap::get('CMECreditWrapper')
 		);
 
-		$providers = $credits->loadAllSubDataObjects(
+		$front_matters = $credits->loadAllSubDataObjects(
+			'front_matter',
+			$this->db,
+			'select * from CMEFrontMatter where id in(%s)',
+			SwatDBClassMap::get('CMEFrontMatterWrapper')
+		);
+
+		$providers = $front_matters->loadAllSubDataObjects(
 			'provider',
 			$this->db,
 			'select * from CMEProvider where id in(%s)',
@@ -213,6 +230,27 @@ class CMEAccount extends StoreAccount
 		);
 
 		return $credits;
+	}
+
+	// }}}
+	// {{{ protected function loadCMEFrontMatters()
+
+	protected function loadCMEFrontMatters()
+	{
+		require_once 'CME/dataobjects/CMEFrontMatterWrapper.php';
+
+		$wrapper = SwatDBClassMap::get('CMEFrontMatterWrapper');
+		$front_matters = new $wrapper();
+		$wrapper->setDatabase($this->db);
+
+		foreach ($this->cme_credits as $credit) {
+			$front_matter = $credit->front_matter;
+			if ($wrapper->getByIndex($front_matter->id) === null) {
+				$wrapper->add($front_matter);
+			}
+		}
+
+		return $wrapper;
 	}
 
 	// }}}
