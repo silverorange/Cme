@@ -1,4 +1,4 @@
-.cme-disclosure {
+.cme-front-matter-display {
 	width: 800px;
 	position: absolute;
 	position: fixed;
@@ -7,12 +7,12 @@
 	margin-left: -400px;
 }
 
-.cme-disclosure-scroll-content {
+.cme-front-matter-display-scroll-content {
 	height: 600px;
 	overflow-y: scroll;
 }
 
-.cme-piece-overlay {
+.cme-front-matter-display-overlay {
 	width: 100%;
 	position: absolute;
 	top: 0;

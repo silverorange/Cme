@@ -9,7 +9,7 @@ require_once 'CME/CME.php';
  * @copyright 2011-2014 silverorange
  * @license   http://www.opensource.org/licenses/mit-license.html MIT License
  */
-class CMEDisclosure extends SwatControl
+class CMEFrontMatterDisplay extends SwatControl
 {
 	// {{{ public properties
 
@@ -46,9 +46,12 @@ class CMEDisclosure extends SwatControl
 		$this->addJavaScript(
 			'packages/swat/javascript/swat-z-index-manager.js'
 		);
-
-		$this->addJavaScript('javascript/cme-disclosure.js');
-		$this->html_head_entry_set->addEntry('styles/cme-disclosure.css');
+		$this->addJavaScript(
+			'packages/cme/javascript/cme-front-matter-display.js'
+		);
+		$this->addStyleSheet(
+			'packages/cme/styles/cme-front-matter-display.css'
+		);
 	}
 
 	// }}}
@@ -71,7 +74,7 @@ class CMEDisclosure extends SwatControl
 	protected function getCSSClassNames()
 	{
 		return array_merge(
-			array('cme-disclosure'),
+			array('cme-front-matter-display'),
 			parent::getCSSClassNames()
 		);
 	}
@@ -117,9 +120,9 @@ class CMEDisclosure extends SwatControl
 		);
 
 		return sprintf(
-			"CMEDisclosure.accept_text = %s;\n".
-			"CMEDisclosure.cancel_text = %s;\n".
-			"CMEDisclosure.confirm_text = %s;\n",
+			"CMEFrontMatterDisplay.accept_text = %s;\n".
+			"CMEFrontMatterDisplay.cancel_text = %s;\n".
+			"CMEFrontMatterDisplay.confirm_text = %s;\n",
 			SwatString::quoteJavaScriptString($acept_text),
 			SwatString::quoteJavaScriptString($cancel_text),
 			SwatString::quoteJavaScriptString($confirm_text)
@@ -131,7 +134,7 @@ class CMEDisclosure extends SwatControl
 
 	protected function getJavaScriptClassName()
 	{
-		return 'CMEDisclosure';
+		return 'CMEFrontMatterDisplay';
 	}
 
 	// }}}
