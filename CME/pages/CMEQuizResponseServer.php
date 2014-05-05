@@ -7,6 +7,8 @@ require_once 'Inquisition/dataobjects/InquisitionResponseWrapper.php';
 require_once 'Inquisition/dataobjects/InquisitionInquisitionWrapper.php';
 require_once 'Inquisition/dataobjects/InquisitionInquisition.php';
 require_once 'CME/dataobjects/CMECredit.php';
+require_once 'CME/dataobjects/CMEQuiz.php';
+require_once 'CME/dataobjects/CMEQuizResponse.php';
 require_once 'CME/dataobjects/CMECreditWrapper.php';
 
 /**
@@ -71,12 +73,12 @@ class CMEQuizResponseServer extends SiteArticlePage
 			$account = $this->app->session->account;
 
 			$credit = $this->getCredit();
-			if ($credit === null) {
+			if (!$credit instanceof CMECredit) {
 				return $this->getErrorResponse('CME credit not found.');
 			}
 
 			$quiz = $this->getQuiz($credit);
-			if ($quiz === null) {
+			if (!$quiz instanceof CMEQuiz) {
 				return $this->getErrorResponse('Quiz not found.');
 			}
 
@@ -176,8 +178,12 @@ class CMEQuizResponseServer extends SiteArticlePage
 		$credit_id = $this->getArgument('credit');
 
 		$sql = sprintf(
-			'select * from CMECredit where id = %s',
-			$this->app->db->quote($credit_id, 'integer')
+			'select CMECredit.* from CMECredit
+				inner join CMEFrontMatter
+					on CMECredit.front_matter = CMEFrontMatter.id
+			where CMECredit.id = %s and CMEFrontMatter.enabled = %s',
+			$this->app->db->quote($credit_id, 'integer'),
+			$this->app->db->quote(true, 'boolean')
 		);
 
 		return SwatBD::query(
@@ -234,7 +240,7 @@ class CMEQuizResponseServer extends SiteArticlePage
 
 		// get new response
 		if ($response === null) {
-			$class_name = SwatDBClassMap::get('InquisitionResponse');
+			$class_name = SwatDBClassMap::get('CMEQuizResponse');
 			$response = new $class_name();
 
 			$response->account     = $this->app->session->account;
@@ -257,8 +263,8 @@ class CMEQuizResponseServer extends SiteArticlePage
 	// }}}
 	// {{{ protected function getResponseValue()
 
-	protected function getResponseValue(InquisitionInquisition $quiz,
-		InquisitionResponse $response,
+	protected function getResponseValue(CMEQuiz $quiz,
+		CMEQuizResponse $response,
 		InquisitionInquisitionQuestionBinding $question_binding,
 		$option_id)
 	{
@@ -310,7 +316,7 @@ class CMEQuizResponseServer extends SiteArticlePage
 	// }}}
 	// {{{ protected function saveResponseValue()
 
-	protected function saveResponseValue(InquisitionResponse $response,
+	protected function saveResponseValue(CMEQuizResponse $response,
 		InquisitionResponseValue $response_value)
 	{
 		// save new response object if it wasn't already saved

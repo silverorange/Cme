@@ -21,7 +21,9 @@
 				<widget class="SwatContentBlock" id="quiz_content" />
 			</widget>
 			<widget class="SwatDisplayableContainer" id="quiz_container">
-				<widget class="SwatDisplayableContainer" id="question_container" />
+				<widget class="SwatDisplayableContainer" id="question_container">
+					<property name="classes[]">quiz-question-container</property>
+				</widget>
 			</widget>
 			<widget class="SwatFooterFormField" id="quiz_footer">
 				<property name="classes[]">quiz-footer</property>

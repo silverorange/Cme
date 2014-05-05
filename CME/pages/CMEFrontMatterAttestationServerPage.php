@@ -2,15 +2,15 @@
 
 require_once 'Site/pages/SiteArticlePage.php';
 require_once 'CME/dataobjects/CMEAccount.php';
-require_once 'CME/dataobjects/CMECredit.php';
-require_once 'CME/dataobjects/CMECreditWrapper.php';
+require_once 'CME/dataobjects/CMEFrontMatter.php';
+require_once 'CME/dataobjects/CMEFrontMatterWrapper.php';
 
 /**
  * @package   CME
  * @copyright 2011-2014 silverorange
  * @license   http://www.opensource.org/licenses/mit-license.html MIT License
  */
-class CMEDisclosureServerPage extends SiteArticlePage
+class CMEFrontMatterAttestationServerPage extends SiteArticlePage
 {
 	// {{{ public function __construct()
 
@@ -48,21 +48,21 @@ class CMEDisclosureServerPage extends SiteArticlePage
 	}
 
 	// }}}
-	// {{{ protected function getCredit()
+	// {{{ protected function getFrontMatter()
 
-	protected function getCredit()
+	protected function getFrontMatter()
 	{
 		$credit_id = $this->getArgument('credit');
 
 		$sql = sprintf(
-			'select * from CMECredit where id = %s',
+			'select * from CMEFrontMatter where id = %s',
 			$this->app->db->quote($credit_id, 'integer')
 		);
 
 		return SwatBD::query(
 			$this->app->db,
 			$sql,
-			SwatDBClassMap::get('CMECreditWrapper')
+			SwatDBClassMap::get('CMEFrontMatterWrapper')
 		)->getFirst();
 	}
 
@@ -79,12 +79,12 @@ class CMEDisclosureServerPage extends SiteArticlePage
 
 			$account = $this->app->session->account;
 
-			$credit = $this->getCMECredit();
-			if (!$credit instanceof CMECredit) {
-				return $this->getErrorResponse('CME credit not found.');
+			$front_matter = $this->getCMEFrontMatter();
+			if (!$front_matter instanceof CMEFrontMatter) {
+				return $this->getErrorResponse('CME front matter not found.');
 			}
 
-			$this->saveAccountCMECreditBinding($account, $credit);
+			$this->saveAccountAttestedCMEFrontMatter($account, $front_matter);
 
 			$transaction->commit();
 		} catch (Exception $e) {
@@ -114,25 +114,30 @@ class CMEDisclosureServerPage extends SiteArticlePage
 	}
 
 	// }}}
-	// {{{ protected function saveAccountCMECreditBinding()
+	// {{{ protected function saveAccountAttestedCMEFrontMatter()
 
-	protected function saveAccountCMECreditBinding(CMEAccount $account,
-		CMECredit $credit)
+	protected function saveAccountAttestedCMEFrontMatter(CMEAccount $account,
+		CMEFrontMatter $front_matter)
 	{
 		$sql = sprintf(
-			'delete from AccountCMECreditBinding
-			where account = %s and credit = %s',
+			'delete from AccountAttestedCMEFrontMatter
+			where account = %s and front_matter = %s',
 			$this->app->db->quote($account->id, 'integer'),
-			$this->app->db->quote($credit->id, 'integer')
+			$this->app->db->quote($front_matter->id, 'integer')
 		);
 
 		SwatDB::exec($this->app->db, $sql);
 
+		$now = new SwatDate();
+		$now->toUTC();
+
 		$sql = sprintf(
-			'insert into AccountCMECreditBinding (account, credit)
-			values (%s, %s)',
+			'insert into AccountAttestedCMEFrontMatter (
+				account, front_matter, attested_date
+			) values (%s, %s, %s)',
 			$this->app->db->quote($account->id, 'integer'),
-			$this->app->db->quote($credit->id, 'integer')
+			$this->app->db->quote($front_matter->id, 'integer'),
+			$this->app->db->quote($now, 'date')
 		);
 
 		SwatDB::exec($this->app->db, $sql);

@@ -126,7 +126,7 @@ abstract class CMECertificatePage extends SiteUiPage
 					$locale->formatNumber($credit->hours)
 				),
 				SwatString::minimizeEntities(
-					$credit->provider->title
+					$credit->front_matter->provider->title
 				)
 			),
 			'text/xml'
@@ -217,7 +217,9 @@ abstract class CMECertificatePage extends SiteUiPage
 		return <<<JAVASCRIPT
 		YAHOO.util.Event.on(window, 'load', function() {
 			var certificates = YAHOO.util.Dom.getElementsByClassName(
-				'cme-certificate', 'div');
+				'cme-certificate',
+				'div'
+			);
 
 			if (certificates.length > 0) {
 				window.print();
@@ -232,19 +234,36 @@ JAVASCRIPT;
 	protected function getCompleteDate(CMECredit $credit)
 	{
 		$account = $this->app->session->account;
+		$dates = array();
 
-		// assume evaluation taken after quiz
-		if ($credit->evaluation instanceof InquisitionInquisition) {
+		if ($credit->front_matter->evaluation instanceof CMEEvaluation) {
 			$response = $credit->evaluation->getResponseByAccount($account);
-			$date = clone $response->complete_date;
-		} elseif ($credit->quiz instanceof InquisitionInquisition) {
-			$response = $credit->quiz->getResponseByAccount($account);
-			$date = clone $response->complete_date;
-		} else {
-			$date = new SwatDate();
+			if ($response instanceof InquisitionResponse) {
+				$dates[] = clone $response->complete_date;
+			}
 		}
 
-		return $date;
+		if ($credit->quiz instanceof CMEQuiz) {
+			$response = $credit->quiz->getResponseByAccount($account);
+			if ($response instanceof InquisitionResponse) {
+				$dates[] = clone $response->complete_date;
+			}
+		}
+
+		// if there are no complete dates, just use today
+		if (count($dates) === 0) {
+			$dates[] = new SwatDate();
+		}
+
+		// get latest date
+		$latest_date = null;
+		foreach ($dates as $date) {
+			if ($latest_date === null || $latest_date->before($date)) {
+				$latest_date = $date;
+			}
+		}
+
+		return $latest_date;
 	}
 
 	// }}}

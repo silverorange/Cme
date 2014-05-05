@@ -7,6 +7,7 @@ require_once 'Inquisition/dataobjects/InquisitionQuestionWrapper.php';
 require_once 'Inquisition/dataobjects/InquisitionQuestionOptionWrapper.php';
 require_once 'CME/CME.php';
 require_once 'CME/dataobjects/CMEEvaluationWrapper.php';
+require_once 'CME/dataobjects/CMEFrontMatterWrapper.php';
 
 /**
  * @package   CME
@@ -18,12 +19,12 @@ abstract class CMEEvaluationPage extends SiteDBEditPage
 	// {{{ protected properties
 
 	/**
-	 * @var CMECredit
+	 * @var CMEFrontMatter
 	 */
-	protected $credit;
+	protected $front_matter;
 
 	/**
-	 * @var InquisitionInquisition
+	 * @var CMEEvaluation
 	 */
 	protected $evaluation;
 
@@ -61,7 +62,7 @@ abstract class CMEEvaluationPage extends SiteDBEditPage
 
 	protected function getCacheKey()
 	{
-		return 'cme-evaluation-page-'.$this->credit->id;
+		return 'cme-evaluation-page-'.$this->front_matter->id;
 	}
 
 	// }}}
@@ -70,7 +71,7 @@ abstract class CMEEvaluationPage extends SiteDBEditPage
 	protected function getArgumentMap()
 	{
 		return array(
-			'credit' => array(0, null),
+			'front_matter' => array(0, null),
 		);
 	}
 
@@ -88,7 +89,7 @@ abstract class CMEEvaluationPage extends SiteDBEditPage
 	{
 		parent::initInternal();
 
-		$this->initCredit();
+		$this->initFrontMatter();
 		$this->initEvaluation();
 		$this->initResponse();
 
@@ -104,28 +105,29 @@ abstract class CMEEvaluationPage extends SiteDBEditPage
 	}
 
 	// }}}
-	// {{{ protected function initCredit()
+	// {{{ protected function initFrontMatter()
 
-	protected function initCredit()
+	protected function initFrontMatter()
 	{
-		$credit_id = $this->getArgument('credit');
+		$front_matter_id = $this->getArgument('front_matter');
 
 		$sql = sprintf(
-			'select * from CMECredit where id = %s',
-			$this->app->db->quote($credit_id, 'integer')
+			'select * from CMEFrontMatter where id = %s and enabled = %s',
+			$this->app->db->quote($front_matter_id, 'integer'),
+			$this->app->db->quote(true, 'boolean')
 		);
 
-		$this->credit = SwatBD::query(
+		$this->front_matter = SwatBD::query(
 			$this->app->db,
 			$sql,
-			SwatDBClassMap::get('CMECreditWrapper')
+			SwatDBClassMap::get('CMEFrontMatterWrapper')
 		)->getFirst();
 
-		if (!$this->credit instanceof CMECredit) {
+		if (!$this->front_matter instanceof CMEFrontMatter) {
 			throw new SiteNotFoundException(
 				sprintf(
-					'CME credit %s not found.',
-					$credit_id
+					'CME front matter %s not found.',
+					$front_matter_id
 				)
 			);
 		}
@@ -139,12 +141,11 @@ abstract class CMEEvaluationPage extends SiteDBEditPage
 		$this->evaluation = $this->app->getCacheValue($this->getCacheKey());
 
 		if ($this->evaluation === false) {
-			$this->evaluation = $this->credit->evaluation;
+			$this->evaluation = $this->front_matter->evaluation;
 
-			if (!$this->evaluation instanceof InquisitionInquisition ||
-				!$this->evaluation->enabled) {
+			if (!$this->evaluation instanceof CMEEvaluation) {
 				throw new SiteNotFoundException(
-					'Evaluation not found for CME credit.'
+					'Evaluation not found for CME front matter.'
 				);
 			}
 
@@ -313,10 +314,14 @@ abstract class CMEEvaluationPage extends SiteDBEditPage
 					'Thank you for completing the <em>%s</em> %s evaluation.'
 				),
 				SwatString::minimizeEntities($this->getTitle()),
-				SwatString::minimizeEntities($this->credit->provider->title)
+				SwatString::minimizeEntities(
+					$this->front_matter->provider->title
+				)
 			)
 		);
 
+		// TODO: behaviour depends on design
+		/*
 		if (!$this->credit->quiz instanceof InquisitionInquisition ||
 			$this->app->session->account->isQuizPassed($this->credit)) {
 			$message->secondary_content = sprintf(
@@ -330,6 +335,7 @@ abstract class CMEEvaluationPage extends SiteDBEditPage
 				'</a>'
 			);
 		}
+		*/
 
 		$message->content_type = 'text/xml';
 
@@ -350,12 +356,12 @@ abstract class CMEEvaluationPage extends SiteDBEditPage
 	{
 		$this->layout->data->title = sprintf(
 			CME::_('%s Evaluation'),
-			SwatString::minimizeEntities($this->credit->provider->title)
+			SwatString::minimizeEntities($this->front_matter->provider->title)
 		);
 
 		$this->layout->data->html_title = sprintf(
 			CME::_('%s Evaluation - %s'),
-			$this->credit->provider->title,
+			$this->front_matter->provider->title,
 			$this->app->getHtmlTitle()
 		);
 	}
@@ -380,7 +386,9 @@ abstract class CMEEvaluationPage extends SiteDBEditPage
 
 		$yui = new SwatYUI(array('dom', 'event'));
 		$this->layout->addHtmlHeadEntrySet($yui->getHtmlHeadEntrySet());
-		$this->layout->addHtmlHeadEntry('javascript/cme-evaluation-page.js');
+		$this->layout->addHtmlHeadEntry(
+			'packages/cme/javascript/cme-evaluation-page.js'
+		);
 	}
 
 	// }}}
