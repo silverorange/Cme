@@ -44,6 +44,21 @@ class CMECredit extends SwatDBDataObject
 	public $resettable;
 
 	// }}}
+	// {{{ public function isEarned()
+
+	public function isEarned(CMEAccount $account)
+	{
+		// assume the evaluation is always required
+		return (
+				!$this->quiz instanceof CMEQuiz ||
+				$account->isQuizPassed($this)
+			) && (
+				!$this->front_matter->evaluation instanceof CMEEvaluation ||
+				$account->isEvaluationComplete($this->front_matter)
+			);
+	}
+
+	// }}}
 	// {{{ abstract protected function getQuizLink()
 
 	abstract protected function getQuizLink();
