@@ -3,17 +3,20 @@
 require_once 'Swat/SwatDate.php';
 require_once 'SwatDB/SwatDB.php';
 require_once 'Site/SiteApplication.php';
-require_once 'Inquisition/dataobjects/InquisitionResponseWrapper.php';
+require_once 'Site/dataobjects/SiteAccountWrapper.php';
+require_once 'Store/dataobjects/StoreAccountAddressWrapper.php';
+require_once 'Store/dataobjects/StoreProvstateWrapper.php';
+require_once 'Store/dataobjects/StoreCountryWrapper.php';
 require_once 'CME/dataobjects/CMECreditWrapper.php';
 require_once 'CME/dataobjects/CMEProvider.php';
-require_once 'CME/dataobjects/CMEQuizWrapper.php';
+require_once 'CME/dataobjects/CMEAccountEarnedCMECreditWrapper.php';
 
 /**
  * @package   CME
  * @copyright 2011-2014 silverorange
  * @license   http://www.opensource.org/licenses/mit-license.html MIT License
  */
-abstract class CMEQuizReportGenerator
+class CMEQuizReportGenerator
 {
 	// {{{ protected properties
 
@@ -31,11 +34,6 @@ abstract class CMEQuizReportGenerator
 	 * @var CMEProvider
 	 */
 	protected $provider;
-
-	/**
-	 * @var array
-	 */
-	protected $credits_by_quiz = array();
 
 	/**
 	 * @var SiteApplication
@@ -65,160 +63,83 @@ abstract class CMEQuizReportGenerator
 	// }}}
 
 	// data retrieval methods
-	// {{{ protected function getResponses()
+	// {{{ protected function getEarnedCredits()
 
-	protected function getResponses()
+	/**
+	 * Gets earned CME credits to include in the quarterly report
+	 *
+	 * Credits are included iff:
+	 *
+	 * - the credit is earned
+	 * - the front matter is enabled
+	 * - the provider is the specified provider
+	 * - the earned date is within the quarter
+	 * - the account is not deleted
+	 *
+	 * @return array
+	 */
+	protected function getEarnedCredits()
 	{
 		$sql = sprintf(
-			'select * from InquisitionResponse
-			where complete_date is not null
-				and reset_date is null
-				and convertTZ(complete_date, %1$s) >= %2$s
-				and convertTZ(complete_date, %1$s) < %3$s
-				and inquisition in (
-					select quiz from CMECredit where provider = %4$s
-				) and account in (
-					select id from Account where Account.delete_date is null
-				)',
+			'select AccountEarnedCMECredit.* from AccountEarnedCMECredit
+				inner join Account
+					on AccountEarnedCMECredit.account = Account.id
+				inner join CMECredit
+					on AccountEarnedCMECredit.credit = CMECredit.id
+				inner join CMEFrontMatter
+					on CMECredit.front_matter = CMEFrontMatter.id
+			where CMEFrontMatter.provider = %s
+				and CMEFrontMatter.enabled = %s
+				and convertTZ(earned_date, %s) >= %s
+				and convertTZ(earned_date, %s) < %s
+				and Account.delete_date is null',
+			$this->app->db->quote($this->provider->id, 'integer'),
+			$this->app->db->quote(true, 'boolean'),
 			$this->app->db->quote($this->app->config->date->time_zone, 'text'),
 			$this->app->db->quote($this->start_date->getDate(), 'date'),
-			$this->app->db->quote($this->end_date->getDate(), 'date'),
-			$this->app->db->quote($this->provider->id, 'integer')
+			$this->app->db->quote($this->app->config->date->time_zone, 'text'),
+			$this->app->db->quote($this->end_date->getDate(), 'date')
 		);
 
-		$responses = SwatDB::query(
+		$earened_credits = SwatDB::query(
 			$this->app->db,
 			$sql,
-			SwatDBClassMap::get('InquisitionResponseWrapper')
+			SwatDBClassMap::get('CMEAccountEarnedCMECreditWrapper')
 		);
 
 		// efficiently load accounts
-		$accounts = $this->loadAccounts($responses);
+		$accounts = $this->loadAccounts($earned_credits);
 
 		// load addresses
 		$addresses = $this->loadAddresses($accounts);
 
-		// efficiently load response values
-		$values = $responses->loadAllSubRecordsets(
-			'values',
-			SwatDBClassMap::get('InquisitionResponseValueWrapper'),
-			'InquisitionResponseValue',
-			'response'
-		);
-
-		// efficiently load response value question bindings
-		$question_binding_sql =
-			'select * from InquisitionInquisitionQuestionBinding
-			where id in (%s)';
-
-		$question_bindings = $values->loadAllSubDataObjects(
-			'question_binding',
-			$this->app->db,
-			$question_binding_sql,
-			SwatDBClassMap::get('InquisitionInquisitionQuestionBindingWrapper')
-		);
-
-		// efficiently load response value questions
-		$question_sql = 'select * from InquisitionQuestion where id in (%s)';
-		$questions = $question_bindings->loadAllSubDataObjects(
-			'question',
-			$this->app->db,
-			$question_sql,
-			SwatDBClassMap::get('InquisitionQuestionWrapper')
-		);
-
-		// efficiently load quizzes
-		$quiz_sql = 'select * from Inquisition where id in (%s)';
-		$quizzes = $responses->loadAllSubDataObjects(
-			'inquisition',
-			$this->app->db,
-			$quiz_sql,
-			SwatDBClassMap::get('CMEQuizWrapper')
-		);
-
 		// efficiently load credits
-		$credits = SwatDB::query(
-			$this->app->db,
-			sprintf(
-				'select id, hours, quiz, episode
-					from CMECredit
-				where quiz in (%s)',
-				$this->app->db->implodeArray($quizzes->getIndexes(), 'integer')
-			),
-			SwatDBClassMap::get('CMECreditWrapper')
-		);
+		$credits = $this->loadCredits($earned_credits);
 
-		$credits->attachSubDataObjects('quiz', $quizzes);
+		// sort earned credits (sorting is application specific)
+		$earned_credits_array = $earned_credits->getArray();
+		usort($earned_credits_array, array($this, 'compareEarnedCredit'));
 
-		// index credits by quiz
-		foreach ($credits as $credit) {
-			$this->credits_by_quiz[$credit->quiz->id] = $credit;
-		}
-
-		// efficiently load question bindings
-		$wrapper = SwatDBClassMap::get(
-			'InquisitionInquisitionQuestionBindingWrapper'
-		);
-
-		$sql = sprintf(
-			'select * from InquisitionInquisitionQuestionBinding
-			where InquisitionInquisitionQuestionBinding.inquisition in (%s)
-			order by inquisition, displayorder',
-			$this->app->db->implodeArray($quizzes->getIndexes(), 'integer')
-		);
-
-		$question_bindings = SwatDB::query($this->app->db, $sql, $wrapper);
-		$quizzes->attachSubRecordset(
-			'question_bindings',
-			$wrapper,
-			'inquisition',
-			$question_bindings
-		);
-
-		// efficiently load questions
-		$sql = 'select * from InquisitionQuestion where id in (%s)';
-		$questions = $question_bindings->loadAllSubDataObjects(
-			'question',
-			$this->app->db,
-			$question_sql,
-			SwatDBClassMap::get('InquisitionQuestionWrapper')
-		);
-
-		$response_array = array();
-		foreach ($responses as $response) {
-			// filter out responses for quizzes with no questions
-			if (count($response->inquisition->question_bindings) > 0) {
-				$response_array[] = $response;
-			}
-		}
-
-		// sort responses
-		usort($response_array, array($this, 'compareResponse'));
-
-		// index by inquisition
-		$responses_by_inquisition = array();
-
-		foreach ($response_array as $response) {
-			$inquisition_id = $response->getInternalValue('inquisition');
-			if (!isset($responses_by_inquisition[$inquisition_id])) {
-				$responses_by_inquisition[$inquisition_id] = array();
-			}
-			$responses_by_inquisition[$inquisition_id][] = $response;
-		}
-
-		return $responses_by_inquisition;
+		return $earned_credits_array;
 	}
 
 	// }}}
 	// {{{ protected function loadAccounts()
 
-	protected function loadAccounts(InquisitionResponseWrapper $responses)
+	/**
+	 * Efficiently loads accounts for earned CME credits
+	 *
+	 * @param CMEAccountEarnedCMECreditWrapper $earned_credits
+	 *
+	 * @return SiteAccountWrapper
+	 */
+	protected function loadAccounts(
+		CMEAccountEarnedCMECreditWrapper $earned_credits)
 	{
-		// efficiently load accounts
 		$account_sql = 'select id, email, default_billing_address from Account
 			where id in (%s)';
 
-		$accounts = $responses->loadAllSubDataObjects(
+		$accounts = $earned_credits->loadAllSubDataObjects(
 			'account',
 			$this->app->db,
 			$account_sql,
@@ -226,6 +147,31 @@ abstract class CMEQuizReportGenerator
 		);
 
 		return $accounts;
+	}
+
+	// }}}
+	// {{{ protected function loadCredits()
+
+	/**
+	 * Efficiently loads CME credits for earned CME credits
+	 *
+	 * @param CMEAccountEarnedCMECreditWrapper $earned_credits
+	 *
+	 * @return CMECreditWrapper
+	 */
+	protected function loadCredits(
+		CMEAccountEarnedCMECreditWrapper $earned_credits)
+	{
+		$credit_sql = 'select id, hours from CMECredit where id in (%s)';
+
+		$credits = $earned_credits->loadAllSubDataObjects(
+			'credit',
+			$this->app->db,
+			$credit_sql,
+			SwatDBClassMap::get('CMECreditWrapper')
+		);
+
+		return $credits;
 	}
 
 	// }}}
@@ -261,19 +207,14 @@ abstract class CMEQuizReportGenerator
 	}
 
 	// }}}
-	// {{{ protected function getCredit()
+	// {{{ protected function compareEarnedCredit()
 
-	protected function getCredit(CMEQuiz $quiz)
+	protected function compareEarnedCredit(
+		CMEAccountEarnedCMECredit $a,
+		CMEAccountEarnedCMECredit $b)
 	{
-		return $this->credits_by_quiz[$quiz->id];
+		return 0;
 	}
-
-	// }}}
-	// {{{ abstract protected function compareResponse()
-
-	abstract protected function compareResponse(
-		InquisitionResponse $a,
-		InquisitionResponse $b);
 
 	// }}}
 
@@ -310,33 +251,34 @@ abstract class CMEQuizReportGenerator
 			'Country',
 			'Phone',
 			'Hours',
-			'Date Completed',
+			'Date Earned Credit',
 		);
 	}
 
 	// }}}
-	// {{{ protected function getQuizResponseRow()
+	// {{{ protected function getEarnedCreditRow()
 
-	protected function getQuizResponseRow(InquisitionResponse $response)
+	protected function getEarnedCreditRow(
+		CMEAccountEarnedCMECredit $earned_credit)
 	{
-		$address = $response->account->getDefaultBillingAddress();
+		$account = $earned_credit->account;
+		$credit = $earned_credit->credit;
 
-		if ($address === null) {
-			$address = $response->account->addresses->getFirst();
+		$address = $account->getDefaultBillingAddress();
+
+		if (!$address instanceof StoreAccountAddress) {
+			$address = $account->addresses->getFirst();
 		}
 
-		if ($address === null) {
+		if (!$address instanceof StoreAddress) {
 			return;
 		}
 
-		$quiz   = $response->inquisition;
-		$credit = $this->getCredit($quiz);
-
-		$complete_date = clone $response->complete_date;
-		$complete_date->convertTZ($this->app->default_time_zone);
+		$earned_date = clone $earned_credit->earned_date;
+		$earned_date->convertTZ($this->app->default_time_zone);
 
 		$address_lines = $this->formatLines($address);
-		$address_suffix = $this->formatSuffix($response->account, $address);
+		$address_suffix = $this->formatSuffix($account, $address);
 		$address_provstate = $this->formatProvState($address);
 		$address_postal_code = $this->formatPostalCode($address);
 
@@ -344,7 +286,7 @@ abstract class CMEQuizReportGenerator
 			$address->last_name,
 			$address->first_name,
 			$address_suffix,
-			$response->account->email,
+			$account->email,
 			$address_lines,
 			$address->city,
 			$address_provstate,
@@ -352,7 +294,7 @@ abstract class CMEQuizReportGenerator
 			$address->country->title,
 			$address->phone,
 			$credit->hours,
-			$complete_date->formatLikeIntl('MMMM dd, yyyy'),
+			$earned_date->formatLikeIntl('MMMM dd, yyyy'),
 		);
 	}
 
@@ -363,10 +305,8 @@ abstract class CMEQuizReportGenerator
 	{
 		$this->displayHeader($file);
 
-		$responses_by_inquisition = $this->getResponses();
-		foreach ($responses_by_inquisition as $responses) {
-			$this->displayQuizResponses($file, $responses);
-		}
+		$earned_credits = $this->getEarnedCredits();
+		$this->displayEarnedCredits($file, $earned_credits);
 	}
 
 	// }}}
@@ -378,23 +318,22 @@ abstract class CMEQuizReportGenerator
 	}
 
 	// }}}
-	// {{{ protected function displayQuizResponses()
+	// {{{ protected function displayEarnedCredits()
 
-	protected function displayQuizResponses($file, array $responses)
+	protected function displayEarnedCredits($file, array $earned_credits)
 	{
-		foreach ($responses as $response) {
-			if ($response->isPassed()) {
-				$this->displayQuizResponse($file, $response);
-			}
+		foreach ($earned_credits as $earned_credit) {
+			$this->displayEarnedCredit($file, $earned_credit);
 		}
 	}
 
 	// }}}
-	// {{{ protected function displayQuizResponse()
+	// {{{ protected function displayEarnedCredit()
 
-	protected function displayQuizResponse($file, InquisitionResponse $response)
+	protected function displayEarnedCredit($file,
+		CMEAccountEarnedCMECredit $earned_credit)
 	{
-		fputcsv($file, $this->getQuizResponseRow($response));
+		fputcsv($file, $this->getEarnedCreditRow($earned_credit));
 	}
 
 	// }}}

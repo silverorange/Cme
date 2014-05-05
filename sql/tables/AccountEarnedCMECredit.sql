@@ -1,9 +1,11 @@
 create table AccountEarnedCMECredit (
+	id serial,
+
 	account integer not null references Account(id) on delete cascade,
 	credit integer not null references CMECredit(id) on delete cascade,
 	earned_date timestamp not null,
 
-	primary key (account, credit)
+	primary key (id)
 );
 
 create index AccountEarnedCMECredit_account_index

@@ -65,19 +65,29 @@ abstract class CMEEvaluationReportGenerator
 	protected function getResponses()
 	{
 		$sql = sprintf(
-			'select * from InquisitionResponse
-			where complete_date is not null
-				and convertTZ(complete_date, %1$s) >= %2$s
-				and convertTZ(complete_date, %1$s) < %3$s
-				and inquisition in (
-					select evaluation from CMECredit where provider = %4$s
-				) and account in (
-					select id from Account where Account.delete_date is null
-				)',
+			'select InquisitionResponse.* from AccountEarnedCMECredit
+				inner join Account
+					on AccountEarnedCMECredit.account = Account.id
+				inner join CMECredit
+					on AccountEarnedCMECredit.credit = CMECredit.id
+				inner join CMEFrontMatter
+					on CMECredit.front_matter = CMEFrontMatter.id
+				inner join InquisitionResponse
+					on AccountEarnedCMECredit.account =
+						InquisitionResponse.account
+					and CMEFrontMatter.evaluation =
+						InquisitionResponse.inquisition
+			where CMEFrontMatter.provider = %s
+				and CMEFrontMatter.enabled = %s
+				and convertTZ(earned_date, %s) >= %s
+				and convertTZ(earned_date, %s) < %s
+				and Account.delete_date is null',
+			$this->app->db->quote($this->provider->id, 'integer'),
+			$this->app->db->quote(true, 'boolean'),
 			$this->app->db->quote($this->app->config->date->time_zone, 'text'),
 			$this->app->db->quote($this->start_date->getDate(), 'date'),
-			$this->app->db->quote($this->end_date->getDate(), 'date'),
-			$this->app->db->quote($this->provider->id, 'integer')
+			$this->app->db->quote($this->app->config->date->time_zone, 'text'),
+			$this->app->db->quote($this->end_date->getDate(), 'date')
 		);
 
 		$responses = SwatDB::query(
@@ -236,7 +246,7 @@ abstract class CMEEvaluationReportGenerator
 
 		$this->displayFooter();
 
-		$this->displayEvaluation($this->getResponses());
+		$this->displayEvaluations($this->getResponses());
 
 		echo '</body>';
 		echo '</html>';
@@ -415,9 +425,9 @@ STYLESHEET;
 	}
 
 	// }}}
-	// {{{ protected function displayEvaluation()
+	// {{{ protected function displayEvaluations()
 
-	protected function displayEvaluation(array $responses)
+	protected function displayEvaluations(array $responses)
 	{
 		echo '<div class="page">';
 
