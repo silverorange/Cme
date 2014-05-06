@@ -9,7 +9,7 @@ require_once 'CME/dataobjects/CMEProvider.php';
  * @copyright 2013-2014 silverorange
  * @license   http://www.opensource.org/licenses/mit-license.html MIT License
  */
-class CMEFrontMatter extends SwatDBDataObject
+abstract class CMEFrontMatter extends SwatDBDataObject
 {
 	// {{{ public properties
 
@@ -65,9 +65,9 @@ class CMEFrontMatter extends SwatDBDataObject
 	}
 
 	// }}}
-	// {{{ abstract protected function getCMEDisclosureLink()
+	// {{{ abstract protected function getAttestationLink()
 
-	abstract protected function getCMEDisclosureLink();
+	abstract protected function getAttestationLink();
 
 	// }}}
 	// {{{ abstract protected function getEvaluationLink()
