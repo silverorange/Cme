@@ -14,7 +14,7 @@ require_once 'CME/dataobjects/CMEQuizResponse.php';
  * @copyright 2011-2014 silverorange
  * @license   http://www.opensource.org/licenses/mit-license.html MIT License
  */
-class CMEAccount extends StoreAccount
+abstract class CMEAccount extends StoreAccount
 {
 	// {{{ abstract public function hasCMEAccess()
 

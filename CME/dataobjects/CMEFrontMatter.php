@@ -103,7 +103,7 @@ abstract class CMEFrontMatter extends SwatDBDataObject
 		require_once 'CME/dataobjects/CMECreditWrapper.php';
 
 		$sql = sprintf(
-			'select * from CMECredit where provider = %s
+			'select * from CMECredit where front_matter = %s
 			order by displayorder asc, hours desc',
 			$this->db->quote($this->id, 'integer')
 		);
