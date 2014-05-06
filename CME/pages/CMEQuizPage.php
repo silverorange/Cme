@@ -543,7 +543,7 @@ abstract class CMEQuizPage extends SiteDBEditPage
 
 			$account = $this->app->session->account;
 			if ($account->isEvaluationComplete($this->credit->front_matter)) {
-				echo '<p>'
+				echo '<p>';
 				echo SwatString::minimizeEntities(
 					CME::_('You’ve already completed the evaluation.')
 				);
@@ -876,7 +876,7 @@ abstract class CMEQuizPage extends SiteDBEditPage
 			// correct option (shown if your option is wrong)
 			if ($option !== null && $option->id !== $response_option_id) {
 				$dt_tag = new SwatHtmlTag('dt');
-				$dt_tag->setContent(CME::_('Correct Answer:'))
+				$dt_tag->setContent(CME::_('Correct Answer:'));
 				$dt_tag->display();
 				$dd_tag = new SwatHtmlTag('dd');
 				$dd_tag->class =

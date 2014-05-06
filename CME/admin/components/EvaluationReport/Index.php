@@ -40,7 +40,7 @@ class CMEEvaluationReportIndex extends AdminIndex
 
 	protected function getUiXml()
 	{
-		return 'CME/admin/components/EvaluationReport/index.xml'
+		return 'CME/admin/components/EvaluationReport/index.xml';
 	}
 
 	// }}}
