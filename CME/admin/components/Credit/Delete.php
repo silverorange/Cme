@@ -4,13 +4,14 @@ require_once 'Admin/pages/AdminDBDelete.php';
 require_once 'SwatDB/SwatDB.php';
 require_once 'Admin/AdminListDependency.php';
 require_once 'Admin/AdminSummaryDependency.php';
+require_once 'CME/dataobjects/CMECreditWrapper.php';
 
 /**
  * @package   CME
  * @copyright 2013-2014 silverorange
  * @license   http://www.opensource.org/licenses/mit-license.html MIT License
  */
-class CMECreditDelete extends AdminDBDelete
+abstract class CMECreditDelete extends AdminDBDelete
 {
 	// process phase
 	// {{{ protected function processDBData()
@@ -58,29 +59,25 @@ class CMECreditDelete extends AdminDBDelete
 		$dep->setTitle(CME::_('CME credit'), CME::_('CME credits'));
 
 		$sql = sprintf(
-			'select CMECredit.id, CMECredit.hours, CMEProvider.title
+			'select CMECredit.*
 			from CMECredit
-				inner join CMEProvider on
-					CMECredit.provider = CMEProvider.id
 			where CMECredit.id in (%s)',
 			$item_list
 		);
 
-		$credits = SwatDB::query($this->app->db, $sql);
+		$credits = SwatDB::query(
+			$this->app->db,
+			$sql,
+			SwatDBClassMap::get('CMECreditWrapper')
+		);
 
 		foreach ($credits as $credit) {
-			$credit->status_level = AdminDependency::DELETE;
-			$credit->parent = null;
-			$credit->title = sprintf(
-				CME::ngettext(
-					'%s (%s hour)',
-					'%s (%s hours)',
-					$credit->hours
-				),
-				$credit->title,
-				$locale->formatNumber($credit->hours)
-			);
-			$dep->entries[] = new AdminDependencyEntry($credit);
+			$data = new stdClass();
+			$data->id = $credit->id;
+			$data->status_level = AdminDependency::DELETE;
+			$data->parent = null;
+			$data->title = $this->getCreditTitle($credit);
+			$dep->entries[] = new AdminDependencyEntry($data);
 		}
 
 		$message = $this->ui->getWidget('confirmation_message');
@@ -92,6 +89,11 @@ class CMECreditDelete extends AdminDBDelete
 		}
 
 	}
+
+	// }}}
+	// {{{ abstract protected function getCreditTitle()
+
+	abstract protected function getCreditTitle(CMECredit $credit);
 
 	// }}}
 	// {{{ protected function buildNavBar()
