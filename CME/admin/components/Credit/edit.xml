@@ -1,0 +1,69 @@
+<?xml version="1.0" standalone="no"?>
+<!DOCTYPE swatml SYSTEM "http://swat.silverorange.com/swatml1.dtd">
+<swatml>
+	<widget class="SwatMessageDisplay" id="message_display" />
+	<widget class="SwatFrame" id="edit_frame">
+		<property name="title" translatable="yes">CME Credit</property>
+		<widget class="SwatForm" id="edit_form">
+			<widget class="SwatFormField" id="title_field">
+				<property name="visible" type="boolean">false</property>
+				<widget class="SwatEntry" id="title" />
+			</widget>
+			<widget class="SwatFormField" id="hours_field">
+				<property name="title" translatable="yes">AMA PRA Category 1 Credit(s)™</property>
+				<widget class="SwatFloatEntry" id="hours">
+					<property name="required" type="boolean">true</property>
+				</widget>
+			</widget>
+			<widget class="SwatFormField">
+				<property name="title" translatable="yes">Passing Grade</property>
+				<widget class="SwatPercentageEntry" id="passing_grade">
+					<property name="required" type="boolean">true</property>
+					<property name="minimum_value" type="float">0.0</property>
+					<property name="maximum_value" type="float">1.0</property>
+				</widget>
+			</widget>
+			<widget class="SwatFormField">
+				<property name="title" translatable="yes">CME quiz can be retaken by users</property>
+				<widget class="SwatCheckbox" id="resettable" />
+			</widget>
+			<widget class="AdminNote" id="email_help_text">
+				<property name="content" translatable="yes"><![CDATA[
+				<p>The following variables may be used in email content:</p>
+				<table>
+					<tbody>
+						<tr>
+							<th>[account-full-name]</th><td>the full name of the user</td>
+							<th>[cme-certificate-link]</th><td>the link to download the CME certificates</td>
+						</tr>
+						<tr>
+							<th>[episode-title]</th><td>the title of the episode</td>
+							<th>[quiz-grade]</th><td>the grade the user got on the quiz</td>
+						</tr>
+						<tr>
+							<th>[episode-link]</th><td>the link to the episode</td>
+							<th>[quiz-passing-grade]</th><td>the grade required to pass the quiz</td>
+						</tr>
+					</tbody>
+				</table>
+				]]></property>
+				<property name="content_type">text/xml</property>
+			</widget>
+			<widget class="SwatFormField">
+				<property name="title" translatable="yes">Pass Email Content</property>
+				<widget class="SwatTextarea" id="email_content_pass">
+					<property name="required" type="boolean">true</property>
+				</widget>
+			</widget>
+			<widget class="SwatFormField">
+				<property name="title" translatable="yes">Fail Email Content</property>
+				<widget class="SwatTextarea" id="email_content_fail">
+					<property name="required" type="boolean">true</property>
+				</widget>
+			</widget>
+			<widget class="SwatFooterFormField">
+				<widget class="SwatButton" id="submit_button" />
+			</widget>
+		</widget>
+	</widget>
+</swatml>
