@@ -197,7 +197,12 @@ HTML;
 
 	protected function createEvaluation()
 	{
-		return null;
+		$class_name = SwatDBClassMap::get('CMEEvaluation');
+		$evaluation = new $class_name();
+		$evaluation->createdate = new SwatDate();
+		$evaluation->createdate->toUTC();
+		$evaluation->setDatabase($this->app->db);
+		return $evaluation;
 	}
 
 	// }}}
