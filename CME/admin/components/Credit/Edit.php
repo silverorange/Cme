@@ -65,7 +65,7 @@ abstract class CMECreditEdit extends InquisitionInquisitionEdit
 
 		// hide question import field when editing an existing credit
 		if ($this->inquisition->id !== null) {
-			$this->ui->getWidget('question_file')->visible = false;
+			$this->ui->getWidget('questions_field')->visible = false;
 		}
 
 		$this->setDefaultValues();
