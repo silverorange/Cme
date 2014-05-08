@@ -3,6 +3,7 @@
 require_once 'SwatDB/SwatDB.php';
 require_once 'Swat/SwatMessage.php';
 require_once 'Admin/exceptions/AdminNotFoundException.php';
+require_once 'Inquisition/InquisitionFileParser.php';
 require_once 'Inquisition/InquisitionImporter.php';
 require_once 'Inquisition/admin/components/Inquisition/Edit.php';
 require_once 'CME/CME.php';
@@ -172,8 +173,9 @@ abstract class CMECreditEdit extends InquisitionInquisitionEdit
 	protected function importInquisition($filename)
 	{
 		try {
+			$file = new InquisitionFileParser($filename);
 			$importer = new InquisitionImporter($this->app);
-			$importer->importInquisition($this->inquisition, $filename);
+			$importer->importInquisition($this->inquisition, $file);
 		} catch (InquisitionImportException $e) {
 			$this->ui->getWidget('questions_file')->addMessage(
 				new SwatMessage($e->getMessage())
