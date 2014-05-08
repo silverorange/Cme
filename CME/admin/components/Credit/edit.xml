@@ -9,6 +9,13 @@
 				<property name="visible" type="boolean">false</property>
 				<widget class="SwatEntry" id="title" />
 			</widget>
+			<widget class="SwatFormField" id="questions_field">
+				<property name="title" translatable="yes">Questions File</property>
+				<widget class="SwatFileEntry" id="questions_file">
+					<property name="accept_mime_types[]">text/csv</property>
+					<property name="accept_mime_types[]">text/plain</property>
+				</widget>
+			</widget>
 			<widget class="SwatFormField" id="hours_field">
 				<property name="title" translatable="yes">AMA PRA Category 1 Credit(s)™</property>
 				<widget class="SwatFloatEntry" id="hours">

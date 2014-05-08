@@ -3,6 +3,7 @@
 require_once 'SwatDB/SwatDB.php';
 require_once 'Swat/SwatMessage.php';
 require_once 'Admin/exceptions/AdminNotFoundException.php';
+require_once 'Inquisition/InquisitionImporter.php';
 require_once 'Inquisition/admin/components/Inquisition/Edit.php';
 require_once 'CME/CME.php';
 require_once 'CME/dataobjects/CMECredit.php';
@@ -27,6 +28,11 @@ abstract class CMECreditEdit extends InquisitionInquisitionEdit
 	 * @var CMEFrontMatter
 	 */
 	protected $front_matter;
+
+	/**
+	 * @var integer
+	 */
+	protected $new_question_count;
 
 	// }}}
 	// {{{ abstract protected function getTitle()
@@ -55,6 +61,11 @@ abstract class CMECreditEdit extends InquisitionInquisitionEdit
 		$this->initFrontMatter();
 
 		$this->ui->loadFromXML($this->getUiXml());
+
+		// hide question import field when editing an existing credit
+		if ($this->inquisition->id !== null) {
+			$this->ui->getWidget('question_file')->visible = false;
+		}
 
 		$this->setDefaultValues();
 	}
@@ -137,6 +148,40 @@ abstract class CMECreditEdit extends InquisitionInquisitionEdit
 	// }}}
 
 	// process phase
+	// {{{ protected function validate()
+
+	protected function validate()
+	{
+		parent::validate();
+
+		$questions_file = $this->ui->getWidget(
+			'questions_file'
+		)->getTempFileName();
+
+		// Import questions file in validate step so we can show error
+		// messages. The importer only modifies the inquisition object and does
+		// not save it to the database.
+		if ($questions_file !== null) {
+			$this->importInquisition($questions_file);
+		}
+	}
+
+	// }}}
+	// {{{ protected function importInquisition()
+
+	protected function importInquisition($filename)
+	{
+		try {
+			$importer = new InquisitionImporter($this->app);
+			$importer->importInquisition($this->inquisition, $filename);
+		} catch (InquisitionImportException $e) {
+			$this->ui->getWidget('questions_file')->addMessage(
+				new SwatMessage($e->getMessage())
+			);
+		}
+	}
+
+	// }}}
 	// {{{ protected function saveDBData()
 
 	protected function saveDBData()
