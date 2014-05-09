@@ -71,11 +71,21 @@ abstract class CMEEvaluationDetails extends InquisitionInquisitionDetails
 	{
 		parent::buildInternal();
 
-		$this->ui->getWidget('details_frame')->title = $this->getTitle();
+		$details_frame = $this->ui->getWidget('details_frame');
+		$details_frame->title = $this->getTitle();
 
+		// Hide details view. All details are displayed on previous screen with
+		// front matter.
 		$view = $this->ui->getWidget('details_view');
-		$view->getField('title')->visible = false;
-		$view->getField('createdate')->visible = false;
+		$view->visible = false;
+
+		// move question frame to top-level
+		$question_frame = $this->ui->getWidget('question_frame');
+		$question_frame->visible = false;
+		foreach ($question_frame->getChildren() as $child) {
+			$question_frame->remove($child);
+			$details_frame->packEnd($child);
+		}
 	}
 
 	// }}}
