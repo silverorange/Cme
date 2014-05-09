@@ -266,7 +266,7 @@ abstract class CMECreditEdit extends InquisitionInquisitionEdit
 
 	protected function buildNavBar()
 	{
-		parent::buildNavBar();
+		AdminDBEdit::buildNavBar();
 
 		$this->navbar->popEntry();
 
