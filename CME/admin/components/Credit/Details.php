@@ -173,7 +173,6 @@ abstract class CMECreditDetails extends InquisitionInquisitionDetails
 	}
 
 	// }}}
-
 }
 
 ?>
