@@ -2,7 +2,7 @@
 
 require_once 'Inquisition/admin/components/Question/Details.php';
 require_once 'CME/CME.php';
-require_once 'CME/dataobjects/CMECreditWrapper.php';
+require_once 'CME/admin/components/Question/include/CMEQuestionHelper.php';
 
 /**
  * Question edit page for inquisitions
@@ -11,19 +11,14 @@ require_once 'CME/dataobjects/CMECreditWrapper.php';
  * @copyright 2011-2014 silverorange
  * @license   http://www.opensource.org/licenses/mit-license.html MIT License
  */
-class CMEQuestionDetails extends InquisitionQuestionDetails
+abstract class CMEQuestionDetails extends InquisitionQuestionDetails
 {
 	// {{{ protected properties
 
 	/**
-	 * @var string
+	 * @var CMEQuestionHelper
 	 */
-	protected $type;
-
-	/**
-	 * @var CMECredit
-	 */
-	protected $credit;
+	protected $helper;
 
 	// }}}
 
@@ -34,25 +29,17 @@ class CMEQuestionDetails extends InquisitionQuestionDetails
 	{
 		parent::initInternal();
 
+		$this->helper = $this->getQuestionHelper();
+		$this->helper->initInternal($this->inquisition);
+
 		// for evaluations, hide correct option column
-		$sql = sprintf(
-			'select count(1) from CMECredit
-			where evaluation = %s',
-			$this->app->db->quote($this->inquisition->id, 'integer')
-		);
-
-		$is_evaluation = (SwatDB::queryOne($this->app->db, $sql) > 0);
-
-		if ($is_evaluation) {
+		if ($this->helper->isEvaluation()) {
 			$view = $this->ui->getWidget('option_view');
 			$view->getColumn('correct_option')->visible = false;
 
 			$toollink = $this->ui->getWidget('correct_option');
 			$toollink->visible = false;
 		}
-
-		$this->initCredit();
-		$this->initType();
 	}
 
 	// }}}
@@ -80,37 +67,9 @@ class CMEQuestionDetails extends InquisitionQuestionDetails
 	}
 
 	// }}}
-	// {{{ protected function initCredit()
+	// {{{ abstract protected function getQuestionHelper()
 
-	protected function initCredit()
-	{
-		$sql = sprintf(
-			'select * from CMECredit where
-			evaluation = %1$s or quiz = %1$s',
-			$this->app->db->quote($this->inquisition->id, 'integer')
-		);
-
-		$this->credit = SwatDB::query(
-			$this->app->db,
-			$sql,
-			SwatDBClassMap::get('CMECreditWrapper')
-		)->getFirst();
-	}
-
-	// }}}
-	// {{{ protected function initType()
-
-	protected function initType()
-	{
-		$evaluation_id = $this->credit->getInternalValue('evaluation');
-		$quiz_id       = $this->credit->getInternalValue('quiz');
-
-		if ($this->inquisition->id === $evaluation_id) {
-			$this->type = 'evaluation';
-		} elseif ($this->inquisition->id === $quiz_id) {
-			$this->type = 'quiz';
-		}
-	}
+	abstract protected function getQuestionHelper();
 
 	// }}}
 
@@ -121,35 +80,7 @@ class CMEQuestionDetails extends InquisitionQuestionDetails
 	{
 		parent::buildNavBar();
 
-		if ($this->credit instanceof CMECredit) {
-			$entries = $this->navbar->popEntries(3);
-
-			$entries[1]->title = $this->getQuizTitle();
-
-			$this->navbar->addEntry($entries[1]);
-			$this->navbar->addEntry($entries[2]);
-		}
-	}
-
-	// }}}
-	// {{{ protected function getQuizTitle()
-
-	protected function getQuizTitle()
-	{
-		switch ($this->type) {
-		case 'evaluation':
-			return sprintf(
-				CME::_('% Evaluation'),
-				$this->credit->provider->title
-			);
-
-		default:
-		case 'quiz':
-			return sprintf(
-				CME::_('%s Quiz'),
-				$this->credit->provider->title
-			);
-		}
+		$this->helper->buildNavBar($this->navbar);
 	}
 
 	// }}}
