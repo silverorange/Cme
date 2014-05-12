@@ -29,7 +29,7 @@ abstract class CMEQuestionDetails extends InquisitionQuestionDetails
 		parent::initInternal();
 
 		$this->helper = $this->getQuestionHelper();
-		$this->helper->initInternal($this->inquisition);
+		$this->helper->initInternal();
 
 		// for evaluations, hide correct option column
 		if ($this->helper->isEvaluation()) {

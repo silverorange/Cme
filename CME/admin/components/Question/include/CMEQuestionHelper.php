@@ -43,9 +43,11 @@ abstract class CMEQuestionHelper
 	// }}}
 	// {{{ public function __construct()
 
-	public function __construct(SiteApplication $app)
+	public function __construct(SiteApplication $app,
+		InquisitionInquisition $inquisition)
 	{
 		$this->app = $app;
+		$this->inquisition = $inquisition;
 	}
 
 	// }}}
@@ -69,12 +71,11 @@ abstract class CMEQuestionHelper
 	// init phase
 	// {{{ public function initInternal()
 
-	public function initInternal(InquisitionInquisition $inquisition = null)
+	public function initInternal()
 	{
-		$this->inquisition = $inquisition;
-		$this->initCredit($inquisition);
-		$this->initFrontMatter($inquisition);
-		$this->initType($inquisition);
+		$this->initCredit();
+		$this->initFrontMatter();
+		$this->initType();
 	}
 
 	// }}}
@@ -220,3 +221,5 @@ abstract class CMEQuestionHelper
 
 	// }}}
 }
+
+?>

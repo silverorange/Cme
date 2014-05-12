@@ -29,7 +29,7 @@ abstract class CMEQuestionDelete extends InquisitionQuestionDelete
 		parent::setId($id);
 
 		$this->helper = $this->getQuestionHelper();
-		$this->helper->initInternal($this->inquisition);
+		$this->helper->initInternal();
 	}
 
 	// }}}

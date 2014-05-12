@@ -29,7 +29,7 @@ abstract class CMEQuestionImageOrder extends InquisitionQuestionImageOrder
 		parent::initInternal();
 
 		$this->helper = $this->getQuestionHelper();
-		$this->helper->initInternal($this->inquisition);
+		$this->helper->initInternal();
 	}
 
 	// }}}

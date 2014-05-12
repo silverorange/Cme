@@ -43,7 +43,7 @@ abstract class CMEQuestionHintDelete extends InquisitionQuestionHintDelete
 		}
 
 		$this->helper = $this->getQuestionHelper();
-		$this->helper->initInternal($this->inquisition);
+		$this->helper->initInternal();
 	}
 
 	// }}}

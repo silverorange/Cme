@@ -43,7 +43,7 @@ abstract class CMEQuestionImageDelete extends InquisitionQuestionImageDelete
 		}
 
 		$this->helper = $this->getQuestionHelper();
-		$this->helper->initInternal($this->inquisition);
+		$this->helper->initInternal();
 	}
 
 	// }}}

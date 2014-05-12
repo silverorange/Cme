@@ -29,7 +29,7 @@ abstract class CMEQuestionImageUpload extends InquisitionQuestionImageUpload
 		parent::initInternal();
 
 		$this->helper = $this->getQuestionHelper();
-		$this->helper->initInternal($this->inquisition);
+		$this->helper->initInternal();
 	}
 
 	// }}}
