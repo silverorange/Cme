@@ -1,8 +1,7 @@
 <?php
 
 require_once 'Inquisition/admin/components/Question/Delete.php';
-require_once 'CME/CME.php';
-require_once 'CME/dataobjects/CMECreditWrapper.php';
+require_once 'CME/admin/components/Question/include/CMEQuestionHelper.php';
 
 /**
  * Delete confirmation page for question images
@@ -11,19 +10,14 @@ require_once 'CME/dataobjects/CMECreditWrapper.php';
  * @copyright 2012-2014 silverorange
  * @license   http://www.opensource.org/licenses/mit-license.html MIT License
  */
-class CMEQuestionDelete extends InquisitionQuestionDelete
+abstract class CMEQuestionDelete extends InquisitionQuestionDelete
 {
 	// {{{ protected properties
 
 	/**
-	 * @var string
+	 * @var CMEQuestionHelper
 	 */
-	protected $type;
-
-	/**
-	 * @var CMECredit
-	 */
-	protected $credit;
+	protected $helper;
 
 	// }}}
 
@@ -34,40 +28,28 @@ class CMEQuestionDelete extends InquisitionQuestionDelete
 	{
 		parent::setId($id);
 
-		$this->initCredit();
-		$this->initType();
+		$this->helper = $this->getQuestionHelper();
+		$this->helper->initInternal($this->inquisition);
 	}
 
 	// }}}
-	// {{{ protected function initCredit()
+	// {{{ abstract protected function getQuestionHelper()
 
-	protected function initCredit()
-	{
-		$sql = sprintf(
-			'select * from CMECredit where
-			evaluation = %1$s or quiz = %1$s',
-			$this->app->db->quote($this->inquisition->id, 'integer')
-		);
-
-		$this->credit = SwatDB::query(
-			$this->app->db,
-			$sql,
-			SwatDBClassMap::get('CMECreditWrapper')
-		)->getFirst();
-	}
+	abstract protected function getQuestionHelper();
 
 	// }}}
-	// {{{ protected function initType()
 
-	protected function initType()
+	// process phase
+	// {{{ protected function relocate()
+
+	protected function relocate()
 	{
-		$evaluation_id = $this->credit->getInternalValue('evaluation');
-		$quiz_id       = $this->credit->getInternalValue('quiz');
+		$uri = $this->helper->getRelocateURI();
 
-		if ($this->inquisition->id === $evaluation_id) {
-			$this->type = 'evaluation';
-		} elseif ($this->inquisition->id === $quiz_id) {
-			$this->type = 'quiz';
+		if ($uri == '') {
+			parent::relocate();
+		} else {
+			$this->app->relocate($uri);
 		}
 	}
 
@@ -80,35 +62,7 @@ class CMEQuestionDelete extends InquisitionQuestionDelete
 	{
 		parent::buildNavBar();
 
-		if ($this->credit instanceof CMECredit) {
-			$entries = $this->navbar->popEntries(3);
-
-			array_shift($entries);
-			$entries[0]->title = $this->getQuizTitle();
-
-			$this->navbar->addEntries($entries);
-		}
-	}
-
-	// }}}
-	// {{{ protected function getQuizTitle()
-
-	protected function getQuizTitle()
-	{
-		switch ($this->type) {
-		case 'evaluation':
-			return sprintf(
-				CME::_('% Evaluation'),
-				$this->credit->provider->title
-			);
-
-		default:
-		case 'quiz':
-			return sprintf(
-				CME::_('%s Quiz'),
-				$this->credit->provider->title
-			);
-		}
+		$this->helper->buildNavBar($this->navbar);
 	}
 
 	// }}}
