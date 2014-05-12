@@ -56,8 +56,10 @@ abstract class CMEEvaluationDetails extends InquisitionInquisitionDetails
 
 		if (!$this->front_matter instanceof CMEFrontMatter) {
 			throw new AdminNotFoundException(
-				'Evaluation with id of %s not found.',
-				$this->id
+				sprintf(
+					'Evaluation with id of %s not found.',
+					$this->id
+				)
 			);
 		}
 	}
@@ -107,17 +109,6 @@ abstract class CMEEvaluationDetails extends InquisitionInquisitionDetails
 
 		$this->navbar->popEntry();
 		$this->navbar->createEntry($this->getTitle());
-	}
-
-	// }}}
-	// {{{ protected function getQuestionDetailsStore()
-
-	protected function getQuestionDetailsStore(
-		InquisitionInquisitionQuestionBinding $question_binding)
-	{
-		$ds = parent::getQuestionDetailsStore($question_binding);
-		$ds->credit = $this->credit;
-		return $ds;
 	}
 
 	// }}}
