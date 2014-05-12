@@ -97,11 +97,14 @@ abstract class CMEOptionHelper
 	public function buildNavBar(SwatNavBar $navbar)
 	{
 		// save add/edit title defined in Inquisition package
-		$this->question_helper->buildNavBar($navbar);
-
 		$title = $navbar->popEntry();
 
-		// question
+		$this->question_helper->buildNavBar($navbar);
+
+		// remove question defined in Inquisition package
+		$question = $navbar->popEntry();
+
+		// add question
 		$inquisition = $this->question_helper->getInquisition();
 		if ($inquisition instanceof InquisitionInquisition) {
 			$navbar->createEntry(
