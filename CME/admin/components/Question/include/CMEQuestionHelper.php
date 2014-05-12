@@ -67,6 +67,14 @@ abstract class CMEQuestionHelper
 	}
 
 	// }}}
+	// {{{ public function getInquisition()
+
+	public function getInquisition()
+	{
+		return $this->inquisition;
+	}
+
+	// }}}
 
 	// init phase
 	// {{{ public function initInternal()
@@ -163,7 +171,7 @@ abstract class CMEQuestionHelper
 
 	public function buildNavBar(SwatNavBar $navbar)
 	{
-		// save add/edit title defined in Building package
+		// save add/edit title defined in Inquisition package
 		$title = $navbar->popEntry();
 
 		// pop question component
