@@ -1,7 +1,6 @@
 <?php
 
 require_once 'Inquisition/admin/components/Question/Details.php';
-require_once 'CME/CME.php';
 require_once 'CME/admin/components/Question/include/CMEQuestionHelper.php';
 
 /**

@@ -1,7 +1,6 @@
 <?php
 
 require_once 'Inquisition/admin/components/Question/Add.php';
-require_once 'CME/CME.php';
 require_once 'CME/admin/components/Question/include/CMEQuestionHelper.php';
 
 /**
@@ -44,6 +43,22 @@ abstract class CMEQuestionAdd extends InquisitionQuestionAdd
 	// {{{ abstract protected function getQuestionHelper()
 
 	abstract protected function getQuestionHelper();
+
+	// }}}
+
+	// process phase
+	// {{{ protected function relocate()
+
+	protected function relocate()
+	{
+		$uri = $this->helper->getRelocateURI();
+
+		if ($uri == '') {
+			parent::relocate();
+		} else {
+			$this->app->relocate($uri);
+		}
+	}
 
 	// }}}
 

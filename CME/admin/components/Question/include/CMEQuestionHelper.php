@@ -132,6 +132,30 @@ abstract class CMEQuestionHelper
 
 	// }}}
 
+	// process phase
+	// {{{ public function getRelocateURI()
+
+	public function getRelocateURI()
+	{
+		$uri = null;
+
+		if ($this->isQuiz()) {
+			$uri = sprintf(
+				'Credit/Details?id=%s',
+				$this->credit->id
+			);
+		} elseif ($this->isEvaluation()) {
+			$uri = sprintf(
+				'Evaluation/Details?id=%s',
+				$this->inquisition->id
+			);
+		}
+
+		return $uri;
+	}
+
+	// }}}
+
 	// build phase
 	// {{{ public function buildNavBar()
 
