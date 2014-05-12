@@ -2,6 +2,7 @@
 
 require_once 'SwatDB/SwatDBClassMap.php';
 require_once 'Admin/exceptions/AdminNotFoundException.php';
+require_once 'Inquisition/dataobjects/InquisitionInquisition.php';
 require_once 'CME/dataobjects/CMECreditWrapper.php';
 require_once 'CME/dataobjects/CMEFrontMatterWrapper.php';
 
@@ -17,6 +18,11 @@ abstract class CMEQuestionHelper
 	 * @var SiteApplication
 	 */
 	protected $app;
+
+	/**
+	 * @var InquisitionInquisition
+	 */
+	protected $inquisition;
 
 	/**
 	 * @var CMECredit
@@ -62,8 +68,9 @@ abstract class CMEQuestionHelper
 	// init phase
 	// {{{ public function initInternal()
 
-	public function initInternal(InquisitionInquisition $inquisition)
+	public function initInternal(InquisitionInquisition $inquisition = null)
 	{
+		$this->inquisition = $inquisition;
 		$this->initCredit($inquisition);
 		$this->initFrontMatter($inquisition);
 		$this->initType($inquisition);
@@ -72,45 +79,49 @@ abstract class CMEQuestionHelper
 	// }}}
 	// {{{ protected function initCredit()
 
-	protected function initCredit(InquisitionInquisition $inquisition)
+	protected function initCredit()
 	{
-		$sql = sprintf(
-			'select * from CMECredit where quiz = %s',
-			$this->app->db->quote($inquisition->id, 'integer')
-		);
+		if ($this->inquisition instanceof InquisitionInquisition) {
+			$sql = sprintf(
+				'select * from CMECredit where quiz = %s',
+				$this->app->db->quote($this->inquisition->id, 'integer')
+			);
 
-		$this->credit = SwatDB::query(
-			$this->app->db,
-			$sql,
-			SwatDBClassMap::get('CMECreditWrapper')
-		)->getFirst();
+			$this->credit = SwatDB::query(
+				$this->app->db,
+				$sql,
+				SwatDBClassMap::get('CMECreditWrapper')
+			)->getFirst();
+		}
 	}
 
 	// }}}
 	// {{{ protected function initFrontMatter()
 
-	protected function initFrontMatter(InquisitionInquisition $inquisition)
+	protected function initFrontMatter()
 	{
-		if ($this->credit instanceof CMECredit) {
-			$this->front_matter = $this->credit->front_matter;
-		} else {
-			$sql = sprintf(
-				'select * from CMEFrontMatter where evaluation = %s',
-				$this->app->db->quote($inquisition->id, 'integer')
-			);
+		if ($this->inquisition instanceof InquisitionInquisition) {
+			if ($this->credit instanceof CMECredit) {
+				$this->front_matter = $this->credit->front_matter;
+			} else {
+				$sql = sprintf(
+					'select * from CMEFrontMatter where evaluation = %s',
+					$this->app->db->quote($this->inquisition->id, 'integer')
+				);
 
-			$this->front_matter = SwatDB::query(
-				$this->app->db,
-				$sql,
-				SwatDBClassMap::get('CMEFrontMatterWrapper')
-			)->getFirst();
+				$this->front_matter = SwatDB::query(
+					$this->app->db,
+					$sql,
+					SwatDBClassMap::get('CMEFrontMatterWrapper')
+				)->getFirst();
+			}
 		}
 	}
 
 	// }}}
 	// {{{ protected function initType()
 
-	protected function initType(InquisitionInquisition $inquisition)
+	protected function initType()
 	{
 		if ($this->credit instanceof CMECredit) {
 			$this->type = 'quiz';
@@ -149,15 +160,15 @@ abstract class CMEQuestionHelper
 				$this->getEvaluationNavBarTitle(),
 				sprintf(
 					'Evaluation/Details?id=%s',
-					$inquisition->id
+					$this->inquisition->id
 				)
 			);
-		} else {
+		} elseif ($this->inquisition instanceof InquisitionInquisition) {
 			$navbar->createEntry(
-				$inquisition->title,
+				$this->inquisition->title,
 				sprintf(
 					'Inquisition/Details?id=%s',
-					$inquisition->id
+					$this->inquisition->id
 				)
 			);
 		}

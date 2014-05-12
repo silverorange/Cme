@@ -3,6 +3,7 @@
 require_once 'Inquisition/admin/components/Question/Edit.php';
 require_once 'CME/CME.php';
 require_once 'CME/dataobjects/CMECreditWrapper.php';
+require_once 'CME/admin/components/Question/include/CMEQuestionHelper.php';
 
 /**
  * Question edit page for inquisitions
@@ -11,19 +12,14 @@ require_once 'CME/dataobjects/CMECreditWrapper.php';
  * @copyright 2011-2014 silverorange
  * @license   http://www.opensource.org/licenses/mit-license.html MIT License
  */
-class CMEQuestionEdit extends InquisitionQuestionEdit
+abstract class CMEQuestionEdit extends InquisitionQuestionEdit
 {
 	// {{{ protected properties
 
 	/**
-	 * @var string
+	 * @var CMEQuestionHelper
 	 */
-	protected $type;
-
-	/**
-	 * @var CMECredit
-	 */
-	protected $credit;
+	protected $helper;
 
 	// }}}
 
@@ -34,8 +30,8 @@ class CMEQuestionEdit extends InquisitionQuestionEdit
 	{
 		parent::initInternal();
 
-		$this->initCredit();
-		$this->initType();
+		$this->helper = $this->getQuestionHelper();
+		$this->helper->initInternal($this->inquisition);
 	}
 
 	// }}}
@@ -63,37 +59,9 @@ class CMEQuestionEdit extends InquisitionQuestionEdit
 	}
 
 	// }}}
-	// {{{ protected function initCredit()
+	// {{{ abstract protected function getQuestionHelper()
 
-	protected function initCredit()
-	{
-		$sql = sprintf(
-			'select * from CMECredit where
-			evaluation = %1$s or quiz = %1$s',
-			$this->app->db->quote($this->inquisition->id, 'integer')
-		);
-
-		$this->credit = SwatDB::query(
-			$this->app->db,
-			$sql,
-			SwatDBClassMap::get('CMECreditWrapper')
-		)->getFirst();
-	}
-
-	// }}}
-	// {{{ protected function initType()
-
-	protected function initType()
-	{
-		$evaluation_id = $this->credit->getInternalValue('evaluation');
-		$quiz_id       = $this->credit->getInternalValue('quiz');
-
-		if ($this->inquisition->id === $evaluation_id) {
-			$this->type = 'evaluation';
-		} elseif ($this->inquisition->id === $quiz_id) {
-			$this->type = 'quiz';
-		}
-	}
+	abstract protected function getQuestionHelper();
 
 	// }}}
 
@@ -104,35 +72,12 @@ class CMEQuestionEdit extends InquisitionQuestionEdit
 	{
 		parent::buildNavBar();
 
-		if ($this->credit instanceof CMECredit) {
-			$entries = $this->navbar->popEntries(4);
+		// put edit entry at the end
+		$title = $this->navbar->popEntry();
 
-			array_shift($entries);
-			$entries[0]->title = $this->getQuizTitle();
+		$this->helper->buildNavBar($this->navbar);
 
-			$this->navbar->addEntries($entries);
-		}
-	}
-
-	// }}}
-	// {{{ protected function getQuizTitle()
-
-	protected function getQuizTitle()
-	{
-		switch ($this->type) {
-		case 'evaluation':
-			return sprintf(
-				CME::_('% Evaluation'),
-				$this->credit->provider->title
-			);
-
-		default:
-		case 'quiz':
-			return sprintf(
-				CME::_('%s Quiz'),
-				$this->credit->provider->title
-			);
-		}
+		$this->navbar->addEntry($title);
 	}
 
 	// }}}
