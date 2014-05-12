@@ -2,7 +2,6 @@
 
 require_once 'Inquisition/admin/components/Question/Edit.php';
 require_once 'CME/CME.php';
-require_once 'CME/dataobjects/CMECreditWrapper.php';
 require_once 'CME/admin/components/Question/include/CMEQuestionHelper.php';
 
 /**
@@ -44,11 +43,9 @@ abstract class CMEQuestionEdit extends InquisitionQuestionEdit
 		if (!$this->inquisition instanceof InquisitionInquisition) {
 			// if we got here from the question index, load the inquisition
 			// from the binding as we only have one inquisition per question
-			$sql = 'select inquisition
-				from InquisitionInquisitionQuestionBinding where question = %s';
-
 			$sql = sprintf(
-				$sql,
+				'select inquisition from InquisitionInquisitionQuestionBinding
+				where question = %s',
 				$this->app->db->quote($this->question->id)
 			);
 
