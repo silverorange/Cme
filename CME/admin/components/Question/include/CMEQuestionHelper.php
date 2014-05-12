@@ -174,10 +174,10 @@ abstract class CMEQuestionHelper
 		// save add/edit title defined in Inquisition package
 		$title = $navbar->popEntry();
 
-		// pop question component
+		// pop inquisition title defined in Inquisition package
 		$navbar->popEntry();
 
-		// pop inquisition title defined in Inquisition package
+		// pop question component
 		$navbar->popEntry();
 
 		// add inquisition
