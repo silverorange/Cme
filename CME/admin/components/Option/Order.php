@@ -38,17 +38,6 @@ abstract class CMEOptionOrder extends InquisitionOptionOrder
 	// }}}
 
 	// build phase
-	// {{{ protected function buildForm()
-
-	protected function buildForm()
-	{
-		parent::buildForm();
-
-		$form = $this->ui->getWidget('order_form');
-		$form->addHiddenField('inquisition', $this->inquisition->id);
-	}
-
-	// }}}
 	// {{{ protected function buildNavBar()
 
 	protected function buildNavBar()
