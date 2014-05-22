@@ -261,7 +261,7 @@ abstract class CMEReportUpdater extends SiteCommandLineApplication
 	// {{{ protected function getDataObject()
 
 	protected function getDataObject(SwatDate $quarter,
-		CMEProvider $provider, $filename);
+		CMEProvider $provider, $filename)
 	{
 		$class_name = $this->getReportClassName();
 		$report = new $class_name();
