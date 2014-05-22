@@ -49,11 +49,6 @@ abstract class CMEOptionImageDelete extends InquisitionOptionImageDelete
 		// put edit entry at the end
 		$title = $this->navbar->popEntry();
 
-		// remove inquisition defined in inquisition package
-		$question = $this->navbar->popEntry();
-		$this->navbar->popEntry();
-		$this->navbar->addEntry($question);
-
 		$this->helper->buildNavBar($this->navbar);
 
 		$this->navbar->addEntry($title);
