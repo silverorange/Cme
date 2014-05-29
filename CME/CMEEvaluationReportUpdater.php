@@ -20,34 +20,15 @@ abstract class CMEEvaluationReportUpdater extends CMEReportUpdater
 	}
 
 	// }}}
-	// {{{ protected function initReportsByQuarter()
+	// {{{ protected function getReports()
 
-	protected function initReportsByQuarter()
+	protected function getReports()
 	{
-		$this->reports_by_quarter = array();
-
-		$sql = 'select * from EvaluationReport order by quarter';
-		$reports = SwatDB::query(
+		return SwatDB::query(
 			$this->db,
-			$sql,
+			'select * from EvaluationReport order by quarter',
 			SwatDBClassMap::get('CMEEvaluationReportWrapper')
 		);
-
-		$reports->attachSubDataObjects(
-			'provider',
-			$this->providers
-		);
-
-		foreach ($reports as $report) {
-			$quarter = clone $report->quarter;
-			$quarter->convertTZ($this->default_time_zone);
-			$quarter = $quarter->formatLikeIntl('qqq-yyyy');
-			$provider = $report->provider->shortname;
-			if (!isset($this->reports_by_quarter[$quarter])) {
-				$this->reports_by_quarter[$quarter] = array();
-			}
-			$this->reports_by_quarter[$quarter][$provider] = $report;
-		}
 	}
 
 	// }}}

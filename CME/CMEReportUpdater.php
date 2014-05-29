@@ -104,9 +104,9 @@ abstract class CMEReportUpdater extends SiteCommandLineApplication
 	abstract protected function getStatusLine();
 
 	// }}}
-	// {{{ abstract protected function initReportsByQuarter()
+	// {{{ abstract protected function getReports()
 
-	abstract protected function initReportsByQuarter();
+	abstract protected function getReports();
 
 	// }}}
 	// {{{ abstract protected function getReportClassName()
@@ -160,6 +160,31 @@ abstract class CMEReportUpdater extends SiteCommandLineApplication
 			'select * from CMEProvider order by title, id',
 			SwatDBClassMap::get('CMEProviderWrapper')
 		);
+	}
+
+	// }}}
+	// {{{ protected function initReportsByQuarter()
+
+	protected function initReportsByQuarter()
+	{
+		$this->reports_by_quarter = array();
+
+		$reports = $this->getReports();
+		$reports->attachSubDataObjects(
+			'provider',
+			$this->providers
+		);
+
+		foreach ($reports as $report) {
+			$quarter = clone $report->quarter;
+			$quarter->convertTZ($this->default_time_zone);
+			$quarter = $quarter->formatLikeIntl('qqq-yyyy');
+			$provider = $report->provider->shortname;
+			if (!isset($this->reports_by_quarter[$quarter])) {
+				$this->reports_by_quarter[$quarter] = array();
+			}
+			$this->reports_by_quarter[$quarter][$provider] = $report;
+		}
 	}
 
 	// }}}
