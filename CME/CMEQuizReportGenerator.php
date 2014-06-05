@@ -68,7 +68,7 @@ class CMEQuizReportGenerator
 	/**
 	 * Gets earned CME credits to include in the quarterly report
 	 *
-	 * Credits are included iff:
+	 * Credits are included if and only if:
 	 *
 	 * - the credit is earned
 	 * - the provider is the specified provider
