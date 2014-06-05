@@ -171,7 +171,10 @@ HTML;
 	protected function updateObject()
 	{
 		// Required because of weird behaviour with sub-data-objects in
-		// SwatDBDataObject.
+		// SwatDBDataObject. Setting a new provider id without first setting
+		// the subobject to null will update the data-object internal value
+		// to the new id but NOT update the loaded provider object itself. This
+		// will cause save confirmation messages to display incorrectly.
 		$this->getObject()->provider = null;
 
 		parent::updateObject();
