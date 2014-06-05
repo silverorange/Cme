@@ -107,7 +107,7 @@ abstract class CMEQuizPage extends SiteDBEditPage
 
 		// if there is no quiz, go to evaluation page
 		if (!$this->quiz instanceof CMEQuiz) {
-			if ($response->complete_date === null) {
+			if (!$response->complete_date instanceof SwatDate) {
 				$this->relocateToEvaluation();
 			}
 		}
@@ -307,7 +307,7 @@ abstract class CMEQuizPage extends SiteDBEditPage
 	protected function isComplete()
 	{
 		return ($this->response !== null &&
-			$this->response->complete_date !== null);
+			$this->response->complete_date instanceof SwatDate);
 	}
 
 	// }}}
