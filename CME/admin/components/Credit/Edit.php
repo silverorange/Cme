@@ -259,6 +259,15 @@ abstract class CMECreditEdit extends InquisitionInquisitionEdit
 	// }}}
 
 	// build phase
+	// {{{ protected function buildInternal()
+
+	protected function buildInternal()
+	{
+		parent::buildInternal();
+		$this->buildEmailHelp();
+	}
+
+	// }}}
 	// {{{ protected function buildNavBar()
 
 	protected function buildNavBar()
@@ -297,6 +306,78 @@ abstract class CMECreditEdit extends InquisitionInquisitionEdit
 		parent::loadDBData();
 
 		$this->ui->setValues(get_object_vars($this->credit));
+	}
+
+	// }}}
+	// {{{ protected function buildEmailHelp()
+
+	protected function buildEmailHelp()
+	{
+		$help = $this->ui->getWidget('email_help_text');
+
+		ob_start();
+
+		$p_tag = new SwatHtmlTag('p');
+		$p_tag->setContent(
+			CME::_(
+				'The following variables may be used in email content:'
+			)
+		);
+		$p_tag->display();
+
+		echo '<table><tbody>';
+
+		$definitions = $this->getEmailHelpVariableDefinitions();
+		$keys = array_keys($definitions);
+		$half_index = ceil(count($definitions) / 2);
+		for ($i = 0; $i < $half_index; $i++) {
+			echo '<tr>';
+
+			$th = new SwatHtmlTag('th');
+			$th->setContent('['.$keys[$i].']');
+			$th->display();
+
+			$td = new SwatHtmlTag('td');
+			$td->setContent($definitions[$keys[$i]]);
+			$td->display();
+
+			if (isset($keys[$i + $half_index])) {
+				$th = new SwatHtmlTag('th');
+				$th->setContent('['.$keys[$i + $half_index].']');
+				$th->display();
+
+				$td = new SwatHtmlTag('td');
+				$td->setContent($definitions[$keys[$i + $half_index]]);
+				$td->display();
+			}
+			echo '</tr>';
+		}
+
+		echo '</tbody></table>';
+
+		$help->content = ob_get_clean();
+		$help->content_type = 'text/xml';
+	}
+
+	// }}}
+	// {{{ protected function getEmailHelpVariableDefinitions()
+
+	protected function getEmailHelpVariableDefinitions()
+	{
+		return array(
+			'account-full-name' => CME::_(
+				'the full name of the user'
+			),
+			'cme-certificate-link' => CME::_(
+				'the link to download the CME certificates'
+			),
+			'quiz-grade' => CME::_(
+				'the grade the user got on the quiz'
+			),
+			'quiz-passing-grade' => CME::_(
+				'the grade required to pass the quiz'
+			),
+		);
 	}
 
 	// }}}

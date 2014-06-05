@@ -34,28 +34,7 @@
 				<property name="title" translatable="yes">CME quiz can be retaken by users</property>
 				<widget class="SwatCheckbox" id="resettable" />
 			</widget>
-			<widget class="AdminNote" id="email_help_text">
-				<property name="content" translatable="yes"><![CDATA[
-				<p>The following variables may be used in email content:</p>
-				<table>
-					<tbody>
-						<tr>
-							<th>[account-full-name]</th><td>the full name of the user</td>
-							<th>[cme-certificate-link]</th><td>the link to download the CME certificates</td>
-						</tr>
-						<tr>
-							<th>[episode-title]</th><td>the title of the episode</td>
-							<th>[quiz-grade]</th><td>the grade the user got on the quiz</td>
-						</tr>
-						<tr>
-							<th>[episode-link]</th><td>the link to the episode</td>
-							<th>[quiz-passing-grade]</th><td>the grade required to pass the quiz</td>
-						</tr>
-					</tbody>
-				</table>
-				]]></property>
-				<property name="content_type">text/xml</property>
-			</widget>
+			<widget class="AdminNote" id="email_help_text" />
 			<widget class="SwatFormField">
 				<property name="title" translatable="yes">Pass Email Content</property>
 				<widget class="SwatTextarea" id="email_content_pass">
