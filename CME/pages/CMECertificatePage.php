@@ -248,7 +248,9 @@ JAVASCRIPT;
 		// get latest date
 		$latest_date = null;
 		foreach ($dates as $date) {
-			if ($latest_date === null || $latest_date->before($date)) {
+			if (!$latest_date instanceof SwatDate ||
+				$latest_date->before($date)) {
+
 				$latest_date = $date;
 			}
 		}
