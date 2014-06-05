@@ -31,7 +31,7 @@ class CMEFrontMatterAttestationServerPage extends SiteArticlePage
 	protected function getArgumentMap()
 	{
 		return array(
-			'credit' => array(0, null),
+			'front_matter' => array(0, null),
 		);
 	}
 
@@ -52,11 +52,12 @@ class CMEFrontMatterAttestationServerPage extends SiteArticlePage
 
 	protected function getFrontMatter()
 	{
-		$credit_id = $this->getArgument('credit');
+		$front_matter_id = $this->getArgument('front_matter');
 
 		$sql = sprintf(
-			'select * from CMEFrontMatter where id = %s',
-			$this->app->db->quote($credit_id, 'integer')
+			'select * from CMEFrontMatter where id = %s and enabled = %s',
+			$this->app->db->quote($front_matter_id, 'integer'),
+			$this->app->db->quote(true, 'boolean')
 		);
 
 		return SwatBD::query(
