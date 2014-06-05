@@ -370,12 +370,34 @@ abstract class CMEQuizPage extends SiteDBEditPage
 
 		// save response values
 		$this->response->values->save();
+		$this->saveEarnedCredit();
 
 		// clear CME hours cache for this account
 		$key = 'cme-hours-'.$this->app->session->account->id;
 		$this->app->deleteCacheValue($key, 'cme-hours');
 
 		$this->sendCompletionEmail();
+	}
+
+	// }}}
+	// {{{ protected function saveEarnedCredit()
+
+	protected function saveEarnedCredit()
+	{
+		$account = $this->app->session->account;
+		if ($this->credit->isEarned($account)) {
+			$earned_date = new SwatDate();
+			$earned_date->toUTC();
+
+			$class_name = SwatDBClassMap::get('CMEAccountEarnedCMECredit');
+			$earned_credit = new $class_name();
+
+			$earned_credit->account = $account->id;
+			$earned_credit->credit = $this->credit->id;
+			$earned_credit->earned_date = $now;
+
+			$earned_credit->save();
+		}
 	}
 
 	// }}}

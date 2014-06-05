@@ -295,12 +295,37 @@ abstract class CMEEvaluationPage extends SiteDBEditPage
 
 		// save responses
 		$this->inquisition_response->save();
+		$this->saveEarnedCredits();
 
 		// clear CME hours cache for this account
 		$key = 'cme-hours-'.$this->app->session->account->id;
 		$this->app->deleteCacheValue($key, 'cme-hours');
 
 		$this->app->messages->add($this->getMessage($form));
+	}
+
+	// }}}
+	// {{{ protected function saveEarnedCredits()
+
+	protected function saveEarnedCredits()
+	{
+		$account = $this->app->session->account;
+		$wrapper = SwatDBClassMap::get('CMEAccountEarnedCMECreditWrapper');
+		$class_name = SwatDBClassMap::get('CMEAccountEarnedCMECredit');
+		$earned_credits = new $wrapper();
+		$earned_date = new SwatDate();
+		$earned_date->toUTC();
+		foreach ($this->front_matter->credits as $credit) {
+			if ($credit->isEarned($account)) {
+				$earned_credit = new $class_name();
+				$earned_credit->account = $account->id;
+				$earned_credit->credit = $credit->id;
+				$earned_credit->earned_date = $now;
+				$earned_credits->add($earned_credit);
+			}
+		}
+		$earned_credits->setDatabase($this->app->db);
+		$earned_credits->save();
 	}
 
 	// }}}

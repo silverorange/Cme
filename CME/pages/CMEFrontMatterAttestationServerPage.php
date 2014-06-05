@@ -4,6 +4,8 @@ require_once 'Site/pages/SiteArticlePage.php';
 require_once 'CME/dataobjects/CMEAccount.php';
 require_once 'CME/dataobjects/CMEFrontMatter.php';
 require_once 'CME/dataobjects/CMEFrontMatterWrapper.php';
+require_once 'CME/dataobjects/CMEAccountEarnedCMECredit.php';
+require_once 'CME/dataobjects/CMEAccountEarnedCMECreditWrapper.php';
 
 /**
  * @package   CME
@@ -142,6 +144,32 @@ class CMEFrontMatterAttestationServerPage extends SiteArticlePage
 		);
 
 		SwatDB::exec($this->app->db, $sql);
+
+		$this->saveEarnedCredits($account, $front_matter);
+	}
+
+	// }}}
+	// {{{ protected function saveEarnedCredits()
+
+	protected function saveEarnedCredits(CMEAccount $account,
+		CMEFrontMatter $front_matter)
+	{
+		$wrapper = SwatDBClassMap::get('CMEAccountEarnedCMECreditWrapper');
+		$class_name = SwatDBClassMap::get('CMEAccountEarnedCMECredit');
+		$earned_credits = new $wrapper();
+		$earned_date = new SwatDate();
+		$earned_date->toUTC();
+		foreach ($front_matter->credits as $credit) {
+			if ($credit->isEarned($account)) {
+				$earned_credit = new $class_name();
+				$earned_credit->account = $account->id;
+				$earned_credit->credit = $credit->id;
+				$earned_credit->earned_date = $now;
+				$earned_credits->add($earned_credit);
+			}
+		}
+		$earned_credits->setDatabase($this->app->db);
+		$earned_credits->save();
 	}
 
 	// }}}
