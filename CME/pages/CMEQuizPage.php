@@ -677,12 +677,6 @@ abstract class CMEQuizPage extends SiteDBEditPage
 				$this->credit->front_matter->provider->title
 			)
 		);
-
-		$this->layout->data->html_title = sprintf(
-			CME::_('%s Quiz - %s'),
-			$this->credit->front_matter->provider->title,
-			$this->app->getHtmlTitle()
-		);
 	}
 
 	// }}}

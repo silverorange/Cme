@@ -358,12 +358,6 @@ abstract class CMEEvaluationPage extends SiteDBEditPage
 			CME::_('%s Evaluation'),
 			SwatString::minimizeEntities($this->front_matter->provider->title)
 		);
-
-		$this->layout->data->html_title = sprintf(
-			CME::_('%s Evaluation - %s'),
-			$this->front_matter->provider->title,
-			$this->app->getHtmlTitle()
-		);
 	}
 
 	// }}}

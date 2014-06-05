@@ -188,10 +188,6 @@ abstract class CMECertificatePage extends SiteUiPage
 	{
 		parent::buildTitle();
 		$this->layout->data->title = CME::_('Print CME Certificates');
-		$this->layout->data->html_title = sprintf(
-			CME::_('Print CME Certificates - %s'),
-			$this->app->getHtmlTitle()
-		);
 	}
 
 	// }}}
