@@ -386,7 +386,8 @@ abstract class CMEQuizPage extends SiteDBEditPage
 		// response can be null when refreshing the quiz page immediately after
 		// resetting a quiz, or resetting it in another window, and attempting
 		// to reset a second time.
-		if (!$this->credit->resettable || $this->response === null) {
+		if (!$this->credit->resettable ||
+			!$this->response instanceof InquisitionResponse) {
 			return;
 		}
 
