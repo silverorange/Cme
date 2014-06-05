@@ -17,7 +17,7 @@
 				</widget>
 			</widget>
 			<widget class="SwatFormField" id="hours_field">
-				<property name="title" translatable="yes">AMA PRA Category 1 Credit(s)™</property>
+				<property name="title" translatable="yes">Credit Hours</property>
 				<widget class="SwatFloatEntry" id="hours">
 					<property name="required" type="boolean">true</property>
 				</widget>

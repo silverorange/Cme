@@ -111,9 +111,12 @@ abstract class CMECertificatePage extends SiteUiPage
 		$hours_span->class = 'hours';
 		$hours_span->setContent(
 			sprintf(
-				CME::_('%s <em>AMA PRA Category 1 Credit(s)</em>™ from %s'),
+				CME::_('%s <em>%s</em> from %s'),
 				SwatString::minimizeEntities(
 					$locale->formatNumber($credit->hours)
+				),
+				SwatString::minimizeEntities(
+					$credit->front_matter->provider->credit_title
 				),
 				SwatString::minimizeEntities(
 					$credit->front_matter->provider->title

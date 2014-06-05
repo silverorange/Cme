@@ -265,6 +265,8 @@ abstract class CMECreditEdit extends InquisitionInquisitionEdit
 	{
 		parent::buildInternal();
 		$this->buildEmailHelp();
+		$this->ui->getWidget('hours_field')->title =
+			$this->credit->front_matter->provider->credit_title;
 	}
 
 	// }}}

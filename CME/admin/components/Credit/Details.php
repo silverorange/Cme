@@ -51,6 +51,9 @@ abstract class CMECreditDetails extends InquisitionInquisitionDetails
 		$local_ui = new SwatUI();
 		$local_ui->loadFromXML($this->getCreditDetailsViewXml());
 
+		$local_ui->getWidget('details_view')->getField('hour')->title =
+			$this->credit->front_matter->provider->credit_title;
+
 		$view = $this->ui->getWidget('details_view');
 		foreach ($local_ui->getWidget('details_view')->getFields() as $field) {
 			$view->appendField($field);
