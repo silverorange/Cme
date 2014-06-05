@@ -29,7 +29,7 @@ class CMEQuiz extends InquisitionInquisition
 		$wrapper  = SwatDBClassMap::get('InquisitionResponseWrapper');
 		$response = SwatDB::query($this->db, $sql, $wrapper)->getFirst();
 
-		if ($response !== null) {
+		if ($response instanceof InquisitionResponse) {
 			$response->inquisition = $this;
 		}
 
