@@ -136,15 +136,11 @@ abstract class CMEReportUpdater extends SiteCommandLineApplication
 	{
 		$oldest_date_string = SwatDB::queryOne(
 			$this->db,
-			sprintf(
-				'select min(earned_date) from AccountEarnedCMECredit
-					inner join CMECredit
-						on AccountEarnedCMECredit.credit = CMECredit.id
-					inner join CMEFrontMatter
-						on CMECredit.front_matter = CMEFrontMatter.id
-				where where CMEFrontMatter.enabled = %s',
-				$this->db->quote(true, 'boolean')
-			)
+			'select min(earned_date) from AccountEarnedCMECredit
+				inner join CMECredit
+					on AccountEarnedCMECredit.credit = CMECredit.id
+				inner join CMEFrontMatter
+					on CMECredit.front_matter = CMEFrontMatter.id'
 		);
 
 		$this->start_date = new SwatDate($oldest_date_string);
@@ -267,12 +263,10 @@ abstract class CMEReportUpdater extends SiteCommandLineApplication
 				inner join CMEFrontMatter
 					on CMECredit.front_matter = CMEFrontMatter.id
 			where CMEFrontMatter.provider = %s
-				and CMEFrontMatter.enabled = %s
 				and Account.delete_date is null
 				and convertTZ(complete_date, %s) >= %s
 				and convertTZ(complete_date, %s) < %s',
 			$this->db->quote($provider->id, 'integer'),
-			$this->db->quote(true, 'boolean'),
 			$this->db->quote($this->config->date->time_zone, 'text'),
 			$this->db->quote($start_date->getDate(), 'date'),
 			$this->db->quote($this->config->date->time_zone, 'text'),
