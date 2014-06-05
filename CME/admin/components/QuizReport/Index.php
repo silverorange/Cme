@@ -53,7 +53,7 @@ class CMEQuizReportIndex extends AdminIndex
 		parent::initInternal();
 		$this->ui->loadFromXML($this->getUiXml());
 		$this->initStartDate();
-		$this->initCreditTypes();
+		$this->initProviders();
 		$this->initReportsByQuarter();
 		$this->initTableViewColumns();
 	}
@@ -75,9 +75,9 @@ class CMEQuizReportIndex extends AdminIndex
 	}
 
 	// }}}
-	// {{{ protected function initCreditTypes()
+	// {{{ protected function initProviders()
 
-	protected function initCreditTypes()
+	protected function initProviders()
 	{
 		$this->providers = SwatDB::query(
 			$this->app->db,

@@ -55,7 +55,7 @@ class CMEEvaluationReportIndex extends AdminIndex
 		$this->ui->loadFromXML($this->getUiXml());
 
 		$this->initStartDate();
-		$this->initCreditTypes();
+		$this->initProviders();
 		$this->initReportsByQuarter();
 		$this->initTableViewColumns();
 	}
@@ -76,9 +76,9 @@ class CMEEvaluationReportIndex extends AdminIndex
 	}
 
 	// }}}
-	// {{{ protected function initCreditTypes()
+	// {{{ protected function initProviders()
 
-	protected function initCreditTypes()
+	protected function initProviders()
 	{
 		$this->providers = SwatDB::query(
 			$this->app->db,
