@@ -271,7 +271,10 @@ abstract class CMEAccount extends StoreAccount
 
 		foreach ($this->cme_credits as $credit) {
 			$front_matter = $credit->front_matter;
-			if ($wrapper->getByIndex($front_matter->id) === null) {
+
+			// remove duplicate front matters from recordset
+			$wrapper_front_matter = $wrapper->getByIndex($front_matter->id);
+			if (!$wrapper_front_matter instanceof CMEFrontMatter) {
 				$wrapper->add($front_matter);
 			}
 		}
