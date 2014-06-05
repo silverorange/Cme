@@ -70,7 +70,7 @@ abstract class CMEFrontMatterEdit extends AdminObjectEdit
 	// {{{ protected function getDefaultProviderShortname()
 
 	/**
-	 * @return string the defualt provider shortname. If an empty string is
+	 * @return string the default provider shortname. If an empty string is
 	 *                returned, the first provider in the list is selected
 	 *                by default.
 	 */
