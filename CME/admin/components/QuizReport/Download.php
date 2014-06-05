@@ -63,7 +63,7 @@ class CMEQuizReportDownload extends AdminPage
 		$provider = new CMEProvider();
 		$provider->setDatabase($this->app->db);
 		if (!$provider->loadByShortname($type)) {
-			throw new AdminNotFoundException('Invalid credit type');
+			throw new AdminNotFoundException('Invalid CME provider.');
 		}
 
 		$sql = sprintf(

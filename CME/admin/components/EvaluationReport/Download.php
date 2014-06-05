@@ -61,7 +61,7 @@ class CMEEvaluationReportDownload extends AdminPage
 		$provider = new $class_name();
 		$provider->setDatabase($this->app->db);
 		if (!$provider->loadByShortname($type)) {
-			throw new AdminNotFoundException('Invalid credit type');
+			throw new AdminNotFoundException('Invalid CME provider.');
 		}
 
 		$sql = sprintf(
