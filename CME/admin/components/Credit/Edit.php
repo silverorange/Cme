@@ -155,15 +155,12 @@ abstract class CMECreditEdit extends InquisitionInquisitionEdit
 	{
 		parent::validate();
 
-		$questions_file = $this->ui->getWidget(
-			'questions_file'
-		)->getTempFileName();
-
 		// Import questions file in validate step so we can show error
 		// messages. The importer only modifies the inquisition object and does
 		// not save it to the database.
-		if ($questions_file !== null) {
-			$this->importInquisition($questions_file);
+		$questions_file = $this->ui->getWidget('questions_file');
+		if ($questions_file->isUploaded()) {
+			$this->importInquisition($questions_file->getTempFileName());
 		}
 	}
 
