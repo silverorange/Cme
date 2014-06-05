@@ -11,7 +11,7 @@ CME:
   Provides:
     # Style-Sheets
     packages/cme/styles/cme-front-matter-display.css:
-    admin/packages/cme/styles/cme-credit-edit.css:
+    admin/packages/cme/admin/styles/cme-credit-edit.css:
 
     # JavaScript
     packages/cme/javascript/cme-evaluation-page.js:
