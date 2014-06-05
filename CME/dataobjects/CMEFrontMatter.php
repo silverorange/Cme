@@ -44,27 +44,6 @@ abstract class CMEFrontMatter extends SwatDBDataObject
 	public $enabled;
 
 	// }}}
-	// {{{ public function getActionLink()
-
-	public function getActionLink(CMEAccount $account, DateTimeZone $time_zone)
-	{
-		$link = null;
-
-		// TODO
-		if ($this->quiz instanceof CMEQuiz &&
-			!$account->isQuizPassed($this)) {
-			$link = $this->getQuizLink();
-		} elseif ($this->evaluation instanceof CMEEvaluation &&
-			!$account->isEvaluationComplete($this)) {
-			$link = $this->getEvaluationLink();
-		} else {
-			$link = $this->getCMEDisclosureLink();
-		}
-
-		return $link;
-	}
-
-	// }}}
 	// {{{ abstract protected function getAttestationLink()
 
 	abstract protected function getAttestationLink();
