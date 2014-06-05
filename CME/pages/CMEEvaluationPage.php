@@ -320,26 +320,18 @@ abstract class CMEEvaluationPage extends SiteDBEditPage
 			)
 		);
 
-		// TODO: behaviour depends on design
-		/*
-		if (!$this->credit->quiz instanceof InquisitionInquisition ||
-			$this->app->session->account->isQuizPassed($this->credit)) {
-			$message->secondary_content = sprintf(
-				CME::_('You can now %sprint your certificate%s.'),
-				sprintf(
-					'<a href="%s">',
-					SwatString::minimizeEntities(
-						$this->getCertificateURI()
-					)
-				),
-				'</a>'
-			);
-		}
-		*/
-
+		$message->secondary_content = $this->getMessageSecondaryContent($form);
 		$message->content_type = 'text/xml';
 
 		return $message;
+	}
+
+	// }}}
+	// {{{ protected function getMessageSecondaryContent()
+
+	protected function getMessageSecondaryContent(SwatForm $form)
+	{
+		return null;
 	}
 
 	// }}}
