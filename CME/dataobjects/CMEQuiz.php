@@ -13,7 +13,8 @@ class CMEQuiz extends InquisitionInquisition
 	// {{{ public function getResponseByAccount()
 
 	/**
-	 * Adds resettable check to account quiz response fetching
+	 * Excludes quiz responses that were reset. We save the old quiz response
+	 * but don't use it for display or for credit calculations.
 	 */
 	public function getResponseByAccount(CMEAccount $account)
 	{
