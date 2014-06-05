@@ -78,12 +78,10 @@ abstract class CMEEvaluationReportGenerator
 					and CMEFrontMatter.evaluation =
 						InquisitionResponse.inquisition
 			where CMEFrontMatter.provider = %s
-				and CMEFrontMatter.enabled = %s
 				and convertTZ(earned_date, %s) >= %s
 				and convertTZ(earned_date, %s) < %s
 				and Account.delete_date is null',
 			$this->app->db->quote($this->provider->id, 'integer'),
-			$this->app->db->quote(true, 'boolean'),
 			$this->app->db->quote($this->app->config->date->time_zone, 'text'),
 			$this->app->db->quote($this->start_date->getDate(), 'date'),
 			$this->app->db->quote($this->app->config->date->time_zone, 'text'),
