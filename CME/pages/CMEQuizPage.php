@@ -923,7 +923,7 @@ abstract class CMEQuizPage extends SiteDBEditPage
 			'packages/cme/javascript/cme-quiz-page.js'
 		);
 
-		if ($this->response_message_display !== null) {
+		if ($this->response_message_display instanceof SwatUIObject) {
 			$this->layout->addHtmlHeadEntrySet(
 				$this->response_message_display->getHtmlHeadEntrySet());
 		}
