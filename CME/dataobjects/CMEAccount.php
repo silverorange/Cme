@@ -169,7 +169,8 @@ abstract class CMEAccount extends StoreAccount
 		require_once 'CME/dataobjects/CMEProviderWrapper.php';
 
 		$sql = sprintf(
-			'select AccountEarnedCMECredit.* from AccountEarnedCMECredit
+			'select AccountEarnedCMECredit.*
+			from AccountEarnedCMECredit
 				inner join CMECredit
 					on AccountEarnedCMECredit.credit = CMECredit.id
 				inner join CMEFrontMatter
