@@ -856,7 +856,9 @@ abstract class CMEQuizPage extends SiteDBEditPage
 			$option = $question->correct_option;
 
 			// your option
-			if ($option !== null && $response_option_id !== null) {
+			if ($option instanceof InquisitionQuestionOption &&
+				$response_option_id !== null) {
+
 				$dt_tag = new SwatHtmlTag('dt');
 				$dt_tag->setContent(CME::_('Your Answer:'));
 				$dt_tag->display();
@@ -875,7 +877,9 @@ abstract class CMEQuizPage extends SiteDBEditPage
 			}
 
 			// correct option (shown if your option is wrong)
-			if ($option !== null && $option->id !== $response_option_id) {
+			if ($option instanceof InquisitionQuestionOption &&
+				$option->id !== $response_option_id) {
+
 				$dt_tag = new SwatHtmlTag('dt');
 				$dt_tag->setContent(CME::_('Correct Answer:'));
 				$dt_tag->display();
