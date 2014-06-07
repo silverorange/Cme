@@ -94,7 +94,7 @@ abstract class CMECreditEdit extends InquisitionInquisitionEdit
 		$this->credit = new $class_name();
 		$this->credit->setDatabase($this->app->db);
 
-		if ($this->id !== null) {
+		if (!$this->isNew()) {
 			if (!$this->credit->load($this->id)) {
 				throw new AdminNotFoundException(
 					sprintf(
@@ -111,7 +111,7 @@ abstract class CMECreditEdit extends InquisitionInquisitionEdit
 
 	protected function initFrontMatter()
 	{
-		if ($this->credit->id === null) {
+		if ($this->isNew()) {
 			$front_matter_id = SiteApplication::initVar('front-matter');
 			$class_name = SwatDBClassMap::get('CMEFrontMatter');
 			$this->front_matter = new $class_name();
@@ -223,7 +223,7 @@ abstract class CMECreditEdit extends InquisitionInquisitionEdit
 		$this->credit->front_matter = $this->front_matter->id;
 
 		// if hours updated, clear all cached hours for accounts
-		if ($this->id !== null &&
+		if (!$this->isNew() &&
 			$this->credit->hours != $values['hours']) {
 			$this->app->memcache->flushNs('cme-hours');
 		}
@@ -278,7 +278,7 @@ abstract class CMECreditEdit extends InquisitionInquisitionEdit
 
 		$this->navbar->popEntry();
 
-		if ($this->credit->id === null) {
+		if ($this->isNew()) {
 			$this->navbar->createEntry(CME::_('New CME Credit'));
 		} else {
 			$this->navbar->createEntry(CME::_('Edit CME Credit'));
@@ -292,7 +292,7 @@ abstract class CMECreditEdit extends InquisitionInquisitionEdit
 	{
 		parent::buildForm();
 
-		if ($this->credit->id === null) {
+		if ($this->isNew()) {
 			$this->ui->getWidget('edit_form')->addHiddenField(
 				'front-matter',
 				$this->front_matter->id
