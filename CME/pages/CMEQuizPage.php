@@ -209,7 +209,7 @@ abstract class CMEQuizPage extends SiteDBEditPage
 			$this->app->session->account
 		);
 
-		if ($this->response !== null) {
+		if ($this->response instanceof InquisitionResponse) {
 			// efficiently load question options for response values
 			$this->response->values->loadAllSubDataObjects(
 				'question_option',
@@ -290,7 +290,7 @@ abstract class CMEQuizPage extends SiteDBEditPage
 		$value = null;
 
 		// get response value if it exists
-		if ($this->response !== null) {
+		if ($this->response instanceof InquisitionResponse) {
 			$binding_id = $question_binding->id;
 
 			if (isset($this->response_values_by_binding_id[$binding_id])) {
@@ -306,7 +306,7 @@ abstract class CMEQuizPage extends SiteDBEditPage
 
 	protected function isComplete()
 	{
-		return ($this->response !== null &&
+		return ($this->response instanceof InquisitionResponse &&
 			$this->response->complete_date instanceof SwatDate);
 	}
 
@@ -332,7 +332,7 @@ abstract class CMEQuizPage extends SiteDBEditPage
 
 	protected function saveQuizData(SwatForm $form)
 	{
-		if ($this->response === null) {
+		if (!$this->response instanceof InquisitionResponse) {
 			$class_name = SwatDBClassMap::get('InquisitionResponse');
 			$this->response = new $class_name();
 
