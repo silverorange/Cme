@@ -333,12 +333,17 @@ abstract class CMEEvaluationPage extends SiteDBEditPage
 
 	protected function getMessage(SwatForm $form)
 	{
+		$formatted_title = sprintf(
+			'<em>%s</em>',
+			SwatString::minimizeEntities($this->getTitle())
+		);
+
 		$message = new SwatMessage(
 			sprintf(
 				CME::_(
-					'Thank you for completing the <em>%s</em> %s evaluation.'
+					'Thank you for completing the %s %s evaluation.'
 				),
-				SwatString::minimizeEntities($this->getTitle()),
+				$formatted_title,
 				SwatString::minimizeEntities(
 					$this->front_matter->provider->title
 				)

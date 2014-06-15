@@ -107,17 +107,22 @@ abstract class CMECertificatePage extends SiteUiPage
 		$title_span->setContent($this->getCreditTitle($credit));
 		$title_span->display();
 
+		$formatted_provider_credit_title = sprintf(
+			'<em>%s</em>',
+			SwatString::minimizeEntities(
+				$credit->front_matter->provider->credit_title
+			)
+		);
+
 		$hours_span = new SwatHtmlTag('span');
 		$hours_span->class = 'hours';
 		$hours_span->setContent(
 			sprintf(
-				CME::_('%s <em>%s</em> from %s'),
+				CME::_('%s %s from %s'),
 				SwatString::minimizeEntities(
 					$locale->formatNumber($credit->hours)
 				),
-				SwatString::minimizeEntities(
-					$credit->front_matter->provider->credit_title
-				),
+				$formatted_provider_credit_title,
 				SwatString::minimizeEntities(
 					$credit->front_matter->provider->title
 				)
