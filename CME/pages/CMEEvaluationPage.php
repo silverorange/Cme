@@ -97,7 +97,8 @@ abstract class CMEEvaluationPage extends SiteDBEditPage
 		}
 
 		$count = 0;
-		foreach ($this->evaluation->question_bindings as $question_binding) {
+		$question_bindings = $this->evaluation->visible_question_bindings;
+		foreach ($question_bindings as $question_binding) {
 			$this->addQuestionToUi($question_binding, ++$count);
 		}
 	}
@@ -148,7 +149,7 @@ abstract class CMEEvaluationPage extends SiteDBEditPage
 			}
 
 			// efficiently load questions
-			$bindings = $this->evaluation->question_bindings;
+			$bindings = $this->evaluation->visible_question_bindings;
 			$questions = $bindings->loadAllSubDataObjects(
 				'question',
 				$this->app->db,
@@ -279,7 +280,8 @@ abstract class CMEEvaluationPage extends SiteDBEditPage
 		$this->inquisition_response->complete_date->toUTC();
 		$this->inquisition_response->values = new $wrapper();
 
-		foreach ($this->evaluation->question_bindings as $question_binding) {
+		$question_bindings = $this->evaluation->visible_question_bindings;
+		foreach ($question_bindings as $question_binding) {
 			$view = $this->question_views[$question_binding->id];
 
 			$response_value = $view->getResponseValue();
