@@ -449,10 +449,17 @@ STYLESHEET;
 		ksort($response_values_by_bodytext, SORT_STRING);
 
 		$index = 1;
-		foreach ($response_values_by_bodytext as $bodytext => $response_values) {
+		foreach ($response_values_by_bodytext as
+			$bodytext => $response_values) {
 			$question = $questions[$bodytext];
 
-			if ($question->question_type !== 100) {
+			// Only show responses for questions that are enabled, or have
+			// response values in that month. If a question was turned off, we
+			// still want old responses to show up, but there is no point in
+			// showing a disabled question once it no longer has responses in a
+			// quarter.
+			if ($question->enabled === true ||
+				$response_values > 0) {
 				$this->displayQuestion($question, $index++, $response_values);
 			}
 		}
