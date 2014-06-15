@@ -180,8 +180,7 @@ abstract class CMEEvaluationPage extends SiteDBEditPage
 
 	protected function initResponse()
 	{
-		$this->inquisition_response =
-			$this->evaluation->getResponseByAccount(
+		$this->inquisition_response = $this->evaluation->getResponseByAccount(
 			$this->app->session->account
 		);
 	}
@@ -233,7 +232,7 @@ abstract class CMEEvaluationPage extends SiteDBEditPage
 		$value = null;
 
 		// get response value if it exists
-		if ($this->inquisition_response !== null) {
+		if ($this->inquisition_response instanceof InquisitionResponse) {
 			$binding_id = $question_binding->id;
 
 			if (isset($this->response_values_by_binding_id[$binding_id])) {
@@ -251,7 +250,10 @@ abstract class CMEEvaluationPage extends SiteDBEditPage
 	{
 		$response = $this->inquisition_response;
 
-		return ($response !== null && $response->complete_date !== null);
+		return (
+			$response instanceof InquisitionResponse &&
+			$response->complete_date instanceof SwatDate
+		);
 	}
 
 	// }}}
