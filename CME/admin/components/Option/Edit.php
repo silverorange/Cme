@@ -44,10 +44,17 @@ abstract class CMEOptionEdit extends InquisitionOptionEdit
 	{
 		parent::buildNavBar();
 
-		// put edit entry at the end
+		// put add/edit title entry at the end
 		$title = $this->navbar->popEntry();
 
+		// Add dummy entry. The CMEOptionHelper will remove this. All other
+		// option admin components have a details component in the nav bar.
+		$this->navbar->createEntry('');
+
 		$this->helper->buildNavBar($this->navbar);
+
+		// remove dummy entry.
+		$this->navbar->popEntry();
 
 		$this->navbar->addEntry($title);
 	}
