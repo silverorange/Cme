@@ -7,7 +7,7 @@ require_once 'CME/dataobjects/CMEFrontMatterWrapper.php';
  * @package   CME
  * @copyright 2014 silverorange
  */
-abstract class CMEEvaluationDetails extends InquisitionInquisitionDetails
+class CMEEvaluationDetails extends InquisitionInquisitionDetails
 {
 	// {{{ protected properties
 
@@ -17,7 +17,7 @@ abstract class CMEEvaluationDetails extends InquisitionInquisitionDetails
 	protected $front_matter;
 
 	// }}}
-	// {{{ abstract protected function getTitle()
+	// {{{ protected function getTitle()
 
 	protected function getTitle()
 	{
