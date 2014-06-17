@@ -11,7 +11,7 @@ require_once 'CME/dataobjects/CMECreditWrapper.php';
  * @copyright 2013-2014 silverorange
  * @license   http://www.opensource.org/licenses/mit-license.html MIT License
  */
-abstract class CMECreditDelete extends AdminDBDelete
+class CMECreditDelete extends AdminDBDelete
 {
 	// process phase
 	// {{{ protected function processDBData()
@@ -91,9 +91,17 @@ abstract class CMECreditDelete extends AdminDBDelete
 	}
 
 	// }}}
-	// {{{ abstract protected function getCreditTitle()
+	// {{{ protected function getCreditTitle()
 
-	abstract protected function getCreditTitle(CMECredit $credit);
+	protected function getCreditTitle(CMECredit $credit)
+	{
+		return sprintf(
+			CME::_('%s Credit'),
+			$credit->front_matter->provider->title
+		);
+	}
+
+	// }}}
 
 	// }}}
 	// {{{ protected function buildNavBar()

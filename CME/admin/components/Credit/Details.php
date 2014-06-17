@@ -6,7 +6,7 @@ require_once 'Inquisition/admin/components/Inquisition/Details.php';
  * @package   CME
  * @copyright 2014 silverorange
  */
-abstract class CMECreditDetails extends InquisitionInquisitionDetails
+class CMECreditDetails extends InquisitionInquisitionDetails
 {
 	// {{{ protected properties
 
@@ -24,9 +24,15 @@ abstract class CMECreditDetails extends InquisitionInquisitionDetails
 	}
 
 	// }}}
-	// {{{ abstract protected function getTitle()
+	// {{{ protected function getTitle()
 
-	abstract protected function getTitle();
+	protected function getTitle()
+	{
+		return sprintf(
+			CME::_('%s Credit'),
+			$this->credit->front_matter->provider->title
+		);
+	}
 
 	// }}}
 
