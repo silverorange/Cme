@@ -217,7 +217,7 @@ abstract class CMEQuestionHelper
 	abstract protected function getCreditNavBarTitle();
 
 	// }}}
-	// {{{ abstract protected function getEvaluationNavBarTitle()
+	// {{{ protected function getEvaluationNavBarTitle()
 
 	protected function getEvaluationNavBarTitle()
 	{
