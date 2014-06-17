@@ -10,7 +10,7 @@ require_once 'CME/admin/components/Option/include/CMEOptionHelper.php';
  * @copyright 2012-2014 silverorange
  * @license   http://www.opensource.org/licenses/mit-license.html MIT License
  */
-abstract class CMEOptionImageDelete extends InquisitionOptionImageDelete
+class CMEOptionImageDelete extends InquisitionOptionImageDelete
 {
 	// {{{ protected properties
 
@@ -33,9 +33,21 @@ abstract class CMEOptionImageDelete extends InquisitionOptionImageDelete
 	}
 
 	// }}}
-	// {{{ abstract protected function getOptionHelper()
+	// {{{ protected function getOptionHelper()
 
-	abstract protected function getOptionHelper();
+	protected function getOptionHelper()
+	{
+		$question_helper = new CMEQuestionHelper(
+			$this->app,
+			$this->inquisition
+		);
+
+		return new CMEOptionHelper(
+			$this->app,
+			$question_helper,
+			$this->question
+		);
+	}
 
 	// }}}
 

@@ -10,7 +10,7 @@ require_once 'CME/admin/components/Question/include/CMEQuestionHelper.php';
  * @copyright 2011-2014 silverorange
  * @license   http://www.opensource.org/licenses/mit-license.html MIT License
  */
-abstract class CMEQuestionImageOrder extends InquisitionQuestionImageOrder
+class CMEQuestionImageOrder extends InquisitionQuestionImageOrder
 {
 	// {{{ protected properties
 
@@ -55,9 +55,12 @@ abstract class CMEQuestionImageOrder extends InquisitionQuestionImageOrder
 	}
 
 	// }}}
-	// {{{ abstract protected function getQuestionHelper()
+	// {{{ protected function getQuestionHelper()
 
-	abstract protected function getQuestionHelper();
+	protected function getQuestionHelper()
+	{
+		return new CMEQuestionHelper($this->app, $this->inquisition);
+	}
 
 	// }}}
 

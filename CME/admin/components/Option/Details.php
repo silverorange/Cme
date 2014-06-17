@@ -8,7 +8,7 @@ require_once 'CME/admin/components/Option/include/CMEOptionHelper.php';
  * @copyright 2014 silverorange
  * @license   http://www.opensource.org/licenses/mit-license.html MIT License
  */
-abstract class CMEOptionDetails extends InquisitionOptionDetails
+class CMEOptionDetails extends InquisitionOptionDetails
 {
 	// {{{ protected properties
 
@@ -31,9 +31,21 @@ abstract class CMEOptionDetails extends InquisitionOptionDetails
 	}
 
 	// }}}
-	// {{{ abstract protected function getOptionHelper()
+	// {{{ protected function getOptionHelper()
 
-	abstract protected function getOptionHelper();
+	protected function getOptionHelper()
+	{
+		$question_helper = new CMEQuestionHelper(
+			$this->app,
+			$this->inquisition
+		);
+
+		return new CMEOptionHelper(
+			$this->app,
+			$question_helper,
+			$this->question
+		);
+	}
 
 	// }}}
 

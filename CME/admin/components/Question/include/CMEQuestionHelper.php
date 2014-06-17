@@ -11,7 +11,7 @@ require_once 'CME/dataobjects/CMEFrontMatterWrapper.php';
  * @copyright 2014 silverorange
  * @license   http://www.opensource.org/licenses/mit-license.html MIT License
  */
-abstract class CMEQuestionHelper
+class CMEQuestionHelper
 {
 	// {{{ protected properties
 
@@ -212,9 +212,15 @@ abstract class CMEQuestionHelper
 	}
 
 	// }}}
-	// {{{ abstract protected function getCreditNavBarTitle()
+	// {{{ protected function getCreditNavBarTitle()
 
-	abstract protected function getCreditNavBarTitle();
+	protected function getCreditNavBarTitle()
+	{
+		return sprintf(
+			CME::_('%s Credit'),
+			$this->credit->front_matter->provider->title
+		);
+	}
 
 	// }}}
 	// {{{ protected function getEvaluationNavBarTitle()
