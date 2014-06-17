@@ -73,6 +73,19 @@ abstract class CMEQuestionDetails extends InquisitionQuestionDetails
 	// }}}
 
 	// build phase
+	// {{{ protected function buildInternal()
+
+	protected function buildInternal()
+	{
+		parent::buildInternal();
+
+		// hide hints frame for CME quizzes and evaluations
+		if ($this->helper->isEvaluation() || $this->helper->isQuiz()) {
+			$this->ui->getWidget('hints_frame')->visible = false;
+		}
+	}
+
+	// }}}
 	// {{{ protected function buildNavBar()
 
 	protected function buildNavBar()
