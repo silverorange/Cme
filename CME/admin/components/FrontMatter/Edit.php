@@ -56,11 +56,18 @@ abstract class CMEFrontMatterEdit extends AdminObjectEdit
 
 		// add available providers
 		$provider_widget = $this->ui->getWidget('provider');
-		foreach ($this->getAvailableProviders() as $provider) {
+		$providers = $this->getAvailableProviders();
+		foreach ($providers as $provider) {
 			$provider_widget->addOption(
 				$provider->id,
 				$provider->title
 			);
+		}
+
+		// If there is only one provider, don't show the blank option. One
+		// less click for admin users.
+		if (count($providers) < 2) {
+			$provider_widget->show_blank = false;
 		}
 
 		$this->setDefaultValues();
