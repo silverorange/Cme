@@ -497,6 +497,9 @@ STYLESHEET;
 		$header->display();
 
 		switch ($question->question_type) {
+		case InquisitionQuestion::TYPE_CHECKBOX_LIST:
+			$this->displayCheckboxListQuestion($question, $response_values);
+			break;
 		case InquisitionQuestion::TYPE_RADIO_LIST:
 			$this->displayRadioListQuestion($question, $response_values);
 			break;
@@ -583,6 +586,15 @@ STYLESHEET;
 		}
 
 		echo '</ul>';
+	}
+
+	// }}}
+	// {{{ protected function displayCheckboxListQuestion()
+
+	protected function displayCheckboxListQuestion(
+		InquisitionQuestion $question, array $response_values)
+	{
+		$this->displayRadioEntryQuestion($question, $response_values);
 	}
 
 	// }}}
