@@ -459,7 +459,7 @@ STYLESHEET;
 			// showing a disabled question once it no longer has responses in a
 			// quarter.
 			if ($question->enabled === true ||
-				$response_values > 0) {
+				count($response_values) > 0) {
 				$this->displayQuestion($question, $index++, $response_values);
 			}
 		}
