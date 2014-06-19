@@ -122,7 +122,7 @@ $package->addPackageDepWithChannel(
 	'required',
 	'Inquisition',
 	'pear.silverorange.com',
-	'0.0.21'
+	'0.0.28'
 );
 
 $package->setPhpDep('5.2.1');

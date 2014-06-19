@@ -97,7 +97,8 @@ abstract class CMEEvaluationPage extends SiteDBEditPage
 		}
 
 		$count = 0;
-		foreach ($this->evaluation->question_bindings as $question_binding) {
+		$question_bindings = $this->evaluation->visible_question_bindings;
+		foreach ($question_bindings as $question_binding) {
 			$this->addQuestionToUi($question_binding, ++$count);
 		}
 	}
@@ -148,7 +149,7 @@ abstract class CMEEvaluationPage extends SiteDBEditPage
 			}
 
 			// efficiently load questions
-			$bindings = $this->evaluation->question_bindings;
+			$bindings = $this->evaluation->visible_question_bindings;
 			$questions = $bindings->loadAllSubDataObjects(
 				'question',
 				$this->app->db,
@@ -179,8 +180,7 @@ abstract class CMEEvaluationPage extends SiteDBEditPage
 
 	protected function initResponse()
 	{
-		$this->inquisition_response =
-			$this->evaluation->getResponseByAccount(
+		$this->inquisition_response = $this->evaluation->getResponseByAccount(
 			$this->app->session->account
 		);
 	}
@@ -232,7 +232,7 @@ abstract class CMEEvaluationPage extends SiteDBEditPage
 		$value = null;
 
 		// get response value if it exists
-		if ($this->inquisition_response !== null) {
+		if ($this->inquisition_response instanceof InquisitionResponse) {
 			$binding_id = $question_binding->id;
 
 			if (isset($this->response_values_by_binding_id[$binding_id])) {
@@ -250,7 +250,10 @@ abstract class CMEEvaluationPage extends SiteDBEditPage
 	{
 		$response = $this->inquisition_response;
 
-		return ($response !== null && $response->complete_date !== null);
+		return (
+			$response instanceof InquisitionResponse &&
+			$response->complete_date instanceof SwatDate
+		);
 	}
 
 	// }}}
@@ -279,7 +282,8 @@ abstract class CMEEvaluationPage extends SiteDBEditPage
 		$this->inquisition_response->complete_date->toUTC();
 		$this->inquisition_response->values = new $wrapper();
 
-		foreach ($this->evaluation->question_bindings as $question_binding) {
+		$question_bindings = $this->evaluation->visible_question_bindings;
+		foreach ($question_bindings as $question_binding) {
 			$view = $this->question_views[$question_binding->id];
 
 			$response_value = $view->getResponseValue();
