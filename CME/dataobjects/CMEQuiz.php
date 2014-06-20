@@ -10,41 +10,12 @@ require_once 'CME/dataobjects/CMEAccount.php';
  */
 class CMEQuiz extends InquisitionInquisition
 {
-	// {{{ public properties
-
-	/**
-	 * @var string
-	 */
-	public $description;
-
-	/**
-	 * @var integer
-	 */
-	public $passing_grade;
-
-	/**
-	 * @var string
-	 */
-	public $email_content_pass;
-
-	/**
-	 * @var string
-	 */
-	public $email_content_fail;
-
-	/**
-	 * @var boolean
-	 */
-	public $enabled;
-
-	/**
-	 * @var boolean
-	 */
-	public $resettable;
-
-	// }}}
 	// {{{ public function getResponseByAccount()
 
+	/**
+	 * Excludes quiz responses that were reset. We save the old quiz response
+	 * but don't use it for display or for credit calculations.
+	 */
 	public function getResponseByAccount(CMEAccount $account)
 	{
 		$this->checkDB();
@@ -59,7 +30,7 @@ class CMEQuiz extends InquisitionInquisition
 		$wrapper  = SwatDBClassMap::get('InquisitionResponseWrapper');
 		$response = SwatDB::query($this->db, $sql, $wrapper)->getFirst();
 
-		if ($response !== null) {
+		if ($response instanceof InquisitionResponse) {
 			$response->inquisition = $this;
 		}
 

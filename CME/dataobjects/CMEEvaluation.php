@@ -11,34 +11,6 @@ require_once 'Inquisition/dataobjects/InquisitionInquisition.php';
  */
 class CMEEvaluation extends InquisitionInquisition
 {
-	// {{{ public properties
-
-	/**
-	 * @var string
-	 */
-	public $description;
-
-	/**
-	 * @var integer
-	 */
-	public $passing_grade;
-
-	/**
-	 * @var string
-	 */
-	public $email_content_pass;
-
-	/**
-	 * @var string
-	 */
-	public $email_content_fail;
-
-	/**
-	 * @var string
-	 */
-	public $enabled;
-
-	// }}}
 }
 
 ?>

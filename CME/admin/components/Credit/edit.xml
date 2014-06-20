@@ -1,0 +1,57 @@
+<?xml version="1.0" standalone="no"?>
+<!DOCTYPE swatml SYSTEM "http://swat.silverorange.com/swatml1.dtd">
+<swatml>
+	<widget class="SwatMessageDisplay" id="message_display" />
+	<widget class="SwatFrame" id="edit_frame">
+		<property name="title" translatable="yes">CME Credit</property>
+		<widget class="SwatForm" id="edit_form">
+			<widget class="SwatFormField" id="title_field">
+				<property name="visible" type="boolean">false</property>
+				<widget class="SwatEntry" id="title" />
+			</widget>
+			<widget class="SwatFormField" id="questions_field">
+				<property name="title" translatable="yes">Questions File</property>
+				<widget class="SwatFileEntry" id="questions_file">
+					<property name="accept_mime_types[]">text/csv</property>
+					<property name="accept_mime_types[]">text/plain</property>
+				</widget>
+			</widget>
+			<widget class="SwatFormField" id="hours_field">
+				<property name="title" translatable="yes">Credit Hours</property>
+				<widget class="SwatFloatEntry" id="hours">
+					<property name="required" type="boolean">true</property>
+				</widget>
+			</widget>
+			<widget class="SwatFormField">
+				<property name="title" translatable="yes">Passing Grade</property>
+				<widget class="SwatPercentageEntry" id="passing_grade">
+					<property name="required" type="boolean">true</property>
+					<property name="minimum_value" type="float">0.0</property>
+					<property name="maximum_value" type="float">1.0</property>
+				</widget>
+			</widget>
+			<widget class="SwatFormField">
+				<property name="title" translatable="yes">CME quiz can be retaken by users</property>
+				<widget class="SwatCheckbox" id="resettable">
+					<property name="value" type="boolean">true</property>
+				</widget>
+			</widget>
+			<widget class="AdminNote" id="email_help_text" />
+			<widget class="SwatFormField">
+				<property name="title" translatable="yes">Pass Email Content</property>
+				<widget class="SwatTextarea" id="email_content_pass">
+					<property name="required" type="boolean">true</property>
+				</widget>
+			</widget>
+			<widget class="SwatFormField">
+				<property name="title" translatable="yes">Fail Email Content</property>
+				<widget class="SwatTextarea" id="email_content_fail">
+					<property name="required" type="boolean">true</property>
+				</widget>
+			</widget>
+			<widget class="SwatFooterFormField">
+				<widget class="SwatButton" id="submit_button" />
+			</widget>
+		</widget>
+	</widget>
+</swatml>

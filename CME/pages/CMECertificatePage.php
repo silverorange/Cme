@@ -4,7 +4,7 @@ require_once 'Site/pages/SiteUiPage.php';
 require_once 'Swat/SwatDetailsStore.php';
 require_once 'CME/CME.php';
 require_once 'CME/dataobjects/CMECreditWrapper.php';
-require_once 'CME/dataobjects/CMECreditTypeWrapper.php';
+require_once 'CME/dataobjects/CMEProviderWrapper.php';
 
 /**
  * Page for generating and viewing certificates
@@ -69,17 +69,7 @@ abstract class CMECertificatePage extends SiteUiPage
 	protected function initCredits()
 	{
 		$account = $this->app->session->account;
-
-		$wrapper = SwatDBClassMap::get('CMECreditWrapper');
-		$this->credits = new $wrapper();
-
-		foreach ($account->cme_credits as $credit) {
-			if ($account->isCertificateEarned($credit)) {
-				$this->credits->add($credit);
-			}
-		}
-
-		$this->credits = $earned_credits;
+		return $account->earned_cme_credits;
 	}
 
 	// }}}
@@ -117,16 +107,24 @@ abstract class CMECertificatePage extends SiteUiPage
 		$title_span->setContent($this->getCreditTitle($credit));
 		$title_span->display();
 
+		$formatted_provider_credit_title = sprintf(
+			'<em>%s</em>',
+			SwatString::minimizeEntities(
+				$credit->front_matter->provider->credit_title
+			)
+		);
+
 		$hours_span = new SwatHtmlTag('span');
 		$hours_span->class = 'hours';
 		$hours_span->setContent(
 			sprintf(
-				CME::_('%s <em>AMA PRA Category 1 Credit(s)</em>™ from %s'),
+				CME::_('%s %s from %s'),
 				SwatString::minimizeEntities(
 					$locale->formatNumber($credit->hours)
 				),
+				$formatted_provider_credit_title,
 				SwatString::minimizeEntities(
-					$credit->credit_type->title
+					$credit->front_matter->provider->title
 				)
 			),
 			'text/xml'
@@ -198,10 +196,6 @@ abstract class CMECertificatePage extends SiteUiPage
 	{
 		parent::buildTitle();
 		$this->layout->data->title = CME::_('Print CME Certificates');
-		$this->layout->data->html_title = sprintf(
-			CME::_('Print CME Certificates - %s'),
-			$this->app->getHtmlTitle()
-		);
 	}
 
 	// }}}
@@ -217,7 +211,9 @@ abstract class CMECertificatePage extends SiteUiPage
 		return <<<JAVASCRIPT
 		YAHOO.util.Event.on(window, 'load', function() {
 			var certificates = YAHOO.util.Dom.getElementsByClassName(
-				'cme-certificate', 'div');
+				'cme-certificate',
+				'div'
+			);
 
 			if (certificates.length > 0) {
 				window.print();
@@ -232,19 +228,38 @@ JAVASCRIPT;
 	protected function getCompleteDate(CMECredit $credit)
 	{
 		$account = $this->app->session->account;
+		$dates = array();
 
-		// assume evaluation taken after quiz
-		if ($credit->evaluation instanceof InquisitionInquisition) {
+		if ($credit->front_matter->evaluation instanceof CMEEvaluation) {
 			$response = $credit->evaluation->getResponseByAccount($account);
-			$date = clone $response->complete_date;
-		} elseif ($credit->quiz instanceof InquisitionInquisition) {
-			$response = $credit->quiz->getResponseByAccount($account);
-			$date = clone $response->complete_date;
-		} else {
-			$date = new SwatDate();
+			if ($response instanceof InquisitionResponse) {
+				$dates[] = clone $response->complete_date;
+			}
 		}
 
-		return $date;
+		if ($credit->quiz instanceof CMEQuiz) {
+			$response = $credit->quiz->getResponseByAccount($account);
+			if ($response instanceof InquisitionResponse) {
+				$dates[] = clone $response->complete_date;
+			}
+		}
+
+		// if there are no complete dates, just use today
+		if (count($dates) === 0) {
+			$dates[] = new SwatDate();
+		}
+
+		// get latest date
+		$latest_date = null;
+		foreach ($dates as $date) {
+			if (!$latest_date instanceof SwatDate ||
+				$latest_date->before($date)) {
+
+				$latest_date = $date;
+			}
+		}
+
+		return $latest_date;
 	}
 
 	// }}}

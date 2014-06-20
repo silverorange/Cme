@@ -1,7 +1,7 @@
 create table QuizReport (
 	id serial,
 
-	credit_type integer not null references CMECreditType(id),
+	provider integer not null references CMEProvider(id),
 
 	filename   varchar(255) not null,
 	quarter    timestamp not null,

@@ -2,15 +2,14 @@
 
 require_once 'SwatDB/SwatDBDataObject.php';
 require_once 'CME/dataobjects/CMEQuiz.php';
-require_once 'CME/dataobjects/CMEEvaluation.php';
-require_once 'CME/dataobjects/CMECreditType.php';
+require_once 'CME/dataobjects/CMEFrontMatter.php';
 
 /**
  * @package   CME
  * @copyright 2013-2014 silverorange
  * @license   http://www.opensource.org/licenses/mit-license.html MIT License
  */
-class CMECredit extends SwatDBDataObject
+abstract class CMECredit extends SwatDBDataObject
 {
 	// {{{ public properties
 
@@ -25,59 +24,41 @@ class CMECredit extends SwatDBDataObject
 	public $hours;
 
 	/**
-	 * @var string
+	 * @var integer
 	 */
-	public $objectives;
+	public $passing_grade;
 
 	/**
 	 * @var string
 	 */
-	public $planning_committee_no_disclosures;
+	public $email_content_pass;
 
 	/**
 	 * @var string
 	 */
-	public $support_staff_no_disclosures;
-
-	/**
-	 * @var SwatDate
-	 */
-	public $review_date;
+	public $email_content_fail;
 
 	/**
 	 * @var boolean
 	 */
-	public $enabled;
+	public $resettable;
 
 	// }}}
-	// {{{ public function getActionLink()
+	// {{{ public function isEarned()
 
-	public function getActionLink(CMEAccount $account, DateTimeZone $time_zone)
+	public function isEarned(CMEAccount $account)
 	{
-		$link = null;
-
-		if ($this->quiz instanceof InquisitionInquisition &&
-			!$account->isQuizPassed($this)) {
-			$link = $this->getQuizLink();
-		} elseif ($this->evaluation instanceof InquisitionInquisition &&
-			!$account->isEvaluationComplete($this)) {
-			$link = $this->getEvaluationLink();
-		} else {
-			$link = $this->getCMEDisclosureLink();
-		}
-
-		return $link;
+		// assume the evaluation is always required
+		return (
+				$account->hasCMEAttested($this->front_matter)
+			) && (
+				!$this->quiz instanceof CMEQuiz ||
+				$account->isQuizPassed($this)
+			) && (
+				!$this->front_matter->evaluation instanceof CMEEvaluation ||
+				$account->isEvaluationComplete($this->front_matter)
+			);
 	}
-
-	// }}}
-	// {{{ abstract protected function getCMEDisclosureLink()
-
-	abstract protected function getCMEDisclosureLink();
-
-	// }}}
-	// {{{ abstract protected function getEvaluationLink()
-
-	abstract protected function getEvaluationLink();
 
 	// }}}
 	// {{{ abstract protected function getQuizLink()
@@ -93,21 +74,14 @@ class CMECredit extends SwatDBDataObject
 		$this->id_field = 'integer:id';
 
 		$this->registerInternalProperty(
-			'credit_type',
-			SwatDBClassMap::get('CMECreditType')
+			'front_matter',
+			SwatDBClassMap::get('CMEFrontMatter')
 		);
 
 		$this->registerInternalProperty(
 			'quiz',
 			SwatDBClassMap::get('CMEQuiz')
 		);
-
-		$this->registerInternalProperty(
-			'evaluation',
-			SwatDBClassMap::get('CMEEvaluation')
-		);
-
-		$this->registerDateProperty('review_date');
 	}
 
 	// }}}

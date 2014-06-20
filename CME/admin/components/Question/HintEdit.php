@@ -1,8 +1,7 @@
 <?php
 
 require_once 'Inquisition/admin/components/Question/HintEdit.php';
-require_once 'CME/CME.php';
-require_once 'CME/dataobjects/CMECreditWrapper.php';
+require_once 'CME/admin/components/Question/include/CMEQuestionHelper.php';
 
 /**
  * Question hint edit page for inquisitions
@@ -16,14 +15,9 @@ class CMEQuestionHintEdit extends InquisitionQuestionHintEdit
 	// {{{ protected properties
 
 	/**
-	 * @var string
+	 * @var CMEQuestionHelper
 	 */
-	protected $type;
-
-	/**
-	 * @var CMECredit
-	 */
-	protected $credit;
+	protected $helper;
 
 	// }}}
 
@@ -34,8 +28,8 @@ class CMEQuestionHintEdit extends InquisitionQuestionHintEdit
 	{
 		parent::initInternal();
 
-		$this->initCredit();
-		$this->initType();
+		$this->helper = $this->getQuestionHelper();
+		$this->helper->initInternal();
 	}
 
 	// }}}
@@ -48,11 +42,9 @@ class CMEQuestionHintEdit extends InquisitionQuestionHintEdit
 		if (!$this->inquisition instanceof InquisitionInquisition) {
 			// if we got here from the question index, load the inquisition
 			// from the binding as we only have one inquisition per question
-			$sql = 'select inquisition
-				from InquisitionInquisitionQuestionBinding where question = %s';
-
 			$sql = sprintf(
-				$sql,
+				'select inquisition from InquisitionInquisitionQuestionBinding
+				where question = %s',
 				$this->app->db->quote($this->question->id)
 			);
 
@@ -63,36 +55,11 @@ class CMEQuestionHintEdit extends InquisitionQuestionHintEdit
 	}
 
 	// }}}
-	// {{{ protected function initCredit()
+	// {{{ protected function getQuestionHelper()
 
-	protected function initCredit()
+	protected function getQuestionHelper()
 	{
-		$sql = sprintf(
-			'select * from CMECredit where
-			evaluation = %1$s or quiz = %1$s',
-			$this->app->db->quote($this->inquisition->id, 'integer')
-		);
-
-		$this->credit = SwatDB::query(
-			$this->app->db,
-			$sql,
-			SwatDBClassMap::get('CMECreditWrapper')
-		)->getFirst();
-	}
-
-	// }}}
-	// {{{ protected function initType()
-
-	protected function initType()
-	{
-		$evaluation_id = $this->credit->getInternalValue('evaluation');
-		$quiz_id       = $this->credit->getInternalValue('quiz');
-
-		if ($this->inquisition->id === $evaluation_id) {
-			$this->type = 'evaluation';
-		} elseif ($this->inquisition->id === $quiz_id) {
-			$this->type = 'quiz';
-		}
+		return new CMEQuestionHelper($this->app, $this->inquisition);
 	}
 
 	// }}}
@@ -104,35 +71,12 @@ class CMEQuestionHintEdit extends InquisitionQuestionHintEdit
 	{
 		parent::buildNavBar();
 
-		if ($this->credit instanceof CMECredit) {
-			$entries = $this->navbar->popEntries(4);
+		// put edit entry at the end
+		$title = $this->navbar->popEntry();
 
-			array_shift($entries);
-			$entries[0]->title = $this->getQuizTitle();
+		$this->helper->buildNavBar($this->navbar);
 
-			$this->navbar->addEntries($entries);
-		}
-	}
-
-	// }}}
-	// {{{ protected function getQuizTitle()
-
-	protected function getQuizTitle()
-	{
-		switch ($this->type) {
-		case 'evaluation':
-			return sprintf(
-				CME::_('% Evaluation'),
-				$this->credit->credit_type->title
-			);
-
-		default:
-		case 'quiz':
-			return sprintf(
-				CME::_('%s Quiz'),
-				$this->credit->credit_type->title
-			);
-		}
+		$this->navbar->addEntry($title);
 	}
 
 	// }}}

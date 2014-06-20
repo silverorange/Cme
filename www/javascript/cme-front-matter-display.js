@@ -1,4 +1,5 @@
-function CMEDisclosure(id, class_name, server, title, content, cancel_uri)
+function CMEFrontMatterDisplay(id, class_name, server, title, content,
+	cancel_uri)
 {
 	this.id         = id;
 	this.class_name = class_name;
@@ -10,28 +11,28 @@ function CMEDisclosure(id, class_name, server, title, content, cancel_uri)
 	YAHOO.util.Event.onDOMReady(this.init, this, true);
 }
 
-CMEDisclosure.accept_text =
+CMEFrontMatterDisplay.accept_text =
 	'I Have Read the CME Information / Continue';
 
-CMEDisclosure.cancel_text =
+CMEFrontMatterDisplay.cancel_text =
 	'Cancel and Return';
 
-CMEDisclosure.confirm_text =
+CMEFrontMatterDisplay.confirm_text =
 	'Before you view %s, please attest to reading the following:';
 
-CMEDisclosure.prototype.init = function()
+CMEFrontMatterDisplay.prototype.init = function()
 {
 	var header = document.createElement('div');
-	header.className = 'cme-disclosure-header';
+	header.className = 'cme-front-matter-display-header';
 	header.appendChild(
 		document.createTextNode(
-			CMEDisclosure.confirm_text.replace(/%s/, this.title)
+			CMEFrontMatterDisplay.confirm_text.replace(/%s/, this.title)
 		)
 	);
 
 	var continue_button = document.createElement('input');
 	continue_button.type = 'button';
-	continue_button.value = CMEDisclosure.accept_text;
+	continue_button.value = CMEFrontMatterDisplay.accept_text;
 	continue_button.className = 'button swat-primary-button';
 	YAHOO.util.Event.on(continue_button, 'click', function(e) {
 		continue_button.disabled = true;
@@ -40,7 +41,7 @@ CMEDisclosure.prototype.init = function()
 
 	var cancel_button = document.createElement('input');
 	cancel_button.type = 'button';
-	cancel_button.value = CMEDisclosure.cancel_text;
+	cancel_button.value = CMEFrontMatterDisplay.cancel_text;
 	cancel_button.className = 'button cancel-button';
 	YAHOO.util.Event.on(cancel_button, 'click', function(e) {
 		var base = document.getElementsByTagName('base')[0];
@@ -48,16 +49,16 @@ CMEDisclosure.prototype.init = function()
 	}, this, true);
 
 	var footer = document.createElement('div');
-	footer.className = 'cme-disclosure-footer';
+	footer.className = 'cme-front-matter-display-footer';
 	footer.appendChild(continue_button);
 	footer.appendChild(cancel_button);
 
 	var content = document.createElement('div');
-	content.className = 'cme-disclosure-content';
+	content.className = 'cme-front-matter-display-content';
 	content.innerHTML = this.content;
 
 	this.scroll_content = document.createElement('div');
-	this.scroll_content.className = 'cme-disclosure-scroll-content';
+	this.scroll_content.className = 'cme-front-matter-display-scroll-content';
 	this.scroll_content.appendChild(content);
 	this.scroll_content.style.height =
 		(YAHOO.util.Dom.getViewportHeight() - 200) + 'px';
@@ -70,7 +71,7 @@ CMEDisclosure.prototype.init = function()
 	this.container.appendChild(footer);
 
 	this.overlay = document.createElement('div');
-	this.overlay.className = 'cme-piece-overlay';
+	this.overlay.className = 'cme-front-matter-display-overlay';
 	this.overlay.style.height = YAHOO.util.Dom.getDocumentHeight() + 'px';
 
 	// Bit of a hack to get the initial height of the overlay correctly. The
@@ -90,7 +91,7 @@ CMEDisclosure.prototype.init = function()
 	SwatZIndexManager.raiseElement(this.container);
 };
 
-CMEDisclosure.prototype.handleResize = function(e)
+CMEFrontMatterDisplay.prototype.handleResize = function(e)
 {
 	this.scroll_content.style.height =
 		(YAHOO.util.Dom.getViewportHeight() - 200) + 'px';
@@ -98,7 +99,7 @@ CMEDisclosure.prototype.handleResize = function(e)
 	this.overlay.style.height = YAHOO.util.Dom.getDocumentHeight() + 'px';
 };
 
-CMEDisclosure.prototype.close = function()
+CMEFrontMatterDisplay.prototype.close = function()
 {
 	var animation = new YAHOO.util.Anim(
 		this.container,
@@ -126,7 +127,7 @@ CMEDisclosure.prototype.close = function()
 	animation.animate();
 };
 
-CMEDisclosure.prototype.submitCMEPiece = function()
+CMEFrontMatterDisplay.prototype.submitCMEPiece = function()
 {
 	var callback = {
 		success: function(o) {},

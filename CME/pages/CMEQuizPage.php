@@ -106,8 +106,8 @@ abstract class CMEQuizPage extends SiteDBEditPage
 		$this->initQuiz();
 
 		// if there is no quiz, go to evaluation page
-		if (!$this->quiz instanceof InquisitionInquisition) {
-			if ($response->complete_date === null) {
+		if (!$this->quiz instanceof CMEQuiz) {
+			if (!$response->complete_date instanceof SwatDate) {
 				$this->relocateToEvaluation();
 			}
 		}
@@ -129,8 +129,12 @@ abstract class CMEQuizPage extends SiteDBEditPage
 		$credit_id = $this->getArgument('credit');
 
 		$sql = sprintf(
-			'select * from CMECredit where id = %s',
-			$this->app->db->quote($credit_id, 'integer')
+			'select CMECredit.* from CMECredit
+				inner join CMEFrontMatter
+					on CMECredit.front_matter = CMEFrontMatter.id
+			where CMECredit.id = %s and CMEFrontMatter.enabled = %s',
+			$this->app->db->quote($credit_id, 'integer'),
+			$this->app->db->quote(true, 'boolean')
 		);
 
 		$this->credit = SwatBD::query(
@@ -159,8 +163,7 @@ abstract class CMEQuizPage extends SiteDBEditPage
 		if ($this->quiz === false) {
 			$this->quiz = $this->credit->quiz;
 
-			if (!$this->quiz instanceof InquisitionInquisition ||
-				!$this->quiz->enabled) {
+			if (!$this->quiz instanceof CMEQuiz) {
 				throw new SiteNotFoundException(
 					'Quiz not found for CME credit.'
 				);
@@ -206,7 +209,7 @@ abstract class CMEQuizPage extends SiteDBEditPage
 			$this->app->session->account
 		);
 
-		if ($this->response !== null) {
+		if ($this->response instanceof InquisitionResponse) {
 			// efficiently load question options for response values
 			$this->response->values->loadAllSubDataObjects(
 				'question_option',
@@ -287,7 +290,7 @@ abstract class CMEQuizPage extends SiteDBEditPage
 		$value = null;
 
 		// get response value if it exists
-		if ($this->response !== null) {
+		if ($this->response instanceof InquisitionResponse) {
 			$binding_id = $question_binding->id;
 
 			if (isset($this->response_values_by_binding_id[$binding_id])) {
@@ -303,8 +306,8 @@ abstract class CMEQuizPage extends SiteDBEditPage
 
 	protected function isComplete()
 	{
-		return ($this->response !== null &&
-			$this->response->complete_date !== null);
+		return ($this->response instanceof InquisitionResponse &&
+			$this->response->complete_date instanceof SwatDate);
 	}
 
 	// }}}
@@ -329,7 +332,7 @@ abstract class CMEQuizPage extends SiteDBEditPage
 
 	protected function saveQuizData(SwatForm $form)
 	{
-		if ($this->response === null) {
+		if (!$this->response instanceof InquisitionResponse) {
 			$class_name = SwatDBClassMap::get('InquisitionResponse');
 			$this->response = new $class_name();
 
@@ -367,12 +370,34 @@ abstract class CMEQuizPage extends SiteDBEditPage
 
 		// save response values
 		$this->response->values->save();
+		$this->saveEarnedCredit();
 
 		// clear CME hours cache for this account
 		$key = 'cme-hours-'.$this->app->session->account->id;
 		$this->app->deleteCacheValue($key, 'cme-hours');
 
 		$this->sendCompletionEmail();
+	}
+
+	// }}}
+	// {{{ protected function saveEarnedCredit()
+
+	protected function saveEarnedCredit()
+	{
+		$account = $this->app->session->account;
+		if ($this->credit->isEarned($account)) {
+			$earned_date = new SwatDate();
+			$earned_date->toUTC();
+
+			$class_name = SwatDBClassMap::get('CMEAccountEarnedCMECredit');
+			$earned_credit = new $class_name();
+
+			$earned_credit->account = $account->id;
+			$earned_credit->credit = $this->credit->id;
+			$earned_credit->earned_date = $now;
+
+			$earned_credit->save();
+		}
 	}
 
 	// }}}
@@ -383,7 +408,8 @@ abstract class CMEQuizPage extends SiteDBEditPage
 		// response can be null when refreshing the quiz page immediately after
 		// resetting a quiz, or resetting it in another window, and attempting
 		// to reset a second time.
-		if (!$this->quiz->resettable || $this->response === null) {
+		if (!$this->credit->resettable ||
+			!$this->response instanceof InquisitionResponse) {
 			return;
 		}
 
@@ -467,10 +493,11 @@ abstract class CMEQuizPage extends SiteDBEditPage
 	protected function buildQuizResponse()
 	{
 		// quiz description
-		if ($this->quiz->description != '') {
+		$description = $this->getQuizDescription();
+		if ($description != '') {
 			ob_start();
 			echo '<div class="quiz-description">';
-			echo $this->quiz->description;
+			echo $description;
 			echo '</div>';
 			$content_block = $this->ui->getWidget('quiz_response_description');
 			$content_block->content = ob_get_clean();
@@ -481,7 +508,7 @@ abstract class CMEQuizPage extends SiteDBEditPage
 		$this->buildQuizResponseMessages();
 
 		// answers
-		if ($this->quiz->resettable && !$this->response->isPassed()) {
+		if ($this->credit->resettable && !$this->response->isPassed()) {
 			$this->ui->getWidget('reset_form')->visible = true;
 		} else {
 			ob_start();
@@ -525,7 +552,7 @@ abstract class CMEQuizPage extends SiteDBEditPage
 
 		echo '</p>';
 
-		if (!$this->quiz->resettable) {
+		if (!$this->credit->resettable) {
 			echo '<p class="quiz-response-status">';
 			echo SwatString::minimizeEntities(
 				CME::_(
@@ -538,8 +565,8 @@ abstract class CMEQuizPage extends SiteDBEditPage
 		if ($this->response->isPassed()) {
 
 			$account = $this->app->session->account;
-			if ($account->isEvaluationComplete($this->credit)) {
-				echo '<p>'
+			if ($account->isEvaluationComplete($this->credit->front_matter)) {
+				echo '<p>';
 				echo SwatString::minimizeEntities(
 					CME::_('You’ve already completed the evaluation.')
 				);
@@ -570,7 +597,7 @@ abstract class CMEQuizPage extends SiteDBEditPage
 						'credits.'
 					),
 					$locale->formatNumber(
-						$this->quiz->passing_grade * 100
+						$this->credit->passing_grade * 100
 					)
 				)
 			);
@@ -591,16 +618,19 @@ abstract class CMEQuizPage extends SiteDBEditPage
 		$locale = SwatI18NLocale::get();
 
 		// quiz description
-		echo '<div class="quiz-description">';
-		echo $this->quiz->description;
-		echo '</div>';
+		$description = $this->getQuizDescription();
+		if ($description != '') {
+			echo '<div class="quiz-description">';
+			echo $description;
+			echo '</div>';
+		}
 
 		// passing grade
 		echo '<div class="quiz-passing-grade">';
 
 		$grade_span = new SwatHtmlTag('span');
 		$grade_span->setContent(
-			$locale->formatNumber($this->quiz->passing_grade * 100).'%'
+			$locale->formatNumber($this->credit->passing_grade * 100).'%'
 		);
 
 		printf(
@@ -613,7 +643,7 @@ abstract class CMEQuizPage extends SiteDBEditPage
 		echo '</div>';
 
 		// number of questions and time estimate
-		echo '<div id="quiz_intro_status">';
+		echo '<div class="quiz-intro-status">';
 
 		$total_questions = count($this->quiz->question_bindings);
 
@@ -665,14 +695,18 @@ abstract class CMEQuizPage extends SiteDBEditPage
 	{
 		$this->layout->data->title = sprintf(
 			CME::_('%s Quiz'),
-			SwatString::minimizeEntities($this->credit->credit_type->title)
+			SwatString::minimizeEntities(
+				$this->credit->front_matter->provider->title
+			)
 		);
+	}
 
-		$this->layout->data->html_title = sprintf(
-			CME::_('%s Quiz - %s'),
-			$this->credit->credit_type->title,
-			$this->app->getHtmlTitle()
-		);
+	// }}}
+	// {{{ protected function getQuizDescription()
+
+	protected function getQuizDescription()
+	{
+		return '';
 	}
 
 	// }}}
@@ -706,10 +740,9 @@ abstract class CMEQuizPage extends SiteDBEditPage
 
 		// limit current question in case last question is present in the
 		// response
-		$quiz = $this->quiz;
 		$current_question = min(
 			$current_question,
-			count($quiz->question_bindings) - 1
+			count($this->quiz->question_bindings) - 1
 		);
 
 		$javascript.= sprintf(
@@ -767,7 +800,7 @@ abstract class CMEQuizPage extends SiteDBEditPage
 		$javascript = '';
 		foreach ($strings as $key => $text) {
 			$javscript.= sprintf(
-				"CMEQuizText.%s = %s;\n",
+				"CMEQuizPage.%s = %s;\n",
 				$key,
 				SwatString::quoteJavaScriptString($text)
 			);
@@ -839,7 +872,9 @@ abstract class CMEQuizPage extends SiteDBEditPage
 			$option = $question->correct_option;
 
 			// your option
-			if ($option !== null && $response_option_id !== null) {
+			if ($option instanceof InquisitionQuestionOption &&
+				$response_option_id !== null) {
+
 				$dt_tag = new SwatHtmlTag('dt');
 				$dt_tag->setContent(CME::_('Your Answer:'));
 				$dt_tag->display();
@@ -858,9 +893,11 @@ abstract class CMEQuizPage extends SiteDBEditPage
 			}
 
 			// correct option (shown if your option is wrong)
-			if ($option !== null && $option->id !== $response_option_id) {
+			if ($option instanceof InquisitionQuestionOption &&
+				$option->id !== $response_option_id) {
+
 				$dt_tag = new SwatHtmlTag('dt');
-				$dt_tag->setContent(CME::_('Correct Answer:'))
+				$dt_tag->setContent(CME::_('Correct Answer:'));
 				$dt_tag->display();
 				$dd_tag = new SwatHtmlTag('dd');
 				$dd_tag->class =
@@ -898,10 +935,11 @@ abstract class CMEQuizPage extends SiteDBEditPage
 		$this->layout->addHtmlHeadEntry(
 			'packages/swat/javascript/swat-z-index-manager.js'
 		);
+		$this->layout->addHtmlHeadEntry(
+			'packages/cme/javascript/cme-quiz-page.js'
+		);
 
-		$this->layout->addHtmlHeadEntry('javascript/cme-quiz-page.js');
-
-		if ($this->response_message_display !== null) {
+		if ($this->response_message_display instanceof SwatUIObject) {
 			$this->layout->addHtmlHeadEntrySet(
 				$this->response_message_display->getHtmlHeadEntrySet());
 		}

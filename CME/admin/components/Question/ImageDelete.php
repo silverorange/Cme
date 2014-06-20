@@ -1,8 +1,7 @@
 <?php
 
 require_once 'Inquisition/admin/components/Question/ImageDelete.php';
-require_once 'CME/CME.php';
-require_once 'CME/dataobjects/CMECreditWrapper.php';
+require_once 'CME/admin/components/Question/include/CMEQuestionHelper.php';
 
 /**
  * Delete confirmation page for question images
@@ -16,14 +15,9 @@ class CMEQuestionImageDelete extends InquisitionQuestionImageDelete
 	// {{{ protected properties
 
 	/**
-	 * @var string
+	 * @var CMEQuestionHelper
 	 */
-	protected $type;
-
-	/**
-	 * @var CMECredit
-	 */
-	protected $credit;
+	protected $helper;
 
 	// }}}
 
@@ -37,11 +31,9 @@ class CMEQuestionImageDelete extends InquisitionQuestionImageDelete
 		if (!$this->inquisition instanceof InquisitionInquisition) {
 			// if we got here from the question index, load the inquisition
 			// from the binding as we only have one inquisition per question
-			$sql = 'select inquisition
-				from InquisitionInquisitionQuestionBinding where question = %s';
-
 			$sql = sprintf(
-				$sql,
+				'select inquisition from InquisitionInquisitionQuestionBinding
+				where question = %s',
 				$this->app->db->quote($this->question->id)
 			);
 
@@ -50,41 +42,16 @@ class CMEQuestionImageDelete extends InquisitionQuestionImageDelete
 			$this->inquisition = $this->loadInquisition($inquisition_id);
 		}
 
-		$this->initCredit();
-		$this->initType();
+		$this->helper = $this->getQuestionHelper();
+		$this->helper->initInternal();
 	}
 
 	// }}}
-	// {{{ protected function initCredit()
+	// {{{ protected function getQuestionHelper()
 
-	protected function initCredit()
+	protected function getQuestionHelper()
 	{
-		$sql = sprintf(
-			'select * from CMECredit where
-			evaluation = %1$s or quiz = %1$s',
-			$this->app->db->quote($this->inquisition->id, 'integer')
-		);
-
-		$this->credit = SwatDB::query(
-			$this->app->db,
-			$sql,
-			SwatDBClassMap::get('CMECreditWrapper')
-		)->getFirst();
-	}
-
-	// }}}
-	// {{{ protected function initType()
-
-	protected function initType()
-	{
-		$evaluation_id = $this->credit->getInternalValue('evaluation');
-		$quiz_id       = $this->credit->getInternalValue('quiz');
-
-		if ($this->inquisition->id === $evaluation_id) {
-			$this->type = 'evaluation';
-		} elseif ($this->inquisition->id === $quiz_id) {
-			$this->type = 'quiz';
-		}
+		return new CMEQuestionHelper($this->app, $this->inquisition);
 	}
 
 	// }}}
@@ -96,37 +63,12 @@ class CMEQuestionImageDelete extends InquisitionQuestionImageDelete
 	{
 		parent::buildNavBar();
 
-		if ($this->credit instanceof CMECredit) {
-			$entries = $this->navbar->popEntries(5);
+		// put edit entry at the end
+		$title = $this->navbar->popEntry();
 
-			array_shift($entries);
-			array_shift($entries);
+		$this->helper->buildNavBar($this->navbar);
 
-			$entries[0]->title = $this->getQuizTitle();
-
-			$this->navbar->addEntries($entries);
-		}
-	}
-
-	// }}}
-	// {{{ protected function getQuizTitle()
-
-	protected function getQuizTitle()
-	{
-		switch ($this->type) {
-		case 'evaluation':
-			return sprintf(
-				CME::_('% Evaluation'),
-				$this->credit->credit_type->title
-			);
-
-		default:
-		case 'quiz':
-			return sprintf(
-				CME::_('%s Quiz'),
-				$this->credit->credit_type->title
-			);
-		}
+		$this->navbar->addEntry($title);
 	}
 
 	// }}}

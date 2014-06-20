@@ -10,12 +10,12 @@ CME:
 
   Provides:
     # Style-Sheets
-    styles/cme-disclosure.css:
-    admin/styles/inquisition-edit.css:
+    packages/cme/styles/cme-front-matter-display.css:
+    admin/packages/cme/admin/styles/cme-credit-edit.css:
 
     # JavaScript
-    javascript/cme-disclosure.js:
-    javascript/cme-evaluation-page.js:
-    javascript/cme-quiz-page.js:
+    packages/cme/javascript/cme-evaluation-page.js:
+    packages/cme/javascript/cme-front-matter-display.js:
+    packages/cme/javascript/cme-quiz-page.js:
 
 # vim: set expandtab tabstop=2 shiftwidth=2 softtabstop=2:

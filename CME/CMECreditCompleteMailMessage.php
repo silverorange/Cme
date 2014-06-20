@@ -97,7 +97,7 @@ abstract class CMECreditCompleteMailMessage extends AccountMailMessage
 	{
 		return sprintf(
 			CME::_('%s Quiz Completed'),
-			$this->credit->credit_type->title
+			$this->credit->provider->title
 		);
 	}
 

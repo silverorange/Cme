@@ -10,7 +10,7 @@ require_once 'Admin/AdminSummaryDependency.php';
  * @copyright 2013-2014 silverorange
  * @license   http://www.opensource.org/licenses/mit-license.html MIT License
  */
-class CMECreditDelete extends AdminDBDelete
+class CMEFrontMatterDelete extends AdminDBDelete
 {
 	// process phase
 	// {{{ protected function processDBData()
@@ -19,7 +19,7 @@ class CMECreditDelete extends AdminDBDelete
 	{
 		parent::processDBData();
 
-		$sql = 'delete from CMECredit where id in (%s);';
+		$sql = 'delete from CMEFrontMatter where id in (%s);';
 
 		$item_list = $this->getItemList('integer');
 		$sql = sprintf($sql, $item_list);
@@ -30,8 +30,8 @@ class CMECreditDelete extends AdminDBDelete
 		$message = new SwatMessage(
 			sprintf(
 				CME::ngettext(
-					'One CME credit has been deleted.',
-					'%s CME credits have been deleted.',
+					'One CME front matter has been deleted.',
+					'%s CME front matters have been deleted.',
 					$num
 				),
 				$locale->formatNumber($num)
@@ -55,32 +55,39 @@ class CMECreditDelete extends AdminDBDelete
 		$item_list = $this->getItemList('integer');
 
 		$dep = new AdminListDependency();
-		$dep->setTitle(CME::_('CME credit'), CME::_('CME credits'));
+		$dep->setTitle(
+			CME::_('CME front matter'),
+			CME::_('CME front matters')
+		);
 
 		$sql = sprintf(
-			'select CMECredit.id, CMECredit.hours, CMECreditType.title
-			from CMECredit
-				inner join CMECreditType on
-					CMECredit.credit_type = CMECreditType.id
-			where CMECredit.id in (%s)',
+			'select CMEFrontMatter.id, sum(CMECredit.hours) as hours,
+				CMEProvider.title
+			from CMEFrontMatter
+				left outer join CMECredit
+					on CMECredit.front_matter = CMEFrontMatter.id
+				inner join CMEProvider
+					on CMEFrontMatter.provider = CMEProvider.id
+			where CMEFrontMatter.id in (%s)
+			group by CMEFrontMatter.id, CMEProvider.title',
 			$item_list
 		);
 
-		$credits = SwatDB::query($this->app->db, $sql);
+		$front_matters = SwatDB::query($this->app->db, $sql);
 
-		foreach ($credits as $credit) {
-			$credit->status_level = AdminDependency::DELETE;
-			$credit->parent = null;
-			$credit->title = sprintf(
+		foreach ($front_matters as $front_matter) {
+			$front_matter->status_level = AdminDependency::DELETE;
+			$front_matter->parent = null;
+			$front_matter->title = sprintf(
 				CME::ngettext(
 					'%s (%s hour)',
 					'%s (%s hours)',
-					$credit->hours
+					$front_matter->hours
 				),
-				$credit->title,
-				$locale->formatNumber($credit->hours)
+				$front_matter->title,
+				$locale->formatNumber($front_matter->hours)
 			);
-			$dep->entries[] = new AdminDependencyEntry($credit);
+			$dep->entries[] = new AdminDependencyEntry($front_matter);
 		}
 
 		$message = $this->ui->getWidget('confirmation_message');
@@ -104,8 +111,8 @@ class CMECreditDelete extends AdminDBDelete
 
 		$this->navbar->createEntry(
 			CME::ngettext(
-				'Delete CME Credit',
-				'Delete CME Credits',
+				'Delete CME Front Matter',
+				'Delete CME Front Matters',
 				count($this->items)
 			)
 		);

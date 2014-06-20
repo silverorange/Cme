@@ -1,7 +1,7 @@
 <?php
 
 require_once 'SwatDB/SwatDBDataObject.php';
-require_once 'CME/dataobjects/CMECreditType.php';
+require_once 'CME/dataobjects/CMEProvider.php';
 
 /**
  * @package   CME
@@ -84,7 +84,10 @@ class CMEEvaluationReport extends SwatDBDataObject
 		$this->table = 'EvaluationReport';
 		$this->id_field = 'integer:id';
 
-		$this->registerInternalProperty('credit_type');
+		$this->registerInternalProperty(
+			'provider',
+			SwatDBClassMap::get('CMEProvider')
+		);
 
 		$this->registerDateProperty('quarter');
 		$this->registerDateProperty('createdate');

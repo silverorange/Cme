@@ -77,9 +77,14 @@ proto.initQuestions = function()
 	this.question_options   = [];
 	this.question_labels    = [];
 	this.question_fields    = [];
-	this.question_container = document.getElementById('question_container');
 	this.question_option_messages = {};
 	this.question_review_answers = [];
+
+	this.question_container = Dom.getElementsByClassName(
+		'quiz-question-container',
+		'div',
+		this.el
+	)[0];
 
 	this.question_els = Dom.getElementsByClassName(
 		'question',
@@ -264,7 +269,10 @@ proto.drawIntroPage = function()
 
 	footer.appendChild(this.continue_button);
 
-	this.intro_status_line = document.getElementById('quiz_intro_status');
+	this.intro_status_line = Dom.getElementsByClassName(
+		'quiz-intro-status',
+		'div'
+	)[0];
 
 	page.appendChild(footer);
 
