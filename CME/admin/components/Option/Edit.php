@@ -61,12 +61,16 @@ class CMEOptionEdit extends InquisitionOptionEdit
 
 		// Add dummy entry. The CMEOptionHelper will remove this. All other
 		// option admin components have a details component in the nav bar.
-		$this->navbar->createEntry('');
+		if ($this->isNew()) {
+			$this->navbar->createEntry('');
+		}
 
 		$this->helper->buildNavBar($this->navbar);
 
 		// remove dummy entry.
-		$this->navbar->popEntry();
+		if ($this->isNew()) {
+			$this->navbar->popEntry();
+		}
 
 		$this->navbar->addEntry($title);
 	}
