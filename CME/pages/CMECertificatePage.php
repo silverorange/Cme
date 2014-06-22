@@ -30,7 +30,12 @@ abstract class CMECertificatePage extends SiteUiPage
 	public function init()
 	{
 		if (!$this->app->session->isLoggedIn()) {
-			$uri = sprintf('account/login?relocate=%s', $this->source);
+			$uri = sprintf(
+				'%s?relocate=%s',
+				$this->app->config->uri->account_login,
+				$this->source
+			);
+
 			$this->app->relocate($uri);
 		}
 		$account = $this->app->session->account;

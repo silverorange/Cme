@@ -108,7 +108,7 @@ $package->addPackageDepWithChannel(
 	'required',
 	'Site',
 	'pear.silverorange.com',
-	'1.4.65'
+	'2.1.14'
 );
 
 $package->addPackageDepWithChannel(
