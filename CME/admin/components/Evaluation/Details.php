@@ -36,6 +36,10 @@ class CMEEvaluationDetails extends InquisitionInquisitionDetails
 	{
 		parent::initInternal();
 		$this->initFrontMatter();
+
+		// Hide question import link as question importer only works with
+		// Inquisitions that have correct answers.
+		$this->ui->getWidget('question_import')->visible = false;
 	}
 
 	// }}}
