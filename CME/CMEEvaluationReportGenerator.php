@@ -102,15 +102,17 @@ abstract class CMEEvaluationReportGenerator
 			'response'
 		);
 
-		// efficiently load response value question bindings
-		$question_binding_sql =
-			'select * from InquisitionInquisitionQuestionBinding
-			where id in (%s)';
-
+		// wrappers for effecient loading of question bindings and questions on
+		// response values and evaluations.
 		$question_wrapper = SwatDBClassMap::get('InquisitionQuestionWrapper');
 		$question_binding_wrapper = SwatDBClassMap::get(
 			'InquisitionInquisitionQuestionBindingWrapper'
 		);
+
+		// efficiently load response value question bindings
+		$question_binding_sql =
+			'select * from InquisitionInquisitionQuestionBinding
+			where id in (%s)';
 
 		$question_bindings = $values->loadAllSubDataObjects(
 			'question_binding',
@@ -119,7 +121,7 @@ abstract class CMEEvaluationReportGenerator
 			$question_binding_wrapper
 		);
 
-		// and questions
+		// and response value questions
 		if ($question_bindings instanceof $question_binding_wrapper) {
 			$question_sql = 'select * from InquisitionQuestion
 				where id in (%s)';
@@ -132,7 +134,7 @@ abstract class CMEEvaluationReportGenerator
 			);
 		}
 
-		// efficiently load evaluations
+		// efficiently load response evaluations
 		$evaluation_sql = 'select * from Inquisition where id in (%s)';
 		$evaluations = $responses->loadAllSubDataObjects(
 			'inquisition',
@@ -141,7 +143,7 @@ abstract class CMEEvaluationReportGenerator
 			SwatDBClassMap::get('CMEEvaluationWrapper')
 		);
 
-		// efficiently load question bindings
+		// efficiently load evaluation question bindings
 		$question_binding_sql = sprintf(
 			'select * from InquisitionInquisitionQuestionBinding
 			where inquisition in (%s)
@@ -162,7 +164,7 @@ abstract class CMEEvaluationReportGenerator
 			$question_bindings
 		);
 
-		// efficiently load questions
+		// efficiently load evaluations questions
 		if ($question_bindings instanceof $question_binding_wrapper) {
 			$question_sql = 'select * from InquisitionQuestion
 				where id in (%s)';
