@@ -13,10 +13,10 @@
   <email>mike@silverorange.com</email>
   <active>yes</active>
  </lead>
- <date>2014-06-20</date>
- <time>14:58:49</time>
+ <date>2014-07-03</date>
+ <time>14:23:29</time>
  <version>
-  <release>0.1.0</release>
+  <release>0.1.1</release>
   <api>0.1.0</api>
  </version>
  <stability>
@@ -25,7 +25,7 @@
  </stability>
  <license uri="http://www.opensource.org/licenses/mit-license.html">MIT License</license>
  <notes>
-initial release
+beta release
  </notes>
  <contents>
   <dir baseinstalldir="/" name="/">
@@ -79,6 +79,7 @@ initial release
        <file name="ImageDelete.php" role="php" />
        <file name="ImageOrder.php" role="php" />
        <file name="ImageUpload.php" role="php" />
+       <file name="Import.php" role="php" />
        <file name="Order.php" role="php" />
       </dir> <!-- /CME/admin/components/Question -->
       <dir name="QuizReport">
@@ -179,7 +180,7 @@ initial release
    <package>
     <name>Site</name>
     <channel>pear.silverorange.com</channel>
-    <min>1.4.65</min>
+    <min>2.1.14</min>
    </package>
    <package>
     <name>Admin</name>
@@ -204,17 +205,17 @@ initial release
  <changelog>
   <release>
    <version>
-    <release>0.1.0</release>
+    <release>0.1.1</release>
     <api>0.1.0</api>
    </version>
    <stability>
     <release>beta</release>
     <api>beta</api>
    </stability>
-   <date>2014-06-20</date>
+   <date>2014-07-03</date>
    <license uri="http://www.opensource.org/licenses/mit-license.html">MIT License</license>
    <notes>
-initial release
+beta release
    </notes>
   </release>
  </changelog>

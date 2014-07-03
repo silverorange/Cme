@@ -39,9 +39,9 @@ PEAR::setErrorHandling(PEAR_ERROR_DIE);
 $api_version     = '0.1.0';
 $api_state       = 'beta';
 
-$release_version = '0.1.0';
+$release_version = '0.1.1';
 $release_state   = 'beta';
-$release_notes   = 'initial release';
+$release_notes   = 'beta release';
 
 $description =
 	"Continuing medical education certification system.";
