@@ -86,6 +86,23 @@ abstract class CMEAccount extends StoreAccount
 	}
 
 	// }}}
+	// {{{ public function isCreditEarned()
+
+	public function isCreditEarned(CMECredit $credit)
+	{
+		$earned = false;
+
+		foreach ($this->earned_cme_credits as $earned_credit) {
+			if ($earned_credit->id === $credit->id) {
+				$earned = true;
+				break;
+			}
+		}
+
+		return $earned;
+	}
+
+	// }}}
 	// {{{ public function getEarnedCMECreditHours()
 
 	public function getEarnedCMECreditHours()
