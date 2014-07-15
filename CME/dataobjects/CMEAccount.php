@@ -214,19 +214,21 @@ abstract class CMEAccount extends StoreAccount
 			SwatDBClassMap::get('CMECreditWrapper')
 		);
 
-		$front_matters = $credits->loadAllSubDataObjects(
-			'front_matter',
-			$this->db,
-			'select * from CMEFrontMatter where id in(%s)',
-			SwatDBClassMap::get('CMEFrontMatterWrapper')
-		);
+		if ($credits instanceof CMECreditWrapper) {
+			$front_matters = $credits->loadAllSubDataObjects(
+				'front_matter',
+				$this->db,
+				'select * from CMEFrontMatter where id in(%s)',
+				SwatDBClassMap::get('CMEFrontMatterWrapper')
+			);
 
-		$providers = $front_matters->loadAllSubDataObjects(
-			'provider',
-			$this->db,
-			'select * from CMEProvider where id in(%s)',
-			SwatDBClassMap::get('CMEProviderWrapper')
-		);
+			$providers = $front_matters->loadAllSubDataObjects(
+				'provider',
+				$this->db,
+				'select * from CMEProvider where id in(%s)',
+				SwatDBClassMap::get('CMEProviderWrapper')
+			);
+		}
 
 		return $earned_credits;
 	}
@@ -259,19 +261,21 @@ abstract class CMEAccount extends StoreAccount
 			SwatDBClassMap::get('CMECreditWrapper')
 		);
 
-		$front_matters = $credits->loadAllSubDataObjects(
-			'front_matter',
-			$this->db,
-			'select * from CMEFrontMatter where id in(%s)',
-			SwatDBClassMap::get('CMEFrontMatterWrapper')
-		);
+		if ($credits instanceof CMECreditWrapper) {
+			$front_matters = $credits->loadAllSubDataObjects(
+				'front_matter',
+				$this->db,
+				'select * from CMEFrontMatter where id in(%s)',
+				SwatDBClassMap::get('CMEFrontMatterWrapper')
+			);
 
-		$providers = $front_matters->loadAllSubDataObjects(
-			'provider',
-			$this->db,
-			'select * from CMEProvider where id in(%s)',
-			SwatDBClassMap::get('CMEProviderWrapper')
-		);
+			$providers = $front_matters->loadAllSubDataObjects(
+				'provider',
+				$this->db,
+				'select * from CMEProvider where id in(%s)',
+				SwatDBClassMap::get('CMEProviderWrapper')
+			);
+		}
 
 		return $credits;
 	}
