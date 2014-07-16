@@ -207,9 +207,9 @@ CMEFrontMatterDisplay.prototype.close = function()
 	} else {
 		if (this.body_hidden) {
 			// show all body children again
-			var children = Dom.getChildren(document.body);
+			var children = YAHOO.util.Dom.getChildren(document.body);
 			for (var i = 0; i < children.length; i++) {
-				Dom.removeClass(
+				YAHOO.util.Dom.removeClass(
 					children[i],
 					'cme-front-matter-display-hidden'
 				);
