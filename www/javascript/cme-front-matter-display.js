@@ -179,7 +179,6 @@ CMEFrontMatterDisplay.prototype.close = function()
 		);
 
 		animation.onComplete.subscribe(function() {
-
 			YAHOO.util.Dom.addClass(
 				this.container,
 				'cme-front-matter-display-hidden'
@@ -200,7 +199,6 @@ CMEFrontMatterDisplay.prototype.close = function()
 			}, this, true);
 
 			animation.animate();
-
 		}, this, true);
 
 		animation.animate();
