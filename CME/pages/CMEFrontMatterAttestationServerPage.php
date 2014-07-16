@@ -82,7 +82,7 @@ class CMEFrontMatterAttestationServerPage extends SiteArticlePage
 
 			$account = $this->app->session->account;
 
-			$front_matter = $this->getCMEFrontMatter();
+			$front_matter = $this->getFrontMatter();
 			if (!$front_matter instanceof CMEFrontMatter) {
 				return $this->getErrorResponse('CME front matter not found.');
 			}
