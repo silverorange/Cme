@@ -22,36 +22,44 @@ CMEFrontMatterDisplay.confirm_text =
 
 CMEFrontMatterDisplay.prototype.init = function()
 {
-	var header = document.createElement('div');
-	header.className = 'cme-front-matter-display-header';
-	header.appendChild(
+	this.header = document.createElement('div');
+	this.header.className = 'cme-front-matter-display-header';
+	this.header.appendChild(
 		document.createTextNode(
 			CMEFrontMatterDisplay.confirm_text.replace(/%s/, this.title)
 		)
 	);
 
-	var continue_button = document.createElement('input');
+	var continue_button = document.createElement('button');
 	continue_button.type = 'button';
-	continue_button.value = CMEFrontMatterDisplay.accept_text;
-	continue_button.className = 'button swat-primary-button';
+	continue_button.appendChild(
+		document.createTextNode(CMEFrontMatterDisplay.accept_text)
+	);
+	continue_button.className =
+		'btn btn-primary cme-front-matter-display-accept-button';
+
 	YAHOO.util.Event.on(continue_button, 'click', function(e) {
 		continue_button.disabled = true;
 		this.submitCMEPiece();
 	}, this, true);
 
-	var cancel_button = document.createElement('input');
+	var cancel_button = document.createElement('button');
 	cancel_button.type = 'button';
-	cancel_button.value = CMEFrontMatterDisplay.cancel_text;
-	cancel_button.className = 'button cancel-button';
+	cancel_button.appendChild(
+		document.createTextNode(CMEFrontMatterDisplay.cancel_text)
+	);
+	cancel_button.className =
+		'btn btn-warning cme-front-matter-display-cancel-button';
+
 	YAHOO.util.Event.on(cancel_button, 'click', function(e) {
 		var base = document.getElementsByTagName('base')[0];
 		window.location = base.href + this.cancel_uri;
 	}, this, true);
 
-	var footer = document.createElement('div');
-	footer.className = 'cme-front-matter-display-footer';
-	footer.appendChild(continue_button);
-	footer.appendChild(cancel_button);
+	this.footer = document.createElement('div');
+	this.footer.className = 'cme-front-matter-display-footer';
+	this.footer.appendChild(continue_button);
+	this.footer.appendChild(cancel_button);
 
 	var content = document.createElement('div');
 	content.className = 'cme-front-matter-display-content';
@@ -66,9 +74,9 @@ CMEFrontMatterDisplay.prototype.init = function()
 	this.container = document.createElement('div');
 	this.container.id = this.id;
 	this.container.className = this.class_name;
-	this.container.appendChild(header);
+	this.container.appendChild(this.header);
 	this.container.appendChild(this.scroll_content);
-	this.container.appendChild(footer);
+	this.container.appendChild(this.footer);
 
 	this.overlay = document.createElement('div');
 	this.overlay.className = 'cme-front-matter-display-overlay';
@@ -87,16 +95,29 @@ CMEFrontMatterDisplay.prototype.init = function()
 	document.body.appendChild(this.overlay);
 	document.body.appendChild(this.container);
 
+	this.handleResize();
+
 	SwatZIndexManager.raiseElement(this.overlay);
 	SwatZIndexManager.raiseElement(this.container);
 };
 
 CMEFrontMatterDisplay.prototype.handleResize = function(e)
 {
-	this.scroll_content.style.height =
-		(YAHOO.util.Dom.getViewportHeight() - 200) + 'px';
+	var Dom = YAHOO.util.Dom;
+	var header_region = Dom.getRegion(this.header);
+	var footer_region = Dom.getRegion(this.footer);
 
-	this.overlay.style.height = YAHOO.util.Dom.getDocumentHeight() + 'px';
+	var padding = parseInt(Dom.getStyle(this.container, 'paddingTop')) +
+		parseInt(Dom.getStyle(this.container, 'paddingBottom'));
+
+	this.scroll_content.style.height = (
+		Dom.getViewportHeight() -
+		header_region.height -
+		footer_region.height -
+		padding
+	) + 'px';
+
+	this.overlay.style.height = Dom.getDocumentHeight() + 'px';
 };
 
 CMEFrontMatterDisplay.prototype.close = function()
