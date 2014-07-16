@@ -86,6 +86,23 @@ abstract class CMEAccount extends StoreAccount
 	}
 
 	// }}}
+	// {{{ public function isCreditEarned()
+
+	public function isCreditEarned(CMECredit $credit)
+	{
+		$earned = false;
+
+		foreach ($this->earned_cme_credits as $earned_credit) {
+			if ($earned_credit->id === $credit->id) {
+				$earned = true;
+				break;
+			}
+		}
+
+		return $earned;
+	}
+
+	// }}}
 	// {{{ public function getEarnedCMECreditHours()
 
 	public function getEarnedCMECreditHours()
@@ -197,19 +214,21 @@ abstract class CMEAccount extends StoreAccount
 			SwatDBClassMap::get('CMECreditWrapper')
 		);
 
-		$front_matters = $credits->loadAllSubDataObjects(
-			'front_matter',
-			$this->db,
-			'select * from CMEFrontMatter where id in(%s)',
-			SwatDBClassMap::get('CMEFrontMatterWrapper')
-		);
+		if ($credits instanceof CMECreditWrapper) {
+			$front_matters = $credits->loadAllSubDataObjects(
+				'front_matter',
+				$this->db,
+				'select * from CMEFrontMatter where id in(%s)',
+				SwatDBClassMap::get('CMEFrontMatterWrapper')
+			);
 
-		$providers = $front_matters->loadAllSubDataObjects(
-			'provider',
-			$this->db,
-			'select * from CMEProvider where id in(%s)',
-			SwatDBClassMap::get('CMEProviderWrapper')
-		);
+			$providers = $front_matters->loadAllSubDataObjects(
+				'provider',
+				$this->db,
+				'select * from CMEProvider where id in(%s)',
+				SwatDBClassMap::get('CMEProviderWrapper')
+			);
+		}
 
 		return $earned_credits;
 	}
@@ -242,19 +261,21 @@ abstract class CMEAccount extends StoreAccount
 			SwatDBClassMap::get('CMECreditWrapper')
 		);
 
-		$front_matters = $credits->loadAllSubDataObjects(
-			'front_matter',
-			$this->db,
-			'select * from CMEFrontMatter where id in(%s)',
-			SwatDBClassMap::get('CMEFrontMatterWrapper')
-		);
+		if ($credits instanceof CMECreditWrapper) {
+			$front_matters = $credits->loadAllSubDataObjects(
+				'front_matter',
+				$this->db,
+				'select * from CMEFrontMatter where id in(%s)',
+				SwatDBClassMap::get('CMEFrontMatterWrapper')
+			);
 
-		$providers = $front_matters->loadAllSubDataObjects(
-			'provider',
-			$this->db,
-			'select * from CMEProvider where id in(%s)',
-			SwatDBClassMap::get('CMEProviderWrapper')
-		);
+			$providers = $front_matters->loadAllSubDataObjects(
+				'provider',
+				$this->db,
+				'select * from CMEProvider where id in(%s)',
+				SwatDBClassMap::get('CMEProviderWrapper')
+			);
+		}
 
 		return $credits;
 	}
