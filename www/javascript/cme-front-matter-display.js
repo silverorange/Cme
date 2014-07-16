@@ -55,7 +55,7 @@ CMEFrontMatterDisplay.prototype.init = function()
 		document.createTextNode(CMEFrontMatterDisplay.cancel_text)
 	);
 	cancel_button.className =
-		'btn btn-warning cme-front-matter-display-cancel-button';
+		'btn btn-default cme-front-matter-display-cancel-button';
 
 	YAHOO.util.Event.on(cancel_button, 'click', function(e) {
 		var base = document.getElementsByTagName('base')[0];
