@@ -123,7 +123,7 @@ class CMEFrontMatterDisplay extends SwatControl
 			"CMEFrontMatterDisplay.accept_text = %s;\n".
 			"CMEFrontMatterDisplay.cancel_text = %s;\n".
 			"CMEFrontMatterDisplay.confirm_text = %s;\n",
-			SwatString::quoteJavaScriptString($acept_text),
+			SwatString::quoteJavaScriptString($accept_text),
 			SwatString::quoteJavaScriptString($cancel_text),
 			SwatString::quoteJavaScriptString($confirm_text)
 		);
