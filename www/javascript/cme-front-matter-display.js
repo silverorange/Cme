@@ -231,6 +231,8 @@ CMEFrontMatterDisplay.prototype.close = function()
 			'cme-front-matter-display-hidden'
 		);
 	}
+
+	YAHOO.util.Event.removeListener(window, 'resize', this.handleResize);
 };
 
 CMEFrontMatterDisplay.prototype.submitCMEPiece = function()
