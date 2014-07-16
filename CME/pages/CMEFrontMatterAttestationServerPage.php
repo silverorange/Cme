@@ -87,7 +87,13 @@ class CMEFrontMatterAttestationServerPage extends SiteArticlePage
 				return $this->getErrorResponse('CME front matter not found.');
 			}
 
-			$this->saveAccountAttestedCMEFrontMatter($account, $front_matter);
+			// only save on a POST request
+			if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+				$this->saveAccountAttestedCMEFrontMatter(
+					$account,
+					$front_matter
+				);
+			}
 
 			$transaction->commit();
 		} catch (Exception $e) {
