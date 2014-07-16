@@ -1,12 +1,18 @@
 function CMEFrontMatterDisplay(id, class_name, server, title, content,
 	cancel_uri)
 {
-	this.id         = id;
-	this.class_name = class_name;
-	this.server     = server;
-	this.content    = content;
-	this.title      = title;
-	this.cancel_uri = cancel_uri;
+	this.id          = id;
+	this.class_name  = class_name;
+	this.server      = server;
+	this.content     = content;
+	this.title       = title;
+	this.cancel_uri  = cancel_uri;
+	this.scroll_top  = null;
+	this.body_hidden = false;
+
+	this.media_query = (window.matchMedia)
+		? window.matchMedia('(min-width: 768px)')
+		: { matches: false };
 
 	YAHOO.util.Event.onDOMReady(this.init, this, true);
 }
@@ -71,12 +77,16 @@ CMEFrontMatterDisplay.prototype.init = function()
 	this.scroll_content.style.height =
 		(YAHOO.util.Dom.getViewportHeight() - 200) + 'px';
 
+	var wrapper = document.createElement('div');
+	wrapper.className = 'cme-front-matter-display-wrapper';
+	wrapper.appendChild(this.header);
+	wrapper.appendChild(this.scroll_content);
+	wrapper.appendChild(this.footer);
+
 	this.container = document.createElement('div');
 	this.container.id = this.id;
 	this.container.className = this.class_name;
-	this.container.appendChild(this.header);
-	this.container.appendChild(this.scroll_content);
-	this.container.appendChild(this.footer);
+	this.container.appendChild(wrapper);
 
 	this.overlay = document.createElement('div');
 	this.overlay.className = 'cme-front-matter-display-overlay';
@@ -117,35 +127,110 @@ CMEFrontMatterDisplay.prototype.handleResize = function(e)
 		padding
 	) + 'px';
 
+	if (this.media_query.matches) {
+		if (this.body_hidden) {
+			// show all body children again
+			var children = Dom.getChildren(document.body);
+			for (var i = 0; i < children.length; i++) {
+				Dom.removeClass(
+					children[i],
+					'cme-front-matter-display-hidden'
+				);
+			}
+
+			// restore scroll position
+			window.scrollTo(0, this.scroll_top);
+
+			this.body_hidden = false;
+		}
+	} else {
+		if (!this.body_hidden) {
+			// save scroll position for when we close the display
+			this.scroll_top = Dom.getDocumentScrollTop();
+
+			// hide all body children
+			var children = Dom.getChildren(document.body);
+			for (var i = 0; i < children.length; i++) {
+				if (children[i] !== this.container) {
+					Dom.addClass(
+						children[i],
+						'cme-front-matter-display-hidden'
+					);
+				}
+			}
+
+			window.scrollTo(0, 0);
+
+			this.body_hidden = true;
+		}
+	}
+
 	this.overlay.style.height = Dom.getDocumentHeight() + 'px';
 };
 
 CMEFrontMatterDisplay.prototype.close = function()
 {
-	var animation = new YAHOO.util.Anim(
-		this.container,
-		{ opacity: { to: 0 }, top: { to: -100 } },
-		0.25,
-		YAHOO.util.Easing.easeIn);
-
-	animation.onComplete.subscribe(function() {
-
-		this.container.style.display = 'none';
+	if (this.media_query.matches) {
 		var animation = new YAHOO.util.Anim(
-			this.overlay,
-			{ opacity: { to: 0 } },
+			this.container,
+			{ opacity: { to: 0 }, top: { to: -100 } },
 			0.25,
-			YAHOO.util.Easing.easeOut);
+			YAHOO.util.Easing.easeIn
+		);
 
 		animation.onComplete.subscribe(function() {
-			this.overlay.style.display = 'none';
+
+			YAHOO.util.Dom.addClass(
+				this.container,
+				'cme-front-matter-display-hidden'
+			);
+
+			var animation = new YAHOO.util.Anim(
+				this.overlay,
+				{ opacity: { to: 0 } },
+				0.25,
+				YAHOO.util.Easing.easeOut
+			);
+
+			animation.onComplete.subscribe(function() {
+				YAHOO.util.Dom.addClass(
+					this.overlay,
+					'cme-front-matter-display-hidden'
+				);
+			}, this, true);
+
+			animation.animate();
+
 		}, this, true);
 
 		animation.animate();
+	} else {
+		if (this.body_hidden) {
+			// show all body children again
+			var children = Dom.getChildren(document.body);
+			for (var i = 0; i < children.length; i++) {
+				Dom.removeClass(
+					children[i],
+					'cme-front-matter-display-hidden'
+				);
+			}
 
-	}, this, true);
+			// restore scroll position
+			window.scrollTo(0, this.scroll_top);
 
-	animation.animate();
+			this.body_hidden = false;
+		}
+
+		YAHOO.util.Dom.addClass(
+			this.overlay,
+			'cme-front-matter-display-hidden'
+		);
+
+		YAHOO.util.Dom.addClass(
+			this.container,
+			'cme-front-matter-display-hidden'
+		);
+	}
 };
 
 CMEFrontMatterDisplay.prototype.submitCMEPiece = function()
