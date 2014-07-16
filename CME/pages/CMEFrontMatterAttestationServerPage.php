@@ -62,7 +62,7 @@ class CMEFrontMatterAttestationServerPage extends SiteArticlePage
 			$this->app->db->quote(true, 'boolean')
 		);
 
-		return SwatBD::query(
+		return SwatDB::query(
 			$this->app->db,
 			$sql,
 			SwatDBClassMap::get('CMEFrontMatterWrapper')
