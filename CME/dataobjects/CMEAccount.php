@@ -21,7 +21,7 @@ abstract class CMEAccount extends StoreAccount
 	abstract public function hasCMEAccess();
 
 	// }}}
-	// {{{ public function hasCMEAttested()
+	// {{{ public function hasAttested()
 
 	public function hasAttested(CMEFrontMatter $front_matter)
 	{
