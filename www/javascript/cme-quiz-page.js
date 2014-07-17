@@ -220,14 +220,14 @@ proto.drawIntroPage = function()
 	var last_completed = (this.validate(this.question_els.length - 1));
 
 	var page = document.getElementById('quiz_info');
-	Dom.addClass(page, 'quiz-page');
+	Dom.addClass(page, 'quiz-page quiz-page-intro');
 
 	var footer = document.createElement('div');
-	footer.id = 'quiz_intro_footer';
+	footer.className = 'quiz-intro-footer';
 
 	this.continue_button = document.createElement('input');
 	this.continue_button.type = 'button';
-	this.continue_button.className = 'quiz-button quiz-button-continue button';
+	this.continue_button.className = 'btn btn-primary quiz-button-continue';
 
 	if (!started) {
 		this.continue_button.value = CMEQuizPage.start_text;
@@ -279,7 +279,7 @@ proto.drawIntroPage = function()
 proto.drawQuizPage = function()
 {
 	var page = document.createElement('div');
-	page.className = 'quiz-page';
+	page.className = 'quiz-page quiz-page-quiz';
 	page.id = 'quiz_quiz_page';
 
 	this.quiz_status_line = document.createElement('div');
@@ -300,7 +300,7 @@ proto.drawQuizPage = function()
 	);
 
 	var header = document.createElement('div');
-	header.id = 'quiz_header';
+	header.className = 'quiz-header';
 	header.appendChild(intro_link);
 	header.appendChild(this.quiz_status_line);
 
@@ -309,7 +309,7 @@ proto.drawQuizPage = function()
 	header.appendChild(clear);
 
 	this.next_button = document.createElement('input');
-	this.next_button.className = 'swat-button quiz-button quiz-button-next button';
+	this.next_button.className = 'btn btn-primary quiz-button-next';
 	this.next_button.type = 'button';
 	this.next_button.value = CMEQuizPage.next_text;
 	Event.on(this.next_button, 'click', function(e) {
@@ -318,7 +318,7 @@ proto.drawQuizPage = function()
 	}, this, true);
 
 	this.prev_button = document.createElement('input');
-	this.prev_button.className = 'swat-button quiz-button quiz-button-prev';
+	this.prev_button.className = 'btn btn-default quiz-button-prev';
 	this.prev_button.type = 'button';
 	this.prev_button.value = CMEQuizPage.previous_text;
 	Event.on(this.prev_button, 'click', function(e) {
@@ -348,7 +348,7 @@ proto.drawReviewPage = function()
 {
 	var page = document.createElement('div');
 	page.id = 'quiz_review_page';
-	page.className = 'quiz-page';
+	page.className = 'quiz-page quiz-page-review';
 
 	var intro_link = document.createElement('a');
 	intro_link.className = 'quiz-intro-link';
@@ -365,11 +365,11 @@ proto.drawReviewPage = function()
 	);
 
 	var header = document.createElement('div');
-	header.id = 'quiz_review_header';
+	header.className = 'quiz-review-header';
 	header.appendChild(intro_link);
 
 	var content = document.createElement('ol');
-	content.id = 'quiz_review_content';
+	content.className = 'quiz-review-content';
 
 	var li, question_text, question_answer, change_link, clear;
 	var that = this;
@@ -413,10 +413,11 @@ proto.drawReviewPage = function()
 	}
 
 	this.review_status = document.createElement('div');
-	this.review_status.id = 'quiz_review_status';
+	this.review_status.className = 'quiz-review-status';
 
 	this.submit_button = document.getElementById('submit_button');
-	Dom.addClass(this.submit_button, 'quiz-button');
+	Dom.addClass(this.submit_button, 'btn');
+	Dom.addClass(this.submit_button, 'btn-primary');
 	Dom.addClass(this.submit_button, 'quiz-button-submit');
 	this.submit_button.value = CMEQuizPage.submit_text;
 	Event.on(this.submit_button, 'click', function(e) {
@@ -465,7 +466,7 @@ proto.drawDialog = function()
 	header.appendChild(this.dialog_title);
 
 	var close = document.createElement('input');
-	close.className = 'swat-button button';
+	close.className = 'btn btn-primary quiz-button-dialog-close';
 	close.type = 'button';
 	close.value = CMEQuizPage.close_text;
 	Event.on(close, 'click', this.closeDialog, this, true);
@@ -716,7 +717,8 @@ proto.updateReviewPage = function()
 		if (answered) {
 			Dom.addClass(answer.parentNode, 'answered');
 			Dom.removeClass(answer.parentNode, 'unanswered');
-			Dom.removeClass(link, 'button');
+			Dom.removeClass(link, 'btn-primary');
+			Dom.addClass(link, 'btn-default');
 			link.appendChild(
 				document.createTextNode(
 					CMEQuizPage.change_text
@@ -726,7 +728,8 @@ proto.updateReviewPage = function()
 			unanswered.push(i);
 			Dom.removeClass(answer.parentNode, 'answered');
 			Dom.addClass(answer.parentNode, 'unanswered');
-			Dom.addClass(link, 'button');
+			Dom.removeClass(link, 'btn-default');
+			Dom.addClass(link, 'btn-primary');
 			link.appendChild(
 				document.createTextNode(
 					CMEQuizPage.answer_text
