@@ -793,7 +793,7 @@ abstract class CMEQuizPage extends SiteDBEditPage
 
 		$javascript = '';
 		foreach ($strings as $key => $text) {
-			$javscript.= sprintf(
+			$javascript.= sprintf(
 				"CMEQuizPage.%s = %s;\n",
 				$key,
 				SwatString::quoteJavaScriptString($text)
