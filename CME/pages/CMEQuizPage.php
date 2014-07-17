@@ -446,11 +446,6 @@ abstract class CMEQuizPage extends SiteDBEditPage
 	}
 
 	// }}}
-	// {{{ abstract protected function relocate()
-
-	abstract protected function relocate(SwatForm $form);
-
-	// }}}
 	// {{{  protected function relocateToCertificate()
 
 	 protected function relocateToCertificate()
