@@ -371,7 +371,7 @@ proto.drawReviewPage = function()
 	var content = document.createElement('ol');
 	content.className = 'quiz-review-content';
 
-	var li, question_text, question_answer, change_button, clear;
+	var li, question_text, question_answer, change_button;
 	var that = this;
 	for (var i = 0; i < this.question_els.length; i++) {
 		li = document.createElement('li');
@@ -400,13 +400,9 @@ proto.drawReviewPage = function()
 			}, that, true);
 		})();
 
-		clear = document.createElement('div');
-		clear.style.clear = 'both';
-
 		li.appendChild(question_text);
 		li.appendChild(change_button);
 		li.appendChild(question_answer);
-		li.appendChild(clear);
 
 		content.appendChild(li);
 	}
