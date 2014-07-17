@@ -400,8 +400,8 @@ proto.drawReviewPage = function()
 			}, that, true);
 		})();
 
-		li.appendChild(question_text);
 		li.appendChild(change_button);
+		li.appendChild(question_text);
 		li.appendChild(question_answer);
 
 		content.appendChild(li);
@@ -683,11 +683,11 @@ proto.updateQuizPage = function(question_index)
 proto.updateReviewPage = function()
 {
 	var unanswered = [];
-	var answer, answered, link;
+	var answer, answered, change_button;
 	for (var i = 0; i < this.question_els.length; i++) {
 		answered = false;
 		answer = this.question_review_answers[i];
-		link = answer.previousSibling;
+		change_button = answer.previousSibling.previousSibling;
 		for (var j = 0; j < this.question_options[i].length; j++) {
 			if (this.question_options[i][j].checked) {
 				answer.innerHTML = this.question_labels[i][j].innerHTML;
@@ -696,16 +696,16 @@ proto.updateReviewPage = function()
 			}
 		}
 
-		while (link.firstChild) {
-			link.removeChild(link.firstChild);
+		while (change_button.firstChild) {
+			change_button.removeChild(change_button.firstChild);
 		}
 
 		if (answered) {
 			Dom.addClass(answer.parentNode, 'answered');
 			Dom.removeClass(answer.parentNode, 'unanswered');
-			Dom.removeClass(link, 'btn-primary');
-			Dom.addClass(link, 'btn-default');
-			link.appendChild(
+			Dom.removeClass(change_button, 'btn-primary');
+			Dom.addClass(change_button, 'btn-default');
+			change_button.appendChild(
 				document.createTextNode(
 					CMEQuizPage.change_text
 				)
@@ -714,9 +714,9 @@ proto.updateReviewPage = function()
 			unanswered.push(i);
 			Dom.removeClass(answer.parentNode, 'answered');
 			Dom.addClass(answer.parentNode, 'unanswered');
-			Dom.removeClass(link, 'btn-default');
-			Dom.addClass(link, 'btn-primary');
-			link.appendChild(
+			Dom.removeClass(change_button, 'btn-default');
+			Dom.addClass(change_button, 'btn-primary');
+			change_button.appendChild(
 				document.createTextNode(
 					CMEQuizPage.answer_text
 				)
