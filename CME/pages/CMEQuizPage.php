@@ -630,10 +630,8 @@ abstract class CMEQuizPage extends SiteDBEditPage
 		);
 
 		printf(
-			CME::_(
-				'A grade of %s is required',
-				$grade_span
-			)
+			CME::_('A grade of %s is required'),
+			$grade_span
 		);
 
 		echo '</div>';
