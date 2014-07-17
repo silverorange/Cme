@@ -925,6 +925,7 @@ proto.resizePage = function(old_page, new_page)
 	anim.onComplete.subscribe(function() {
 		this.fadeInPage(old_page, new_page);
 		this.page_container.style.height = 'auto';
+		this.page_container.style.overflow = 'visible';
 	}, this, true);
 
 	anim.animate();
