@@ -777,7 +777,7 @@ abstract class CMEQuizPage extends SiteDBEditPage
 			'review_status_text_0'        => CME::_(
 				'All questions are answered.'
 			),
-			'review_status_text_1'        => CME::_('%s is not answered'),
+			'review_status_text_1'        => CME::_('%s is not answered.'),
 			'review_status_text_2_to_5'   => CME::_('%s are unanswered.'),
 			'review_status_text_many'     => CME::_(
 				'%s questions are unanswered.'
