@@ -138,7 +138,7 @@ abstract class CMEQuizPage extends SiteDBEditPage
 			$this->app->db->quote(true, 'boolean')
 		);
 
-		$this->credit = SwatBD::query(
+		$this->credit = SwatDB::query(
 			$this->app->db,
 			$sql,
 			SwatDBClassMap::get('CMECreditWrapper')
