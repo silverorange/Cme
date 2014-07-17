@@ -11,7 +11,8 @@ require_once 'CME/dataobjects/CMECredit.php';
  * @copyright 2011-2014 silverorange
  * @license   http://www.opensource.org/licenses/mit-license.html MIT License
  */
-abstract class CMECreditCompleteMailMessage extends AccountMailMessage
+abstract class CMECreditCompleteMailMessage extends
+	SiteReplacementMarkerMailMessage
 {
 	// {{{ protected properties
 
