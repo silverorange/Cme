@@ -371,7 +371,7 @@ proto.drawReviewPage = function()
 	var content = document.createElement('ol');
 	content.className = 'quiz-review-content';
 
-	var li, question_text, question_answer, change_link, clear;
+	var li, question_text, question_answer, change_button, clear;
 	var that = this;
 	for (var i = 0; i < this.question_els.length; i++) {
 		li = document.createElement('li');
@@ -384,10 +384,10 @@ proto.drawReviewPage = function()
 		question_answer.className = 'quiz-review-answer';
 		this.question_review_answers.push(question_answer);
 
-		change_link = document.createElement('a');
-		change_link.href = '#change';
-		change_link.className = 'swat-button quiz-review-change';
-		change_link.appendChild(
+		change_button = document.createElement('button');
+		change_button.type = 'button';
+		change_button.className = 'btn btn-default btn-xs quiz-review-change';
+		change_button.appendChild(
 			document.createTextNode(
 				CMEQuizPage.change_text
 			)
@@ -395,8 +395,7 @@ proto.drawReviewPage = function()
 
 		(function () {
 			var index = i;
-			Event.on(change_link, 'click', function(e) {
-				Event.preventDefault(e);
+			Event.on(change_button, 'click', function(e) {
 				this.openDialog(index);
 			}, that, true);
 		})();
@@ -405,7 +404,7 @@ proto.drawReviewPage = function()
 		clear.style.clear = 'both';
 
 		li.appendChild(question_text);
-		li.appendChild(change_link);
+		li.appendChild(change_button);
 		li.appendChild(question_answer);
 		li.appendChild(clear);
 
