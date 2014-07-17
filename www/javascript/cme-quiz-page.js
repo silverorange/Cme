@@ -133,15 +133,9 @@ proto.initQuestions = function()
 						Dom.addClass(li, 'selected');
 					}
 
-					// add saving image
-					var img = document.createElement('img');
-					img.src = 'images/elements/quiz-saving.gif';
-					img.width = '16';
-					img.height = '16';
-
 					var message = document.createElement('span');
 					message.className = 'question-saved-message';
-					message.appendChild(img);
+					message.appendChild(document.createTextNode(''));
 					li.insertBefore(message, n.parentNode.nextSibling);
 					this.question_option_messages[n.id] = message;
 
