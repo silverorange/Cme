@@ -117,7 +117,7 @@ abstract class CMEEvaluationPage extends SiteDBEditPage
 			$this->app->db->quote(true, 'boolean')
 		);
 
-		$this->front_matter = SwatBD::query(
+		$this->front_matter = SwatDB::query(
 			$this->app->db,
 			$sql,
 			SwatDBClassMap::get('CMEFrontMatterWrapper')
