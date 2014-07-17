@@ -846,7 +846,7 @@ proto.updateReviewPage = function()
 
 		this.review_status.appendChild(
 			document.createTextNode(' ' +
-				CMEQuizPage.review_status_required
+				CMEQuizPage.review_status_required_text
 			)
 		);
 
