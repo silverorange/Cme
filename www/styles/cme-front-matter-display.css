@@ -18,3 +18,7 @@
 	top: 0;
 	left: 0;
 }
+
+.cme-front-matter-display-hidden {
+	display: none;
+}
