@@ -425,14 +425,9 @@ proto.drawReviewPage = function()
 	}, this, true);
 
 	var footer = document.createElement('div');
-	footer.id = 'quiz_review_footer';
 	footer.className = 'quiz-review-footer';
-	footer.appendChild(this.review_status);
 	footer.appendChild(this.submit_button);
-
-	clear = document.createElement('div');
-	clear.style.clear = 'both';
-	footer.appendChild(clear);
+	footer.appendChild(this.review_status);
 
 	page.appendChild(header);
 	page.appendChild(content);
@@ -473,10 +468,6 @@ proto.drawDialog = function()
 	var footer = document.createElement('div');
 	footer.className = 'quiz-question-dialog-footer';
 	footer.appendChild(close);
-
-	var clear = document.createElement('div');
-	clear.style.clear = 'both';
-	footer.appendChild(clear);
 
 	this.dialog_content = document.createElement('div');
 	this.dialog_content.className = 'quiz-question-dialog-content';
