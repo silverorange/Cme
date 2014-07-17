@@ -11,6 +11,7 @@ require_once 'Inquisition/dataobjects/InquisitionQuestionWrapper.php';
 require_once 'Inquisition/dataobjects/InquisitionQuestionOptionWrapper.php';
 require_once 'CME/CMECreditCompleteMailMessage.php';
 require_once 'CME/dataobjects/CMEQuiz.php';
+require_once 'CME/dataobjects/CMECreditWrapper.php';
 
 /**
  * @package   CME
