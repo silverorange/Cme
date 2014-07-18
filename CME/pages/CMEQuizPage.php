@@ -577,13 +577,13 @@ abstract class CMEQuizPage extends SiteDBEditPage
 				echo '</p>';
 
 				$certificate_link = new SwatHtmlTag('a');
-				$certificate_link->class = 'button';
+				$certificate_link->class = 'btn btn-primary';
 				$certificate_link->href = $this->getCertificateURI();
 				$certificate_link->setContent(CME::_('Print Certificate'));
 				$certificate_link->display();
 			} else {
 				$evaluation_link = new SwatHtmlTag('a');
-				$evaluation_link->class = 'button';
+				$evaluation_link->class = 'btn btn-primary';
 				$evaluation_link->href = $this->getEvaluationURI();
 				$evaluation_link->setContent(CME::_('Complete Evaluation'));
 				$evaluation_link->display();
@@ -865,9 +865,19 @@ abstract class CMEQuizPage extends SiteDBEditPage
 			}
 			$question_li->open();
 
-			echo $question->bodytext;
+			$icon = new SwatHtmlTag('span');
+			$icon->class = 'quiz-response-question-icon glyphicon';
+			if ($correct) {
+				$icon->class.= ' glyphicon-ok';
+			} else {
+				$icon->class.= ' glyphicon-remove';
+			}
+			$icon->setContent('');
+			$icon->display();
 
-			echo '<span class="quiz-response-question-icon"></span>';
+			echo '<div class="quiz-question-question">';
+			echo $question->bodytext;
+			echo '</div>';
 
 			echo '<dl class="quiz-question-options">';
 
