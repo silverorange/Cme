@@ -9,6 +9,8 @@ require_once 'CME/CME.php';
 require_once 'CME/dataobjects/CMEEvaluationWrapper.php';
 require_once 'CME/dataobjects/CMEFrontMatterWrapper.php';
 require_once 'CME/dataobjects/CMEEvaluationResponse.php';
+require_once 'CME/dataobjects/CMEAccountEarnedCMECredit.php';
+require_once 'CME/dataobjects/CMEAccountEarnedCMECreditWrapper.php';
 
 /**
  * @package   CME
