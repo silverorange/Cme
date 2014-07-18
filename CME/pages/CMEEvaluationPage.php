@@ -312,6 +312,9 @@ abstract class CMEEvaluationPage extends SiteDBEditPage
 
 	protected function saveEarnedCredits()
 	{
+		$now = new SwatDate();
+		$now->toUTC();
+
 		$account = $this->app->session->account;
 		$wrapper = SwatDBClassMap::get('CMEAccountEarnedCMECreditWrapper');
 		$class_name = SwatDBClassMap::get('CMEAccountEarnedCMECredit');
