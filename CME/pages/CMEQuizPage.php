@@ -177,23 +177,25 @@ abstract class CMEQuizPage extends SiteDBEditPage
 				SwatDBClassMap::get('InquisitionQuestionWrapper')
 			);
 
-			// efficiently load correct options
-			$questions->loadAllSubDataObjects(
-				'correct_option',
-				$this->app->db,
-				'select * from InquisitionQuestionOption where id in (%s)',
-				SwatDBClassMap::get('InquisitionQuestionOptionWrapper')
-			);
+			if ($questions instanceof InquisitionQuestionWrapper) {
+				// efficiently load correct options
+				$questions->loadAllSubDataObjects(
+					'correct_option',
+					$this->app->db,
+					'select * from InquisitionQuestionOption where id in (%s)',
+					SwatDBClassMap::get('InquisitionQuestionOptionWrapper')
+				);
 
-			// efficiently load question options
-			$questions->loadAllSubRecordsets(
-				'options',
-				SwatDBClassMap::get('InquisitionQuestionOptionWrapper'),
-				'InquisitionQuestionOption',
-				'question',
-				'',
-				'displayorder, id'
-			);
+				// efficiently load question options
+				$questions->loadAllSubRecordsets(
+					'options',
+					SwatDBClassMap::get('InquisitionQuestionOptionWrapper'),
+					'InquisitionQuestionOption',
+					'question',
+					'',
+					'displayorder, id'
+				);
+			}
 
 			$this->addCacheValue($this->quiz, $this->getCacheKey());
 		} else {
