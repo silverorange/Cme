@@ -936,6 +936,8 @@ abstract class CMEQuizPage extends SiteDBEditPage
 	{
 		parent::finalize();
 
+		$this->layout->addBodyClass('cme-quiz-page');
+
 		$yui = new SwatYUI(array(
 			'dom',
 			'event',
