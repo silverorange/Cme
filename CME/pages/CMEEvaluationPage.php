@@ -8,6 +8,7 @@ require_once 'Inquisition/dataobjects/InquisitionQuestionOptionWrapper.php';
 require_once 'CME/CME.php';
 require_once 'CME/dataobjects/CMEEvaluationWrapper.php';
 require_once 'CME/dataobjects/CMEFrontMatterWrapper.php';
+require_once 'CME/dataobjects/CMEEvaluationResponse.php';
 
 /**
  * @package   CME
@@ -29,7 +30,7 @@ abstract class CMEEvaluationPage extends SiteDBEditPage
 	protected $evaluation;
 
 	/**
-	 * @var InquisitionResponse
+	 * @var CMEEvaluationResponse
 	 */
 	protected $inquisition_response;
 
@@ -233,7 +234,7 @@ abstract class CMEEvaluationPage extends SiteDBEditPage
 		$value = null;
 
 		// get response value if it exists
-		if ($this->inquisition_response instanceof InquisitionResponse) {
+		if ($this->inquisition_response instanceof CMEEvaluationResponse) {
 			$binding_id = $question_binding->id;
 
 			if (isset($this->response_values_by_binding_id[$binding_id])) {
@@ -252,7 +253,7 @@ abstract class CMEEvaluationPage extends SiteDBEditPage
 		$response = $this->inquisition_response;
 
 		return (
-			$response instanceof InquisitionResponse &&
+			$response instanceof CMEEvaluationResponse &&
 			$response->complete_date instanceof SwatDate
 		);
 	}
@@ -264,7 +265,7 @@ abstract class CMEEvaluationPage extends SiteDBEditPage
 
 	protected function saveData(SwatForm $form)
 	{
-		$class = SwatDBClassMap::get('InquisitionResponse');
+		$class = SwatDBClassMap::get('CMEEvaluationResponse');
 		$this->inquisition_response = new $class();
 		$this->inquisition_response->setDatabase($this->app->db);
 
