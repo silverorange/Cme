@@ -84,6 +84,11 @@ abstract class CMEEvaluationPage extends SiteDBEditPage
 	abstract protected function getCertificateURI();
 
 	// }}}
+	// {{{ abstract protected function getTitle()
+
+	abstract protected function getTitle();
+
+	// }}}
 
 	// init phase
 	// {{{ protected function initInternal()
