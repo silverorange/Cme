@@ -232,7 +232,7 @@ proto.drawIntroPage = function()
 	footer.className = 'quiz-intro-footer';
 
 	this.continue_button = document.createElement('input');
-	this.continue_button.type = 'button';
+	this.continue_button.setAttribute('type', 'button');
 	this.continue_button.className = 'btn btn-primary quiz-button-continue';
 
 	if (!started) {
@@ -316,7 +316,7 @@ proto.drawQuizPage = function()
 
 	this.next_button = document.createElement('input');
 	this.next_button.className = 'btn btn-primary quiz-button-next';
-	this.next_button.type = 'button';
+	this.next_button.setAttribute('type', 'button');
 	this.next_button.value = CMEQuizPage.next_text;
 	Event.on(this.next_button, 'click', function(e) {
 		Event.preventDefault(e);
@@ -325,7 +325,7 @@ proto.drawQuizPage = function()
 
 	this.prev_button = document.createElement('input');
 	this.prev_button.className = 'btn btn-default quiz-button-prev';
-	this.prev_button.type = 'button';
+	this.prev_button.setAttribute('type', 'button');
 	this.prev_button.value = CMEQuizPage.previous_text;
 	Event.on(this.prev_button, 'click', function(e) {
 		Event.preventDefault(e);
@@ -391,7 +391,7 @@ proto.drawReviewPage = function()
 		this.question_review_answers.push(question_answer);
 
 		change_button = document.createElement('button');
-		change_button.type = 'button';
+		change_button.setAttribute('type', 'button');
 		change_button.className = 'btn btn-default btn-xs quiz-review-change';
 		change_button.appendChild(
 			document.createTextNode(
@@ -461,7 +461,7 @@ proto.drawDialog = function()
 
 	var close = document.createElement('input');
 	close.className = 'btn btn-primary quiz-button-dialog-close';
-	close.type = 'button';
+	close.setAttribute('type', 'button');
 	close.value = CMEQuizPage.close_text;
 	Event.on(close, 'click', this.closeDialog, this, true);
 

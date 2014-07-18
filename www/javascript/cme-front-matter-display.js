@@ -37,7 +37,7 @@ CMEFrontMatterDisplay.prototype.init = function()
 	);
 
 	var continue_button = document.createElement('button');
-	continue_button.type = 'button';
+	continue_button.setAttribute('type', 'button');
 	continue_button.appendChild(
 		document.createTextNode(CMEFrontMatterDisplay.accept_text)
 	);
@@ -50,7 +50,7 @@ CMEFrontMatterDisplay.prototype.init = function()
 	}, this, true);
 
 	var cancel_button = document.createElement('button');
-	cancel_button.type = 'button';
+	cancel_button.setAttribute('type', 'button');
 	cancel_button.appendChild(
 		document.createTextNode(CMEFrontMatterDisplay.cancel_text)
 	);
