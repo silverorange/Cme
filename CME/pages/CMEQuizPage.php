@@ -378,8 +378,6 @@ abstract class CMEQuizPage extends SiteDBEditPage
 		// clear CME hours cache for this account
 		$key = 'cme-hours-'.$this->app->session->account->id;
 		$this->app->deleteCacheValue($key, 'cme-hours');
-
-		$this->sendCompletionEmail();
 	}
 
 	// }}}
@@ -400,6 +398,8 @@ abstract class CMEQuizPage extends SiteDBEditPage
 			$earned_credit->earned_date = $now;
 
 			$earned_credit->save();
+
+			$this->sendCompletionEmail();
 		}
 	}
 
@@ -435,7 +435,8 @@ abstract class CMEQuizPage extends SiteDBEditPage
 	protected function sendCompletionEmail()
 	{
 		try {
-			$message = new CMECreditCompleteMailMessage(
+			$class_name = $this->getCompletionEmailClass();
+			$message = new $class_name(
 				$this->app,
 				$this->app->session->account,
 				$this->credit,
@@ -462,6 +463,11 @@ abstract class CMEQuizPage extends SiteDBEditPage
 	 {
 		 $this->app->relocate($this->getEvaluationURI());
 	 }
+
+	// }}}
+	// {{{ abstract protected function getCompletionEmailClass()
+
+	abstract protected function getCompletionEmailClass();
 
 	// }}}
 
