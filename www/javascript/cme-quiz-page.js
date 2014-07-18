@@ -8,6 +8,12 @@ function CMEQuizPage(el, response_server, current_question)
 	this.dialog_question        = null;
 	this.dialog_question_index  = null;
 	this.is_submitted           = false;
+	this.body_hidden            = false;
+	this.scroll_top             = 0;
+
+	this.media_query = (window.matchMedia)
+		? window.matchMedia('(min-width: 768px)')
+		: { matches: false };
 
 	YAHOO.util.Event.onDOMReady(function() {
 		this.initQuestions();
@@ -446,8 +452,6 @@ proto.drawDialog = function()
 		this.closeDialog();
 	}, this, true);
 
-	SwatZIndexManager.raiseElement(mask);
-
 	this.dialog_title = document.createElement('span');
 	this.dialog_title.className = 'quiz-question-dialog-title';
 
@@ -473,8 +477,6 @@ proto.drawDialog = function()
 	this.dialog.appendChild(header);
 	this.dialog.appendChild(this.dialog_content);
 	this.dialog.appendChild(footer);
-
-	SwatZIndexManager.raiseElement(this.dialog);
 
 	this.overlay = document.createElement('div');
 	this.overlay.className = 'quiz-question-overlay';
@@ -530,6 +532,12 @@ proto.openDialog = function(question_index)
 		this.dialog_question
 	);
 
+	// set z-indexes
+	SwatZIndexManager.raiseElement(this.overlay);
+	SwatZIndexManager.raiseElement(this.overlay.firstChild);
+	SwatZIndexManager.raiseElement(this.dialog);
+	SwatZIndexManager.raiseElement(this.dialog.firstChild);
+
 	this.dialog_content.appendChild(this.dialog_question);
 	this.dialog_question.style.display = 'block';
 
@@ -539,16 +547,12 @@ proto.openDialog = function(question_index)
 	this.dialog.style.filter = '';
 
 	this.overlay.style.display = 'block';
-	this.overlay.style.height = Dom.getDocumentHeight() + 'px';
 
-	var region   = Dom.getRegion(this.dialog);
-	var height   = region.bottom - region.top;
-	var viewport = Dom.getViewportHeight();
-	var scroll   = Dom.getDocumentScrollTop();
-	this.dialog.style.top =
-		(parseInt((viewport - height) / 3, 10) + scroll) + 'px';
+	this.handleResize();
 
 	this.focusQuestion(question_index);
+
+	Event.on(window, 'resize', this.handleResize, this, true);
 };
 
 // }}}
@@ -556,16 +560,7 @@ proto.openDialog = function(question_index)
 
 proto.closeDialog = function()
 {
-	var anim = new Anim(
-		this.dialog,
-		{ opacity: { to: 0 } },
-		CMEQuizPage.dialog_fade_period,
-		Easing.easeOut
-	);
-
-	anim.onComplete.subscribe(function() {
-		this.updateReviewPage();
-
+	function reinsertQuestion() {
 		if (this.dialog_question !== null) {
 			// if it's not the current question, hide it again
 			if (this.current_question !== this.dialog_question_index) {
@@ -581,14 +576,103 @@ proto.closeDialog = function()
 		}
 
 		this.dialog_question_index = null;
+	}
 
-		// reset filter for IE to prevent rendering bugs.
-		this.dialog.style.filter = '';
+	if (this.media_query.matches) {
+		var anim = new Anim(
+			this.dialog,
+			{ opacity: { to: 0 } },
+			CMEQuizPage.dialog_fade_period,
+			Easing.easeOut
+		);
 
+		anim.onComplete.subscribe(function() {
+			this.updateReviewPage();
+
+			reinsertQuestion.call(this);
+
+			// reset filter for IE to prevent rendering bugs.
+			this.dialog.style.filter = '';
+
+			this.overlay.style.display = 'none';
+		}, this, true);
+
+		anim.animate();
+	} else {
+		if (this.body_hidden) {
+			// show all body children again
+			var children = YAHOO.util.Dom.getChildren(document.body);
+			for (var i = 0; i < children.length; i++) {
+				YAHOO.util.Dom.removeClass(children[i], 'quiz-hidden');
+			}
+
+			// restore scroll position
+			window.scrollTo(0, this.scroll_top);
+
+			this.body_hidden = false;
+		}
+
+		this.updateReviewPage();
+		reinsertQuestion.call(this);
 		this.overlay.style.display = 'none';
-	}, this, true);
+	}
 
-	anim.animate();
+	Event.removeListener(window, 'resize', this.handleResize);
+};
+
+// }}}
+// {{{ positionDialog()
+
+proto.positionDialog = function()
+{
+	if (this.media_query.matches) {
+		var region   = Dom.getRegion(this.dialog);
+		var viewport = Dom.getViewportHeight();
+		this.dialog.style.top = (viewport - region.height) / 2 + 'px';
+	} else {
+		this.dialog.style.top = 0;
+	}
+};
+
+// }}}
+// {{{ handleResize()
+
+proto.handleResize = function()
+{
+	if (this.media_query.matches) {
+		this.overlay.style.height = Dom.getViewportHeight() + 'px';
+		if (this.body_hidden) {
+			// show all body children again
+			var children = Dom.getChildren(document.body);
+			for (var i = 0; i < children.length; i++) {
+				Dom.removeClass(children[i], 'quiz-hidden');
+			}
+
+			// restore scroll position
+			window.scrollTo(0, this.scroll_top);
+
+			this.body_hidden = false;
+		}
+	} else {
+		if (!this.body_hidden) {
+			// save scroll position for when we close the dialog
+			this.scroll_top = Dom.getDocumentScrollTop();
+
+			// hide all body children
+			var children = Dom.getChildren(document.body);
+			for (var i = 0; i < children.length; i++) {
+				if (children[i] !== this.container) {
+					Dom.addClass(children[i], 'quiz-hidden');
+				}
+			}
+
+			window.scrollTo(0, 0);
+
+			this.body_hidden = true;
+		}
+	}
+
+	this.positionDialog();
 };
 
 // }}}
