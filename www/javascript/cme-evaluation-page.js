@@ -1,40 +1,97 @@
 YAHOO.util.Event.onDOMReady(function() {
-	var list_els = YAHOO.util.Dom.getElementsByClassName(
-		'swat-radio-list', 'ul');
+	var radio_list_els = YAHOO.util.Dom.getElementsByClassName(
+		'swat-radio-list',
+		'ul'
+	);
 
-	var list, name;
-	for (var i = 0; i < list_els.length; i++) {
-		list = YAHOO.util.Dom.getElementsBy(
+	for (var i = 0; i < radio_list_els.length; i++) {
+		var radio_buttons = YAHOO.util.Dom.getElementsBy(
 			function (el) { return (el.type === 'radio'); },
-			'input', list_els[i]);
+			'input',
+			radio_list_els[i]
+		);
 
-		if (list.length > 0) {
-			name = list[0].name;
-
-			for (var j = 0; j < list.length; j++) {
+		if (radio_buttons.length > 0) {
+			for (var j = 0; j < radio_buttons.length; j++) {
 				(function () {
-					var item = list[j].parentNode.parentNode;
-					var radio = list[j];
-					var the_list = list;
-					YAHOO.util.Event.on(list[j], 'click', function(e) {
-						updateList(the_list);
-					});
-					// passthrough click on list item to radio button
-					YAHOO.util.Event.on(item, 'click', function(e) {
-						var target = YAHOO.util.Event.getTarget(e);
-						if (target === item) {
-							radio.checked = true;
-							updateList(the_list);
+					var item = radio_buttons[j].parentNode.parentNode;
+					var radio = radio_buttons[j];
+
+					var the_radio_buttons = radio_buttons;
+					YAHOO.util.Event.on(
+						radio,
+						'click',
+						function(e) {
+							updateListSelection(the_radio_buttons);
 						}
-					});
+					);
+
+					// passthrough click on list item to radio button
+					YAHOO.util.Event.on(
+						item,
+						'click',
+						function(e) {
+							var target = YAHOO.util.Event.getTarget(e);
+							if (target === item) {
+								radio.checked = true;
+								updateListSelection(the_radio_buttons);
+							}
+						}
+					);
 				})();
 			}
 
-			updateList(list);
+			updateListSelection(radio_buttons);
 		}
 	}
 
-	function updateList(list)
+	var checkbox_list_els = YAHOO.util.Dom.getElementsByClassName(
+		'swat-checkbox-list',
+		'div'
+	);
+
+	for (var i = 0; i < checkbox_list_els.length; i++) {
+		var checkboxes = YAHOO.util.Dom.getElementsBy(
+			function (el) { return (el.type === 'checkbox'); },
+			'input',
+			checkbox_list_els[i]
+		);
+
+		if (checkboxes.length > 0) {
+			for (var j = 0; j < checkboxes.length; j++) {
+				(function () {
+					var item = checkboxes[j].parentNode.parentNode;
+					var checkbox = checkboxes[j];
+
+					var the_checkboxes = checkboxes;
+					YAHOO.util.Event.on(
+						checkbox,
+						'click',
+						function(e) {
+							updateListSelection(the_checkboxes);
+						}
+					);
+
+					// passthrough click on list item to radio button
+					YAHOO.util.Event.on(
+						item,
+						'click',
+						function(e) {
+							var target = YAHOO.util.Event.getTarget(e);
+							if (target === item) {
+								checkbox.checked = !checkbox.checked;
+								updateListSelection(the_checkboxes);
+							}
+						}
+					);
+				})();
+			}
+
+			updateListSelection(checkboxes);
+		}
+	}
+
+	function updateListSelection(list)
 	{
 		var li;
 		for (var i = 0; i < list.length; i++) {
