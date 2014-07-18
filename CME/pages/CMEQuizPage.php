@@ -598,7 +598,7 @@ abstract class CMEQuizPage extends SiteDBEditPage
 				sprintf(
 					CME::_(
 						'A grade of %s%% is required to qualify for CME '.
-						'credits.'
+						'credit.'
 					),
 					$locale->formatNumber(
 						$this->credit->passing_grade * 100
