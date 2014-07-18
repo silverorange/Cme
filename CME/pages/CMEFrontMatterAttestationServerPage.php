@@ -62,7 +62,7 @@ class CMEFrontMatterAttestationServerPage extends SiteArticlePage
 			$this->app->db->quote(true, 'boolean')
 		);
 
-		return SwatBD::query(
+		return SwatDB::query(
 			$this->app->db,
 			$sql,
 			SwatDBClassMap::get('CMEFrontMatterWrapper')
@@ -82,12 +82,18 @@ class CMEFrontMatterAttestationServerPage extends SiteArticlePage
 
 			$account = $this->app->session->account;
 
-			$front_matter = $this->getCMEFrontMatter();
+			$front_matter = $this->getFrontMatter();
 			if (!$front_matter instanceof CMEFrontMatter) {
 				return $this->getErrorResponse('CME front matter not found.');
 			}
 
-			$this->saveAccountAttestedCMEFrontMatter($account, $front_matter);
+			// only save on a POST request
+			if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+				$this->saveAccountAttestedCMEFrontMatter(
+					$account,
+					$front_matter
+				);
+			}
 
 			$transaction->commit();
 		} catch (Exception $e) {

@@ -50,7 +50,7 @@ abstract class CMECredit extends SwatDBDataObject
 	{
 		// assume the evaluation is always required
 		return (
-				$account->hasCMEAttested($this->front_matter)
+				$account->hasAttested($this->front_matter)
 			) && (
 				!$this->quiz instanceof CMEQuiz ||
 				$account->isQuizPassed($this)
