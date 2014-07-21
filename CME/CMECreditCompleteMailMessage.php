@@ -98,7 +98,7 @@ abstract class CMECreditCompleteMailMessage extends
 	{
 		return sprintf(
 			CME::_('%s Quiz Completed'),
-			$this->credit->provider->title
+			$this->credit->front_matter->provider->title
 		);
 	}
 
@@ -108,9 +108,9 @@ abstract class CMECreditCompleteMailMessage extends
 	protected function getBodyText()
 	{
 		if ($this->response->isPassed()) {
-			$bodytext = $this->credit->quiz->email_content_pass;
+			$bodytext = $this->credit->email_content_pass;
 		} else {
-			$bodytext = $this->credit->quiz->email_content_fail;
+			$bodytext = $this->credit->email_content_fail;
 		}
 
 		return $bodytext;
