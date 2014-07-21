@@ -557,16 +557,27 @@ abstract class CMEQuizPage extends SiteDBEditPage
 		);
 
 		echo '</p>';
+		echo '<p class="quiz-response-status">';
+
+		$complete_date = clone $this->response->complete_date;
+		$complete_date->convertTZ($this->app->default_time_zone);
+		echo SwatString::minimizeEntities(
+			sprintf(
+				CME::_('You completed this quiz on %s.'),
+				$complete_date->formatLikeIntl(CME::_('MMMM d, yyyy'))
+			)
+		);
 
 		if (!$this->credit->resettable) {
-			echo '<p class="quiz-response-status">';
+			echo ' ';
 			echo SwatString::minimizeEntities(
 				CME::_(
-					'Once you have taken the quiz, it may not be taken again.'
+					'Once you’ve taken the quiz, it may not be taken again.'
 				)
 			);
-			echo '</p>';
 		}
+
+		echo '</p>';
 
 		if ($this->response->isPassed()) {
 
