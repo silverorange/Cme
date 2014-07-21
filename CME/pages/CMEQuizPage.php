@@ -393,6 +393,7 @@ abstract class CMEQuizPage extends SiteDBEditPage
 
 			$class_name = SwatDBClassMap::get('CMEAccountEarnedCMECredit');
 			$earned_credit = new $class_name();
+			$earned_credit->setDatabase($this->app->db);
 
 			$earned_credit->account = $account->id;
 			$earned_credit->credit = $this->credit->id;
