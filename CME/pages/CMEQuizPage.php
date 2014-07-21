@@ -395,7 +395,7 @@ abstract class CMEQuizPage extends SiteDBEditPage
 
 			$earned_credit->account = $account->id;
 			$earned_credit->credit = $this->credit->id;
-			$earned_credit->earned_date = $now;
+			$earned_credit->earned_date = $earned_date;
 
 			$earned_credit->save();
 
