@@ -388,20 +388,31 @@ abstract class CMEQuizPage extends SiteDBEditPage
 	{
 		$account = $this->app->session->account;
 		if ($this->credit->isEarned($account)) {
-			$earned_date = new SwatDate();
-			$earned_date->toUTC();
+			// check for existing earned credit before saving
+			$sql = sprintf(
+				'select count(1)
+				from AccountEarnedCMECredit
+				where credit = %s and account = %s',
+				$this->app->db->quote($this->credit->id, 'integer'),
+				$this->app->db->quote($account->id, 'integer')
+			);
 
-			$class_name = SwatDBClassMap::get('CMEAccountEarnedCMECredit');
-			$earned_credit = new $class_name();
-			$earned_credit->setDatabase($this->app->db);
+			if (SwatDB::queryOne($this->app->db, $sql) == 0) {
+				$earned_date = new SwatDate();
+				$earned_date->toUTC();
 
-			$earned_credit->account = $account->id;
-			$earned_credit->credit = $this->credit->id;
-			$earned_credit->earned_date = $earned_date;
+				$class_name = SwatDBClassMap::get('CMEAccountEarnedCMECredit');
+				$earned_credit = new $class_name();
+				$earned_credit->setDatabase($this->app->db);
 
-			$earned_credit->save();
+				$earned_credit->account = $account->id;
+				$earned_credit->credit = $this->credit->id;
+				$earned_credit->earned_date = $earned_date;
 
-			$this->sendCompletionEmail();
+				$earned_credit->save();
+
+				$this->sendCompletionEmail();
+			}
 		}
 	}
 

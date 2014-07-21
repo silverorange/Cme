@@ -333,11 +333,22 @@ abstract class CMEEvaluationPage extends SiteDBEditPage
 		$earned_date->toUTC();
 		foreach ($this->front_matter->credits as $credit) {
 			if ($credit->isEarned($account)) {
-				$earned_credit = new $class_name();
-				$earned_credit->account = $account->id;
-				$earned_credit->credit = $credit->id;
-				$earned_credit->earned_date = $earned_date;
-				$earned_credits->add($earned_credit);
+				// check for existing earned credit before saving
+				$sql = sprintf(
+					'select count(1)
+					from AccountEarnedCMECredit
+					where credit = %s and account = %s',
+					$this->app->db->quote($credit->id, 'integer'),
+					$this->app->db->quote($account->id, 'integer')
+				);
+
+				if (SwatDB::queryOne($this->app->db, $sql) == 0) {
+					$earned_credit = new $class_name();
+					$earned_credit->account = $account->id;
+					$earned_credit->credit = $credit->id;
+					$earned_credit->earned_date = $earned_date;
+					$earned_credits->add($earned_credit);
+				}
 			}
 		}
 		$earned_credits->setDatabase($this->app->db);
