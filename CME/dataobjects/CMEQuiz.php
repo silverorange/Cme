@@ -28,7 +28,7 @@ class CMEQuiz extends InquisitionInquisition
 			$this->db->quote($this->id, 'integer')
 		);
 
-		$wrapper = $this->getResolvedResponseClassWrapper();
+		$wrapper = $this->getResolvedResponseWrapperClass();
 		$response = SwatDB::query($this->db, $sql, $wrapper)->getFirst();
 
 		if ($response instanceof CMEQuizResponse) {
