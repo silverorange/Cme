@@ -1,6 +1,7 @@
 <?php
 
 require_once 'Inquisition/dataobjects/InquisitionInquisition.php';
+require_once 'CME/dataobjects/CMEEvaluationResponseWrapper.php';
 
 /**
  * An evaluation
@@ -11,6 +12,14 @@ require_once 'Inquisition/dataobjects/InquisitionInquisition.php';
  */
 class CMEEvaluation extends InquisitionInquisition
 {
+	// {{{ protected function getResponseWrapperClass()
+
+	protected function getResponseWrapperClass()
+	{
+		return 'CMEEvaluationResponseWrapper';
+	}
+
+	// }}}
 }
 
 ?>
