@@ -3,7 +3,7 @@
 require_once 'Site/pages/SiteUiPage.php';
 require_once 'Swat/SwatDetailsStore.php';
 require_once 'CME/CME.php';
-require_once 'CME/dataobjects/CMECreditWrapper.php';
+require_once 'CME/dataobjects/CMEAccountEarnedCMECreditWrapper.php';
 require_once 'CME/dataobjects/CMEProviderWrapper.php';
 
 /**
@@ -44,7 +44,7 @@ abstract class CMECertificatePage extends SiteUiPage
 
 		$hours = $this->app->getCacheValue($key, 'cme-hours');
 		if ($hours === false) {
-			$hours = $account->getCMECreditHours();
+			$hours = $account->getEarnedCMECreditHours();
 			$this->app->addCacheValue($hours, $key, 'cme-hours');
 		}
 
@@ -74,7 +74,7 @@ abstract class CMECertificatePage extends SiteUiPage
 	protected function initCredits()
 	{
 		$account = $this->app->session->account;
-		return $account->earned_cme_credits;
+		$this->credits = $account->earned_cme_credits;
 	}
 
 	// }}}
@@ -101,7 +101,7 @@ abstract class CMECertificatePage extends SiteUiPage
 	// }}}
 	// {{{ protected function getListOptionTitle()
 
-	protected function getListOptionTitle(CMECredit $credit)
+	protected function getListOptionTitle(CMEAccountEarnedCMECredit $credit)
 	{
 		ob_start();
 
@@ -115,7 +115,7 @@ abstract class CMECertificatePage extends SiteUiPage
 		$formatted_provider_credit_title = sprintf(
 			'<em>%s</em>',
 			SwatString::minimizeEntities(
-				$credit->front_matter->provider->credit_title
+				$credit->credit->front_matter->provider->credit_title
 			)
 		);
 
@@ -125,11 +125,11 @@ abstract class CMECertificatePage extends SiteUiPage
 			sprintf(
 				CME::_('%s %s from %s'),
 				SwatString::minimizeEntities(
-					$locale->formatNumber($credit->hours)
+					$locale->formatNumber($credit->credit->hours)
 				),
 				$formatted_provider_credit_title,
 				SwatString::minimizeEntities(
-					$credit->front_matter->provider->title
+					$credit->credit->front_matter->provider->title
 				)
 			),
 			'text/xml'
@@ -150,12 +150,13 @@ abstract class CMECertificatePage extends SiteUiPage
 	// }}}
 	// {{{ abstract protected function getCreditTitle()
 
-	abstract protected function getCreditTitle(CMECredit $credit);
+	abstract protected function getCreditTitle(
+		CMEAccountEarnedCMECredit $credit);
 
 	// }}}
 	// {{{ protected function getCreditDetails()
 
-	protected function getCreditDetails(CMECredit $credit)
+	protected function getCreditDetails(CMEAccountEarnedCMECredit $credit)
 	{
 		return '';
 	}
@@ -230,41 +231,9 @@ JAVASCRIPT;
 	// }}}
 	// {{{ protected function getCompleteDate()
 
-	protected function getCompleteDate(CMECredit $credit)
+	protected function getCompleteDate(CMEAccountEarnedCMECredit $credit)
 	{
-		$account = $this->app->session->account;
-		$dates = array();
-
-		if ($credit->front_matter->evaluation instanceof CMEEvaluation) {
-			$response = $credit->evaluation->getResponseByAccount($account);
-			if ($response instanceof InquisitionResponse) {
-				$dates[] = clone $response->complete_date;
-			}
-		}
-
-		if ($credit->quiz instanceof CMEQuiz) {
-			$response = $credit->quiz->getResponseByAccount($account);
-			if ($response instanceof InquisitionResponse) {
-				$dates[] = clone $response->complete_date;
-			}
-		}
-
-		// if there are no complete dates, just use today
-		if (count($dates) === 0) {
-			$dates[] = new SwatDate();
-		}
-
-		// get latest date
-		$latest_date = null;
-		foreach ($dates as $date) {
-			if (!$latest_date instanceof SwatDate ||
-				$latest_date->before($date)) {
-
-				$latest_date = $date;
-			}
-		}
-
-		return $latest_date;
+		return $credit->earned_date;
 	}
 
 	// }}}
@@ -276,7 +245,7 @@ JAVASCRIPT;
 	{
 		parent::finalize();
 
-		$this->layout->addBodyClass('cme-account-certificate');
+		$this->layout->addBodyClass('cme-certificate-page');
 
 		$yui = new SwatYUI(array('dom', 'event'));
 		$this->layout->addHtmlHeadEntrySet($yui->getHtmlHeadEntrySet());

@@ -10,7 +10,7 @@
 			</widget>
 		</widget>
 			<widget class="SwatFormField" id="credits_field">
-				<widget class="EpisodeCheckboxList" id="credits">
+				<widget class="SwatCheckboxList" id="credits">
 					<property name="columns" type="integer">2</property>
 				</widget>
 			</widget>
