@@ -159,6 +159,10 @@ abstract class CMECertificatePage extends SiteUiPage
 				$this->getListOption($credit),
 				$this->getListOptionMetaData($credit)
 			);
+
+			if ($this->isPreSelected($credit)) {
+				$values[] = $credit->id;
+			}
 		}
 
 		$list->values = $values;
@@ -245,6 +249,14 @@ abstract class CMECertificatePage extends SiteUiPage
 	protected function getCreditDetails(CMEAccountEarnedCMECredit $credit)
 	{
 		return '';
+	}
+
+	// }}}
+	// {{{ protected function isPreSelected()
+
+	protected function isPreSelected(CMEAccountEarnedCMECredit $credit)
+	{
+		return false;
 	}
 
 	// }}}
