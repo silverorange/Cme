@@ -15,6 +15,19 @@ require_once 'CME/dataobjects/CMEProviderWrapper.php';
  */
 abstract class CMECertificatePage extends SiteUiPage
 {
+	// {{{ protected properties
+
+	/**
+	 * @var CMEAccountEarnedCMECreditWrapper
+	 */
+	protected $credits;
+
+	/**
+	 * @var array
+	 */
+	protected $credits_by_provider;
+
+	// }}}
 	// {{{ protected function getUiXml()
 
 	protected function getUiXml()
@@ -75,6 +88,20 @@ abstract class CMECertificatePage extends SiteUiPage
 	{
 		$account = $this->app->session->account;
 		$this->credits = $account->earned_cme_credits;
+		$this->credits_by_provider = array();
+
+		$wrapper = SwatDBClassMap::get('CMEAccountEarnedCMECreditWrapper');
+
+		foreach ($this->credits as $credit) {
+			$provider = $credit->credit->front_matter->provider->shortname;
+			if (!isset($this->credits_by_provider[$provider])) {
+				$this->credits_by_provider[$provider] = new $wrapper();
+				$this->credits_by_provider[$provider]->setDatabase(
+					$this->app->db
+				);
+			}
+			$this->credits_by_provider[$provider]->add($credit);
+		}
 	}
 
 	// }}}
@@ -174,8 +201,8 @@ abstract class CMECertificatePage extends SiteUiPage
 		$form->action = $this->getSource();
 
 		if ($form->isProcessed()) {
+			$this->buildCertificates();
 			ob_start();
-			$this->displayCertificates();
 			Swat::displayInlineJavaScript($this->getInlineJavaScript());
 			$this->ui->getWidget('certificate')->content = ob_get_clean();
 		}
@@ -205,9 +232,9 @@ abstract class CMECertificatePage extends SiteUiPage
 	}
 
 	// }}}
-	// {{{ abstract protected function displayCertificates()
+	// {{{ abstract protected function buildCertificates()
 
-	abstract protected function displayCertificates();
+	abstract protected function buildCertificates();
 
 	// }}}
 	// {{{ protected function getInlineJavaScript()
@@ -226,14 +253,6 @@ abstract class CMECertificatePage extends SiteUiPage
 			}
 		});
 JAVASCRIPT;
-	}
-
-	// }}}
-	// {{{ protected function getCompleteDate()
-
-	protected function getCompleteDate(CMEAccountEarnedCMECredit $credit)
-	{
-		return $credit->earned_date;
 	}
 
 	// }}}
