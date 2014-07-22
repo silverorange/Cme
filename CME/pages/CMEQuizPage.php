@@ -962,13 +962,15 @@ abstract class CMEQuizPage extends SiteDBEditPage
 
 		$this->layout->addBodyClass('cme-quiz-page');
 
-		$yui = new SwatYUI(array(
-			'dom',
-			'event',
-			'connection',
-			'json',
-			'animation',
-		));
+		$yui = new SwatYUI(
+			array(
+				'dom',
+				'event',
+				'connection',
+				'json',
+				'animation',
+			)
+		);
 		$this->layout->addHtmlHeadEntrySet($yui->getHtmlHeadEntrySet());
 		$this->layout->addHtmlHeadEntry(
 			'packages/swat/javascript/swat-z-index-manager.js'
