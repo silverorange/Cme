@@ -27,12 +27,54 @@ abstract class CMECertificatePage extends SiteUiPage
 	 */
 	protected $credits_by_provider;
 
+	/**
+	 * @var CMEAccountEarnedCMECreditWrapper
+	 */
+	protected $selected_credits;
+
+	/**
+	 * @var array
+	 */
+	protected $selected_credits_by_provider;
+
 	// }}}
 	// {{{ protected function getUiXml()
 
 	protected function getUiXml()
 	{
 		return 'CME/pages/cme-certificate.xml';
+	}
+
+	// }}}
+	// {{{ protected function getCreditsByProvider()
+
+	protected function getCreditsByProvider($shortname)
+	{
+		if (isset($this->credits_by_provider[$shortname])) {
+			$credits = $this->credits_by_provider[$shortname];
+		} else {
+			$wrapper = SwatDBClassMap::get('CMEAccountEarnedCMECreditWrapper');
+			$credits = new $wrapper();
+			$credits->setDatabase($this->app->db);
+		}
+
+		return $credits;
+	}
+
+	// }}}
+	// {{{ protected function getSelectedCreditsByProvider()
+
+	protected function getSelectedCreditsByProvider($shortname)
+	{
+		if (isset($this->selected_credits_by_provider[$shortname])) {
+			$credits = $this->selected_credits_by_provider[$shortname];
+		} else {
+			$wrapper = SwatDBClassMap::get('CMEAccountEarnedCMECreditWrapper');
+			$credits = new $wrapper();
+			$credits->setDatabase($this->app->db);
+		}
+
+		return $credits;
 	}
 
 	// }}}
@@ -113,16 +155,33 @@ abstract class CMECertificatePage extends SiteUiPage
 		$list = $this->ui->getWidget('credits');
 
 		foreach ($this->credits as $credit) {
-			$option = new SwatOption(
-				$credit->id,
-				$this->getListOptionTitle($credit),
-				'text/xml'
+			$list->addOption(
+				$this->getListOption($credit),
+				$this->getListOptionMetaData($credit)
 			);
-
-			$list->addOption($option);
 		}
 
 		$list->values = $values;
+	}
+
+	// }}}
+	// {{{ protected function getListOption()
+
+	protected function getListOption(CMEAccountEarnedCMECredit $credit)
+	{
+		return new SwatOption(
+			$credit->id,
+			$this->getListOptionTitle($credit),
+			'text/xml'
+		);
+	}
+
+	// }}}
+	// {{{ protected function getListOptionMetaData()
+
+	protected function getListOptionMetaData(CMEAccountEarnedCMECredit $credit)
+	{
+		return array();
 	}
 
 	// }}}
@@ -186,6 +245,52 @@ abstract class CMECertificatePage extends SiteUiPage
 	protected function getCreditDetails(CMEAccountEarnedCMECredit $credit)
 	{
 		return '';
+	}
+
+	// }}}
+
+	// process phase
+	// {{{ protected function processInternal()
+
+	protected function processInternal()
+	{
+		$list = $this->ui->getWidget('credits')->values;
+
+		$this->selected_credits_by_provider = array();
+
+		$wrapper = SwatDBClassMap::get('CMEAccountEarnedCMECreditWrapper');
+
+		$this->selected_credits = new $wrapper();
+		$this->selected_credits->setDatabase($this->app->db);
+
+		$has_credit = false;
+
+		foreach ($this->credits as $credit) {
+			if (in_array($credit->id, $list)) {
+				$has_credit = true;
+				$this->selected_credits->add($credit);
+				$provider = $credit->credit->front_matter->provider->shortname;
+				if (!isset($this->selected_credits_by_provider[$provider])) {
+					$this->selected_credits_by_provider[$provider] =
+						new $wrapper();
+
+					$this->selected_credits_by_provider[$provider]->setDatabase(
+						$this->app->db
+					);
+				}
+				$this->selected_credits_by_provider[$provider]->add($credit);
+			}
+		}
+
+		$form = $this->ui->getWidget('certificate_form');
+		if ($form->isProcessed() && !$has_credit) {
+			$this->ui->getWidget('message_display')->add(
+				new SwatMessage(
+					CME::_('No credits were selected to print.')
+				),
+				SwatMessageDisplay::DISMISS_OFF
+			);
+		}
 	}
 
 	// }}}
