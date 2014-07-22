@@ -116,7 +116,11 @@ abstract class CMEQuizPage extends SiteDBEditPage
 
 		$this->initResponse();
 
-		if (!$this->isComplete()) {
+		if ($this->isComplete()) {
+			// If earned credit was accidentally deleted but quiz is already
+			// complete, recreate earned credit before displaying quiz results.
+			$this->saveEarnedCredit();
+		} else {
 			foreach ($this->quiz->question_bindings as $question_binding) {
 				$this->addQuestionToUi($question_binding);
 			}
@@ -375,6 +379,7 @@ abstract class CMEQuizPage extends SiteDBEditPage
 		// save response values
 		$this->response->values->save();
 		$this->saveEarnedCredit();
+		$this->sendCompletionEmail();
 
 		// clear CME hours cache for this account
 		$key = 'cme-hours-'.$this->app->session->account->id;
@@ -410,8 +415,6 @@ abstract class CMEQuizPage extends SiteDBEditPage
 				$earned_credit->earned_date = $earned_date;
 
 				$earned_credit->save();
-
-				$this->sendCompletionEmail();
 			}
 		}
 	}

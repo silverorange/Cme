@@ -102,6 +102,10 @@ abstract class CMEEvaluationPage extends SiteDBEditPage
 		$this->initResponse();
 
 		if ($this->isComplete()) {
+			// If earned credits were accidentally deleted but evaluation
+			// is already complete, recreate them before relocating away from
+			// page.
+			$this->saveEarnedCredits();
 			$this->relocateForCompletedEvaluation();
 		}
 
