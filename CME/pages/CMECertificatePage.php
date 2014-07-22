@@ -37,6 +37,11 @@ abstract class CMECertificatePage extends SiteUiPage
 	 */
 	protected $selected_credits_by_provider;
 
+	/**
+	 * @var boolean
+	 */
+	protected $has_pre_selection = false;
+
 	// }}}
 	// {{{ protected function getUiXml()
 
@@ -161,6 +166,7 @@ abstract class CMECertificatePage extends SiteUiPage
 			);
 
 			if ($this->isPreSelected($credit)) {
+				$this->has_pre_selection = true;
 				$values[] = $credit->id;
 			}
 		}
@@ -306,6 +312,13 @@ abstract class CMECertificatePage extends SiteUiPage
 	}
 
 	// }}}
+	// {{{ protected function isProcessed()
+
+	protected function isProcessed()
+	{
+		$form = $this->ui->getWidget('certificate_form');
+		return ($this->has_pre_selection || $form->isProcessed());
+	}
 
 	// build phase
 	// {{{ protected function buildInternal()
@@ -317,7 +330,7 @@ abstract class CMECertificatePage extends SiteUiPage
 		$form = $this->ui->getWidget('certificate_form');
 		$form->action = $this->getSource();
 
-		if ($form->isProcessed()) {
+		if ($this->isProcessed()) {
 			$this->buildCertificates();
 			ob_start();
 			Swat::displayInlineJavaScript($this->getInlineJavaScript());
