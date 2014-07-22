@@ -373,6 +373,10 @@ JAVASCRIPT;
 
 		$yui = new SwatYUI(array('dom', 'event'));
 		$this->layout->addHtmlHeadEntrySet($yui->getHtmlHeadEntrySet());
+
+		$this->layout->addHtmlHeadEntry(
+			'packages/cme/javascript/cme-certificate-page.js'
+		);
 	}
 
 	// }}}
