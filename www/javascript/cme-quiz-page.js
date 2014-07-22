@@ -17,6 +17,7 @@ function CMEQuizPage(el, response_server, current_question)
 
 	YAHOO.util.Event.onDOMReady(function() {
 		this.initQuestions();
+		this.initKeyboardEvents();
 
 		this.draw();
 
@@ -180,6 +181,112 @@ proto.initQuestions = function()
 	}
 
 	this.total_questions = this.question_els.length;
+};
+
+// }}}
+
+	// keyboard handler
+// {{{ initKeyboardEvents()
+
+proto.initKeyboardEvents = function()
+{
+	Event.on(document, 'keydown', function (e) {
+		var target = Event.getTarget(e);
+
+		// don't capture keyboard events for inputs outside of the quiz
+		if ((target.tagName.toLowerCase() == 'textarea' ||
+			(target.tagName.toLowerCase() == 'input'))
+			&& Dom.getAncestorByClassName(target, 'quiz-page') === null
+			&& Dom.getAncestorByClassName(target,
+				'quiz-question-dialog') === null) {
+
+			return;
+		}
+
+		this.handleKeyboardEvent(e);
+	}, this, true);
+};
+
+// }}}
+// {{{ handleKeyboardEvent()
+
+proto.handleKeyboardEvent = function(e)
+{
+	switch (Event.getCharCode(e)) {
+	case 13 : // enter
+	case 39 : // right
+		if (this.current_page == 'intro') {
+			this.startQuiz();
+		} else if (this.dialog_question === null) {
+			this.nextQuestion();
+		} else if (Event.getCharCode(e) == 13) {
+			this.closeDialog();
+		}
+
+		this.stopKeyboardEvent(e);
+
+		break;
+	case 37 : // left
+		if (this.dialog_question === null) {
+			this.previousQuestion();
+		}
+
+		this.stopKeyboardEvent(e);
+		break;
+	case 49 : // 1
+	case 65 : // a
+		this.selectOption(0);
+		this.stopKeyboardEvent(e);
+		break;
+	case 50 : // 2
+	case 66 : // b
+		this.selectOption(1);
+		this.stopKeyboardEvent(e);
+		break;
+	case 51 : // 3
+	case 67 : // c
+		this.selectOption(2);
+		this.stopKeyboardEvent(e);
+		break;
+	case 52 : // 4
+	case 68 : // d
+		this.selectOption(3);
+		this.stopKeyboardEvent(e);
+		break;
+	case 53 : // 5
+	case 69 : // e
+		this.selectOption(4);
+		this.stopKeyboardEvent(e);
+		break;
+	case 54 : // 6
+	case 70 : // f
+		this.selectOption(5);
+		this.stopKeyboardEvent(e);
+		break;
+	case 55 : // 7
+	case 71 : // g
+		this.selectOption(6);
+		this.stopKeyboardEvent(e);
+		break;
+	}
+};
+
+// }}}
+// {{{ stopKeyboardEvent()
+
+proto.stopKeyboardEvent = function(e)
+{
+	// stop events on the question radio list to prevent left/right events
+	// from switching which radio button is selected. Also prevents Firefox
+	// from performing inline searching
+	var target = Event.getTarget(e);
+	if (target.tagName.toLowerCase() == 'input' &&
+		(Dom.getAncestorByClassName(target, 'quiz-page') !== null ||
+		Dom.getAncestorByClassName(target,
+			'quiz-question-dialog') !== null)) {
+
+		Event.stopEvent(e);
+	}
 };
 
 // }}}
@@ -1229,6 +1336,25 @@ proto.focusQuestion = function(question_index)
 	}
 
 	this.question_options[question_index][index].focus();
+};
+
+// }}}
+// {{{ selectOption()
+
+proto.selectOption = function(option_index)
+{
+	// don't choose option if not on the quiz or dialog
+	if (this.current_page != 'quiz' && this.dialog_question_index === null) {
+		return;
+	}
+
+	var question_index = (this.dialog_question_index !== null) ?
+		this.dialog_question_index : this.current_question;
+
+	if (this.question_labels[question_index][option_index]) {
+		this.question_labels[question_index][option_index].click();
+		this.focusQuestion(question_index);
+	}
 };
 
 // }}}
