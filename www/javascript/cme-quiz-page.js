@@ -194,8 +194,8 @@ proto.initKeyboardEvents = function()
 		var target = Event.getTarget(e);
 
 		// don't capture keyboard events for inputs outside of the quiz
-		if ((target.tagName.toLowerCase() == 'textarea' ||
-			(target.tagName.toLowerCase() == 'input'))
+		if ((target.tagName.toLowerCase() === 'textarea' ||
+			(target.tagName.toLowerCase() === 'input'))
 			&& Dom.getAncestorByClassName(target, 'quiz-page') === null
 			&& Dom.getAncestorByClassName(target,
 				'quiz-question-dialog') === null) {
@@ -215,11 +215,11 @@ proto.handleKeyboardEvent = function(e)
 	switch (Event.getCharCode(e)) {
 	case 13 : // enter
 	case 39 : // right
-		if (this.current_page == 'intro') {
+		if (this.current_page === 'intro') {
 			this.startQuiz();
 		} else if (this.dialog_question === null) {
 			this.nextQuestion();
-		} else if (Event.getCharCode(e) == 13) {
+		} else if (Event.getCharCode(e) === 13) {
 			this.closeDialog();
 		}
 
@@ -280,7 +280,7 @@ proto.stopKeyboardEvent = function(e)
 	// from switching which radio button is selected. Also prevents Firefox
 	// from performing inline searching
 	var target = Event.getTarget(e);
-	if (target.tagName.toLowerCase() == 'input' &&
+	if (target.tagName.toLowerCase() === 'input' &&
 		(Dom.getAncestorByClassName(target, 'quiz-page') !== null ||
 		Dom.getAncestorByClassName(target,
 			'quiz-question-dialog') !== null)) {
@@ -1344,7 +1344,7 @@ proto.focusQuestion = function(question_index)
 proto.selectOption = function(option_index)
 {
 	// don't choose option if not on the quiz or dialog
-	if (this.current_page != 'quiz' && this.dialog_question_index === null) {
+	if (this.current_page !== 'quiz' && this.dialog_question_index === null) {
 		return;
 	}
 
