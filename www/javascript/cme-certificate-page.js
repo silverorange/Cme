@@ -14,7 +14,10 @@ YAHOO.util.Event.onDOMReady(function() {
 		if (checkboxes.length > 0) {
 			for (var j = 0; j < checkboxes.length; j++) {
 				(function () {
-					var item = checkboxes[j].parentNode.parentNode;
+					var item = YAHOO.util.Dom.getAncestorByTagName(
+						checkboxes[j],
+						'li'
+					);
 					var checkbox = checkboxes[j];
 
 					var the_checkboxes = checkboxes;
@@ -47,9 +50,8 @@ YAHOO.util.Event.onDOMReady(function() {
 
 	function updateListSelection(list)
 	{
-		var li;
 		for (var i = 0; i < list.length; i++) {
-			li = list[i].parentNode.parentNode;
+			var li = YAHOO.util.Dom.getAncestorByTagName(list[i], 'li');
 			if (list[i].checked) {
 				YAHOO.util.Dom.addClass(li, 'selected');
 			} else {

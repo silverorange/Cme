@@ -123,7 +123,7 @@ proto.initQuestions = function()
 				list,
 				function(n) {
 
-					var li = n.parentNode.parentNode;
+					var li = Dom.getAncestorByTagName(n, 'li');
 
 					// add radio button click handlers
 					var that = this;
@@ -296,7 +296,7 @@ proto.stopKeyboardEvent = function(e)
 
 proto.draw = function()
 {
-	var form = this.el.parentNode;
+	var form = Dom.getAncestorByTagName(this.el, 'form');
 
 	this.page_container = document.createElement('div');
 	this.page_container.className = 'quiz-page-container';
@@ -1389,7 +1389,7 @@ proto.saveResponseValue = function(el, question_index)
 	var n, message, li;
 	for (var i = 0; i < this.question_options[question_index].length; i++) {
 		n = this.question_options[question_index][i];
-		li = n.parentNode.parentNode;
+		li = Dom.getAncestorByTagName(n, 'li');
 		message = this.question_option_messages[n.id];
 		if (n === el) {
 			message.style.display = 'block';
