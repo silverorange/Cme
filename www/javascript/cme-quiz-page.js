@@ -77,6 +77,8 @@ var JSON    = YAHOO.lang.JSON;
 
 var proto   = CMEQuizPage.prototype;
 
+var is_touch_device = ('ontouchstart' in document.documentElement);
+
 // {{{ initQuestions()
 
 proto.initQuestions = function()
@@ -314,7 +316,6 @@ proto.draw = function()
 	this.page_container.appendChild(this.pages.review);
 
 	this.drawDialog();
-
 };
 
 // }}}
@@ -447,8 +448,14 @@ proto.drawQuizPage = function()
 	clear.style.clear = 'both';
 	footer.firstChild.appendChild(clear);
 
+	var keyboard_help = document.getElementById('quiz_keyboard_help');
+	if (is_touch_device) {
+		Dom.addClass(keyboard_help, 'quiz-hidden');
+	}
+
 	page.appendChild(header);
 	page.appendChild(this.el);
+	page.appendChild(keyboard_help);
 	page.appendChild(footer);
 
 	return page;

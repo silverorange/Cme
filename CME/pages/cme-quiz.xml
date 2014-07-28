@@ -35,4 +35,11 @@
 			</widget>
 		</widget>
 	</widget>
+	<widget class="SwatDisplayableContainer" id="quiz_keyboard_help">
+		<property name="classes[]">quiz-keyboard-help</property>
+		<widget class="SwatContentBlock">
+			<property name="content_type">text/xml</property>
+			<property name="content"><![CDATA[Keys: <code>A</code><code>B</code><code>C</code><code>D</code><code>E</code><code>F</code> choose answer, <code>Enter</code> or <code>→</code> next question]]></property>
+		</widget>
+	</widget>
 </swatml>
