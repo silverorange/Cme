@@ -8,6 +8,9 @@ require_once 'Inquisition/dataobjects/InquisitionQuestionOptionWrapper.php';
 require_once 'CME/CME.php';
 require_once 'CME/dataobjects/CMEEvaluationWrapper.php';
 require_once 'CME/dataobjects/CMEFrontMatterWrapper.php';
+require_once 'CME/dataobjects/CMEEvaluationResponse.php';
+require_once 'CME/dataobjects/CMEAccountEarnedCMECredit.php';
+require_once 'CME/dataobjects/CMEAccountEarnedCMECreditWrapper.php';
 
 /**
  * @package   CME
@@ -29,7 +32,7 @@ abstract class CMEEvaluationPage extends SiteDBEditPage
 	protected $evaluation;
 
 	/**
-	 * @var InquisitionResponse
+	 * @var CMEEvaluationResponse
 	 */
 	protected $inquisition_response;
 
@@ -81,6 +84,11 @@ abstract class CMEEvaluationPage extends SiteDBEditPage
 	abstract protected function getCertificateURI();
 
 	// }}}
+	// {{{ abstract protected function getTitle()
+
+	abstract protected function getTitle();
+
+	// }}}
 
 	// init phase
 	// {{{ protected function initInternal()
@@ -94,6 +102,10 @@ abstract class CMEEvaluationPage extends SiteDBEditPage
 		$this->initResponse();
 
 		if ($this->isComplete()) {
+			// If earned credits were accidentally deleted but evaluation
+			// is already complete, recreate them before relocating away from
+			// page.
+			$this->saveEarnedCredits();
 			$this->relocateForCompletedEvaluation();
 		}
 
@@ -117,7 +129,7 @@ abstract class CMEEvaluationPage extends SiteDBEditPage
 			$this->app->db->quote(true, 'boolean')
 		);
 
-		$this->front_matter = SwatBD::query(
+		$this->front_matter = SwatDB::query(
 			$this->app->db,
 			$sql,
 			SwatDBClassMap::get('CMEFrontMatterWrapper')
@@ -233,7 +245,7 @@ abstract class CMEEvaluationPage extends SiteDBEditPage
 		$value = null;
 
 		// get response value if it exists
-		if ($this->inquisition_response instanceof InquisitionResponse) {
+		if ($this->inquisition_response instanceof CMEEvaluationResponse) {
 			$binding_id = $question_binding->id;
 
 			if (isset($this->response_values_by_binding_id[$binding_id])) {
@@ -252,7 +264,7 @@ abstract class CMEEvaluationPage extends SiteDBEditPage
 		$response = $this->inquisition_response;
 
 		return (
-			$response instanceof InquisitionResponse &&
+			$response instanceof CMEEvaluationResponse &&
 			$response->complete_date instanceof SwatDate
 		);
 	}
@@ -264,7 +276,7 @@ abstract class CMEEvaluationPage extends SiteDBEditPage
 
 	protected function saveData(SwatForm $form)
 	{
-		$class = SwatDBClassMap::get('InquisitionResponse');
+		$class = SwatDBClassMap::get('CMEEvaluationResponse');
 		$this->inquisition_response = new $class();
 		$this->inquisition_response->setDatabase($this->app->db);
 
@@ -288,9 +300,17 @@ abstract class CMEEvaluationPage extends SiteDBEditPage
 			$view = $this->question_views[$question_binding->id];
 
 			$response_value = $view->getResponseValue();
-			$response_value->response = $this->inquisition_response->id;
 
-			$this->inquisition_response->values[] = $response_value;
+			if (is_array($response_value)) {
+				$response_value_array = $response_value;
+				foreach ($response_value_array as $response_value) {
+					$response_value->response = $this->inquisition_response->id;
+					$this->inquisition_response->values[] = $response_value;
+				}
+			} else {
+				$response_value->response = $this->inquisition_response->id;
+				$this->inquisition_response->values[] = $response_value;
+			}
 		}
 
 		// save responses
@@ -317,11 +337,22 @@ abstract class CMEEvaluationPage extends SiteDBEditPage
 		$earned_date->toUTC();
 		foreach ($this->front_matter->credits as $credit) {
 			if ($credit->isEarned($account)) {
-				$earned_credit = new $class_name();
-				$earned_credit->account = $account->id;
-				$earned_credit->credit = $credit->id;
-				$earned_credit->earned_date = $now;
-				$earned_credits->add($earned_credit);
+				// check for existing earned credit before saving
+				$sql = sprintf(
+					'select count(1)
+					from AccountEarnedCMECredit
+					where credit = %s and account = %s',
+					$this->app->db->quote($credit->id, 'integer'),
+					$this->app->db->quote($account->id, 'integer')
+				);
+
+				if (SwatDB::queryOne($this->app->db, $sql) == 0) {
+					$earned_credit = new $class_name();
+					$earned_credit->account = $account->id;
+					$earned_credit->credit = $credit->id;
+					$earned_credit->earned_date = $earned_date;
+					$earned_credits->add($earned_credit);
+				}
 			}
 		}
 		$earned_credits->setDatabase($this->app->db);

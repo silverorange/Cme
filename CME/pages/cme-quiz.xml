@@ -2,7 +2,6 @@
 <!DOCTYPE swatml SYSTEM "http://swat.silverorange.com/swatml1.dtd">
 <swatml>
 	<widget class="SwatFrame" id="quiz_response_container">
-		<property name="title" translatable="yes">Results</property>
 		<property name="visible" type="boolean">false</property>
 		<widget class="SwatContentBlock" id="quiz_response_description" />
 		<widget class="SwatContentBlock" id="quiz_response" />
@@ -18,9 +17,11 @@
 		<widget class="SwatForm" id="quiz_form">
 			<widget class="SwatMessageDisplay" id="message_display" />
 			<widget class="SwatDisplayableContainer" id="quiz_info">
+				<property name="classes[]">quiz-info</property>
 				<widget class="SwatContentBlock" id="quiz_content" />
 			</widget>
 			<widget class="SwatDisplayableContainer" id="quiz_container">
+				<property name="classes[]">quiz-container</property>
 				<widget class="SwatDisplayableContainer" id="question_container">
 					<property name="classes[]">quiz-question-container</property>
 				</widget>
@@ -32,6 +33,13 @@
 					<property name="classes[]">button</property>
 				</widget>
 			</widget>
+		</widget>
+	</widget>
+	<widget class="SwatDisplayableContainer" id="quiz_keyboard_help">
+		<property name="classes[]">quiz-keyboard-help</property>
+		<widget class="SwatContentBlock">
+			<property name="content_type">text/xml</property>
+			<property name="content"><![CDATA[Keys: <code>A</code><code>B</code><code>C</code><code>D</code><code>E</code><code>F</code> choose answer, <code>Enter</code> or <code>→</code> next question]]></property>
 		</widget>
 	</widget>
 </swatml>

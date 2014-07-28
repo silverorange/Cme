@@ -2,6 +2,7 @@
 
 require_once 'Inquisition/dataobjects/InquisitionInquisition.php';
 require_once 'CME/dataobjects/CMEAccount.php';
+require_once 'CME/dataobjects/CMEQuizResponseWrapper.php';
 
 /**
  * @package   CME
@@ -27,14 +28,22 @@ class CMEQuiz extends InquisitionInquisition
 			$this->db->quote($this->id, 'integer')
 		);
 
-		$wrapper  = SwatDBClassMap::get('InquisitionResponseWrapper');
+		$wrapper = $this->getResolvedResponseWrapperClass();
 		$response = SwatDB::query($this->db, $sql, $wrapper)->getFirst();
 
-		if ($response instanceof InquisitionResponse) {
+		if ($response instanceof CMEQuizResponse) {
 			$response->inquisition = $this;
 		}
 
 		return $response;
+	}
+
+	// }}}
+	// {{{ protected function getResponseWrapperClass()
+
+	protected function getResponseWrapperClass()
+	{
+		return 'CMEQuizResponseWrapper';
 	}
 
 	// }}}

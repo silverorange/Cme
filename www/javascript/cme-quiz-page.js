@@ -8,9 +8,16 @@ function CMEQuizPage(el, response_server, current_question)
 	this.dialog_question        = null;
 	this.dialog_question_index  = null;
 	this.is_submitted           = false;
+	this.body_hidden            = false;
+	this.scroll_top             = 0;
+
+	this.media_query = (window.matchMedia)
+		? window.matchMedia('(min-width: 768px)')
+		: { matches: false };
 
 	YAHOO.util.Event.onDOMReady(function() {
 		this.initQuestions();
+		this.initKeyboardEvents();
 
 		this.draw();
 
@@ -70,6 +77,8 @@ var JSON    = YAHOO.lang.JSON;
 
 var proto   = CMEQuizPage.prototype;
 
+var is_touch_device = ('ontouchstart' in document.documentElement);
+
 // {{{ initQuestions()
 
 proto.initQuestions = function()
@@ -116,7 +125,7 @@ proto.initQuestions = function()
 				list,
 				function(n) {
 
-					var li = n.parentNode.parentNode;
+					var li = Dom.getAncestorByTagName(n, 'li');
 
 					// add radio button click handlers
 					var that = this;
@@ -133,15 +142,9 @@ proto.initQuestions = function()
 						Dom.addClass(li, 'selected');
 					}
 
-					// add saving image
-					var img = document.createElement('img');
-					img.src = 'images/elements/quiz-saving.gif';
-					img.width = '16';
-					img.height = '16';
-
 					var message = document.createElement('span');
 					message.className = 'question-saved-message';
-					message.appendChild(img);
+					message.appendChild(document.createTextNode(''));
 					li.insertBefore(message, n.parentNode.nextSibling);
 					this.question_option_messages[n.id] = message;
 
@@ -184,12 +187,118 @@ proto.initQuestions = function()
 
 // }}}
 
+	// keyboard handler
+// {{{ initKeyboardEvents()
+
+proto.initKeyboardEvents = function()
+{
+	Event.on(document, 'keydown', function (e) {
+		var target = Event.getTarget(e);
+
+		// don't capture keyboard events for inputs outside of the quiz
+		if ((target.tagName.toLowerCase() === 'textarea' ||
+			(target.tagName.toLowerCase() === 'input'))
+			&& Dom.getAncestorByClassName(target, 'quiz-page') === null
+			&& Dom.getAncestorByClassName(target,
+				'quiz-question-dialog') === null) {
+
+			return;
+		}
+
+		this.handleKeyboardEvent(e);
+	}, this, true);
+};
+
+// }}}
+// {{{ handleKeyboardEvent()
+
+proto.handleKeyboardEvent = function(e)
+{
+	switch (Event.getCharCode(e)) {
+	case 13 : // enter
+	case 39 : // right
+		if (this.current_page === 'intro') {
+			this.startQuiz();
+		} else if (this.dialog_question === null) {
+			this.nextQuestion();
+		} else if (Event.getCharCode(e) === 13) {
+			this.closeDialog();
+		}
+
+		this.stopKeyboardEvent(e);
+
+		break;
+	case 37 : // left
+		if (this.dialog_question === null) {
+			this.previousQuestion();
+		}
+
+		this.stopKeyboardEvent(e);
+		break;
+	case 49 : // 1
+	case 65 : // a
+		this.selectOption(0);
+		this.stopKeyboardEvent(e);
+		break;
+	case 50 : // 2
+	case 66 : // b
+		this.selectOption(1);
+		this.stopKeyboardEvent(e);
+		break;
+	case 51 : // 3
+	case 67 : // c
+		this.selectOption(2);
+		this.stopKeyboardEvent(e);
+		break;
+	case 52 : // 4
+	case 68 : // d
+		this.selectOption(3);
+		this.stopKeyboardEvent(e);
+		break;
+	case 53 : // 5
+	case 69 : // e
+		this.selectOption(4);
+		this.stopKeyboardEvent(e);
+		break;
+	case 54 : // 6
+	case 70 : // f
+		this.selectOption(5);
+		this.stopKeyboardEvent(e);
+		break;
+	case 55 : // 7
+	case 71 : // g
+		this.selectOption(6);
+		this.stopKeyboardEvent(e);
+		break;
+	}
+};
+
+// }}}
+// {{{ stopKeyboardEvent()
+
+proto.stopKeyboardEvent = function(e)
+{
+	// stop events on the question radio list to prevent left/right events
+	// from switching which radio button is selected. Also prevents Firefox
+	// from performing inline searching
+	var target = Event.getTarget(e);
+	if (target.tagName.toLowerCase() === 'input' &&
+		(Dom.getAncestorByClassName(target, 'quiz-page') !== null ||
+		Dom.getAncestorByClassName(target,
+			'quiz-question-dialog') !== null)) {
+
+		Event.stopEvent(e);
+	}
+};
+
+// }}}
+
 	// draw
 // {{{ draw()
 
 proto.draw = function()
 {
-	var form = this.el.parentNode;
+	var form = Dom.getAncestorByTagName(this.el, 'form');
 
 	this.page_container = document.createElement('div');
 	this.page_container.className = 'quiz-page-container';
@@ -207,7 +316,6 @@ proto.draw = function()
 	this.page_container.appendChild(this.pages.review);
 
 	this.drawDialog();
-
 };
 
 // }}}
@@ -226,14 +334,14 @@ proto.drawIntroPage = function()
 	var last_completed = (this.validate(this.question_els.length - 1));
 
 	var page = document.getElementById('quiz_info');
-	Dom.addClass(page, 'quiz-page');
+	Dom.addClass(page, 'quiz-page quiz-page-intro');
 
 	var footer = document.createElement('div');
-	footer.id = 'quiz_intro_footer';
+	footer.className = 'quiz-intro-footer';
 
 	this.continue_button = document.createElement('input');
-	this.continue_button.type = 'button';
-	this.continue_button.className = 'quiz-button quiz-button-continue button';
+	this.continue_button.setAttribute('type', 'button');
+	this.continue_button.className = 'btn btn-primary quiz-button-continue';
 
 	if (!started) {
 		this.continue_button.value = CMEQuizPage.start_text;
@@ -285,7 +393,7 @@ proto.drawIntroPage = function()
 proto.drawQuizPage = function()
 {
 	var page = document.createElement('div');
-	page.className = 'quiz-page';
+	page.className = 'quiz-page quiz-page-quiz';
 	page.id = 'quiz_quiz_page';
 
 	this.quiz_status_line = document.createElement('div');
@@ -306,7 +414,7 @@ proto.drawQuizPage = function()
 	);
 
 	var header = document.createElement('div');
-	header.id = 'quiz_header';
+	header.className = 'quiz-header';
 	header.appendChild(intro_link);
 	header.appendChild(this.quiz_status_line);
 
@@ -315,8 +423,8 @@ proto.drawQuizPage = function()
 	header.appendChild(clear);
 
 	this.next_button = document.createElement('input');
-	this.next_button.className = 'swat-button quiz-button quiz-button-next button';
-	this.next_button.type = 'button';
+	this.next_button.className = 'btn btn-primary quiz-button-next';
+	this.next_button.setAttribute('type', 'button');
 	this.next_button.value = CMEQuizPage.next_text;
 	Event.on(this.next_button, 'click', function(e) {
 		Event.preventDefault(e);
@@ -324,8 +432,8 @@ proto.drawQuizPage = function()
 	}, this, true);
 
 	this.prev_button = document.createElement('input');
-	this.prev_button.className = 'swat-button quiz-button quiz-button-prev';
-	this.prev_button.type = 'button';
+	this.prev_button.className = 'btn btn-default quiz-button-prev';
+	this.prev_button.setAttribute('type', 'button');
 	this.prev_button.value = CMEQuizPage.previous_text;
 	Event.on(this.prev_button, 'click', function(e) {
 		Event.preventDefault(e);
@@ -340,8 +448,14 @@ proto.drawQuizPage = function()
 	clear.style.clear = 'both';
 	footer.firstChild.appendChild(clear);
 
+	var keyboard_help = document.getElementById('quiz_keyboard_help');
+	if (is_touch_device) {
+		Dom.addClass(keyboard_help, 'quiz-hidden');
+	}
+
 	page.appendChild(header);
 	page.appendChild(this.el);
+	page.appendChild(keyboard_help);
 	page.appendChild(footer);
 
 	return page;
@@ -354,7 +468,7 @@ proto.drawReviewPage = function()
 {
 	var page = document.createElement('div');
 	page.id = 'quiz_review_page';
-	page.className = 'quiz-page';
+	page.className = 'quiz-page quiz-page-review';
 
 	var intro_link = document.createElement('a');
 	intro_link.className = 'quiz-intro-link';
@@ -371,13 +485,13 @@ proto.drawReviewPage = function()
 	);
 
 	var header = document.createElement('div');
-	header.id = 'quiz_review_header';
+	header.className = 'quiz-review-header';
 	header.appendChild(intro_link);
 
 	var content = document.createElement('ol');
-	content.id = 'quiz_review_content';
+	content.className = 'quiz-review-content';
 
-	var li, question_text, question_answer, change_link, clear;
+	var li, question_text, question_answer, change_button;
 	var that = this;
 	for (var i = 0; i < this.question_els.length; i++) {
 		li = document.createElement('li');
@@ -390,10 +504,10 @@ proto.drawReviewPage = function()
 		question_answer.className = 'quiz-review-answer';
 		this.question_review_answers.push(question_answer);
 
-		change_link = document.createElement('a');
-		change_link.href = '#change';
-		change_link.className = 'swat-button quiz-review-change';
-		change_link.appendChild(
+		change_button = document.createElement('button');
+		change_button.setAttribute('type', 'button');
+		change_button.className = 'btn btn-default btn-xs quiz-review-change';
+		change_button.appendChild(
 			document.createTextNode(
 				CMEQuizPage.change_text
 			)
@@ -401,28 +515,24 @@ proto.drawReviewPage = function()
 
 		(function () {
 			var index = i;
-			Event.on(change_link, 'click', function(e) {
-				Event.preventDefault(e);
+			Event.on(change_button, 'click', function(e) {
 				this.openDialog(index);
 			}, that, true);
 		})();
 
-		clear = document.createElement('div');
-		clear.style.clear = 'both';
-
+		li.appendChild(change_button);
 		li.appendChild(question_text);
-		li.appendChild(change_link);
 		li.appendChild(question_answer);
-		li.appendChild(clear);
 
 		content.appendChild(li);
 	}
 
 	this.review_status = document.createElement('div');
-	this.review_status.id = 'quiz_review_status';
+	this.review_status.className = 'quiz-review-status';
 
 	this.submit_button = document.getElementById('submit_button');
-	Dom.addClass(this.submit_button, 'quiz-button');
+	Dom.addClass(this.submit_button, 'btn');
+	Dom.addClass(this.submit_button, 'btn-primary');
 	Dom.addClass(this.submit_button, 'quiz-button-submit');
 	this.submit_button.value = CMEQuizPage.submit_text;
 	Event.on(this.submit_button, 'click', function(e) {
@@ -431,14 +541,9 @@ proto.drawReviewPage = function()
 	}, this, true);
 
 	var footer = document.createElement('div');
-	footer.id = 'quiz_review_footer';
 	footer.className = 'quiz-review-footer';
-	footer.appendChild(this.review_status);
 	footer.appendChild(this.submit_button);
-
-	clear = document.createElement('div');
-	clear.style.clear = 'both';
-	footer.appendChild(clear);
+	footer.appendChild(this.review_status);
 
 	page.appendChild(header);
 	page.appendChild(content);
@@ -461,8 +566,6 @@ proto.drawDialog = function()
 		this.closeDialog();
 	}, this, true);
 
-	SwatZIndexManager.raiseElement(mask);
-
 	this.dialog_title = document.createElement('span');
 	this.dialog_title.className = 'quiz-question-dialog-title';
 
@@ -471,18 +574,14 @@ proto.drawDialog = function()
 	header.appendChild(this.dialog_title);
 
 	var close = document.createElement('input');
-	close.className = 'swat-button button';
-	close.type = 'button';
+	close.className = 'btn btn-primary quiz-button-dialog-close';
+	close.setAttribute('type', 'button');
 	close.value = CMEQuizPage.close_text;
 	Event.on(close, 'click', this.closeDialog, this, true);
 
 	var footer = document.createElement('div');
 	footer.className = 'quiz-question-dialog-footer';
 	footer.appendChild(close);
-
-	var clear = document.createElement('div');
-	clear.style.clear = 'both';
-	footer.appendChild(clear);
 
 	this.dialog_content = document.createElement('div');
 	this.dialog_content.className = 'quiz-question-dialog-content';
@@ -492,8 +591,6 @@ proto.drawDialog = function()
 	this.dialog.appendChild(header);
 	this.dialog.appendChild(this.dialog_content);
 	this.dialog.appendChild(footer);
-
-	SwatZIndexManager.raiseElement(this.dialog);
 
 	this.overlay = document.createElement('div');
 	this.overlay.className = 'quiz-question-overlay';
@@ -549,6 +646,12 @@ proto.openDialog = function(question_index)
 		this.dialog_question
 	);
 
+	// set z-indexes
+	SwatZIndexManager.raiseElement(this.overlay);
+	SwatZIndexManager.raiseElement(this.overlay.firstChild);
+	SwatZIndexManager.raiseElement(this.dialog);
+	SwatZIndexManager.raiseElement(this.dialog.firstChild);
+
 	this.dialog_content.appendChild(this.dialog_question);
 	this.dialog_question.style.display = 'block';
 
@@ -558,16 +661,12 @@ proto.openDialog = function(question_index)
 	this.dialog.style.filter = '';
 
 	this.overlay.style.display = 'block';
-	this.overlay.style.height = Dom.getDocumentHeight() + 'px';
 
-	var region   = Dom.getRegion(this.dialog);
-	var height   = region.bottom - region.top;
-	var viewport = Dom.getViewportHeight();
-	var scroll   = Dom.getDocumentScrollTop();
-	this.dialog.style.top =
-		(parseInt((viewport - height) / 3, 10) + scroll) + 'px';
+	this.handleResize();
 
 	this.focusQuestion(question_index);
+
+	Event.on(window, 'resize', this.handleResize, this, true);
 };
 
 // }}}
@@ -575,16 +674,7 @@ proto.openDialog = function(question_index)
 
 proto.closeDialog = function()
 {
-	var anim = new Anim(
-		this.dialog,
-		{ opacity: { to: 0 } },
-		CMEQuizPage.dialog_fade_period,
-		Easing.easeOut
-	);
-
-	anim.onComplete.subscribe(function() {
-		this.updateReviewPage();
-
+	function reinsertQuestion() {
 		if (this.dialog_question !== null) {
 			// if it's not the current question, hide it again
 			if (this.current_question !== this.dialog_question_index) {
@@ -600,14 +690,103 @@ proto.closeDialog = function()
 		}
 
 		this.dialog_question_index = null;
+	}
 
-		// reset filter for IE to prevent rendering bugs.
-		this.dialog.style.filter = '';
+	if (this.media_query.matches) {
+		var anim = new Anim(
+			this.dialog,
+			{ opacity: { to: 0 } },
+			CMEQuizPage.dialog_fade_period,
+			Easing.easeOut
+		);
 
+		anim.onComplete.subscribe(function() {
+			this.updateReviewPage();
+
+			reinsertQuestion.call(this);
+
+			// reset filter for IE to prevent rendering bugs.
+			this.dialog.style.filter = '';
+
+			this.overlay.style.display = 'none';
+		}, this, true);
+
+		anim.animate();
+	} else {
+		if (this.body_hidden) {
+			// show all body children again
+			var children = YAHOO.util.Dom.getChildren(document.body);
+			for (var i = 0; i < children.length; i++) {
+				YAHOO.util.Dom.removeClass(children[i], 'quiz-hidden');
+			}
+
+			// restore scroll position
+			window.scrollTo(0, this.scroll_top);
+
+			this.body_hidden = false;
+		}
+
+		this.updateReviewPage();
+		reinsertQuestion.call(this);
 		this.overlay.style.display = 'none';
-	}, this, true);
+	}
 
-	anim.animate();
+	Event.removeListener(window, 'resize', this.handleResize);
+};
+
+// }}}
+// {{{ positionDialog()
+
+proto.positionDialog = function()
+{
+	if (this.media_query.matches) {
+		var region   = Dom.getRegion(this.dialog);
+		var viewport = Dom.getViewportHeight();
+		this.dialog.style.top = (viewport - region.height) / 2 + 'px';
+	} else {
+		this.dialog.style.top = 0;
+	}
+};
+
+// }}}
+// {{{ handleResize()
+
+proto.handleResize = function()
+{
+	if (this.media_query.matches) {
+		this.overlay.style.height = Dom.getViewportHeight() + 'px';
+		if (this.body_hidden) {
+			// show all body children again
+			var children = Dom.getChildren(document.body);
+			for (var i = 0; i < children.length; i++) {
+				Dom.removeClass(children[i], 'quiz-hidden');
+			}
+
+			// restore scroll position
+			window.scrollTo(0, this.scroll_top);
+
+			this.body_hidden = false;
+		}
+	} else {
+		if (!this.body_hidden) {
+			// save scroll position for when we close the dialog
+			this.scroll_top = Dom.getDocumentScrollTop();
+
+			// hide all body children
+			var children = Dom.getChildren(document.body);
+			for (var i = 0; i < children.length; i++) {
+				if (children[i] !== this.container) {
+					Dom.addClass(children[i], 'quiz-hidden');
+				}
+			}
+
+			window.scrollTo(0, 0);
+
+			this.body_hidden = true;
+		}
+	}
+
+	this.positionDialog();
 };
 
 // }}}
@@ -702,11 +881,11 @@ proto.updateQuizPage = function(question_index)
 proto.updateReviewPage = function()
 {
 	var unanswered = [];
-	var answer, answered, link;
+	var answer, answered, change_button;
 	for (var i = 0; i < this.question_els.length; i++) {
 		answered = false;
 		answer = this.question_review_answers[i];
-		link = answer.previousSibling;
+		change_button = answer.previousSibling.previousSibling;
 		for (var j = 0; j < this.question_options[i].length; j++) {
 			if (this.question_options[i][j].checked) {
 				answer.innerHTML = this.question_labels[i][j].innerHTML;
@@ -715,15 +894,16 @@ proto.updateReviewPage = function()
 			}
 		}
 
-		while (link.firstChild) {
-			link.removeChild(link.firstChild);
+		while (change_button.firstChild) {
+			change_button.removeChild(change_button.firstChild);
 		}
 
 		if (answered) {
 			Dom.addClass(answer.parentNode, 'answered');
 			Dom.removeClass(answer.parentNode, 'unanswered');
-			Dom.removeClass(link, 'button');
-			link.appendChild(
+			Dom.removeClass(change_button, 'btn-primary');
+			Dom.addClass(change_button, 'btn-default');
+			change_button.appendChild(
 				document.createTextNode(
 					CMEQuizPage.change_text
 				)
@@ -732,8 +912,9 @@ proto.updateReviewPage = function()
 			unanswered.push(i);
 			Dom.removeClass(answer.parentNode, 'answered');
 			Dom.addClass(answer.parentNode, 'unanswered');
-			Dom.addClass(link, 'button');
-			link.appendChild(
+			Dom.removeClass(change_button, 'btn-default');
+			Dom.addClass(change_button, 'btn-primary');
+			change_button.appendChild(
 				document.createTextNode(
 					CMEQuizPage.answer_text
 				)
@@ -852,7 +1033,7 @@ proto.updateReviewPage = function()
 
 		this.review_status.appendChild(
 			document.createTextNode(' ' +
-				CMEQuizPage.review_status_required
+				CMEQuizPage.review_status_required_text
 			)
 		);
 
@@ -938,6 +1119,7 @@ proto.resizePage = function(old_page, new_page)
 	anim.onComplete.subscribe(function() {
 		this.fadeInPage(old_page, new_page);
 		this.page_container.style.height = 'auto';
+		this.page_container.style.overflow = 'visible';
 	}, this, true);
 
 	anim.animate();
@@ -1164,6 +1346,25 @@ proto.focusQuestion = function(question_index)
 };
 
 // }}}
+// {{{ selectOption()
+
+proto.selectOption = function(option_index)
+{
+	// don't choose option if not on the quiz or dialog
+	if (this.current_page !== 'quiz' && this.dialog_question_index === null) {
+		return;
+	}
+
+	var question_index = (this.dialog_question_index !== null) ?
+		this.dialog_question_index : this.current_question;
+
+	if (this.question_labels[question_index][option_index]) {
+		this.question_labels[question_index][option_index].click();
+		this.focusQuestion(question_index);
+	}
+};
+
+// }}}
 // {{{ validate()
 
 proto.validate = function(question_index)
@@ -1195,7 +1396,7 @@ proto.saveResponseValue = function(el, question_index)
 	var n, message, li;
 	for (var i = 0; i < this.question_options[question_index].length; i++) {
 		n = this.question_options[question_index][i];
-		li = n.parentNode.parentNode;
+		li = Dom.getAncestorByTagName(n, 'li');
 		message = this.question_option_messages[n.id];
 		if (n === el) {
 			message.style.display = 'block';

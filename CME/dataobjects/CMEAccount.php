@@ -3,6 +3,7 @@
 require_once 'Store/dataobjects/StoreAccount.php';
 require_once 'CME/dataobjects/CMECredit.php';
 require_once 'CME/dataobjects/CMEEvaluation.php';
+require_once 'CME/dataobjects/CMEEvaluationResponse.php';
 require_once 'CME/dataobjects/CMEFrontMatter.php';
 require_once 'CME/dataobjects/CMEQuiz.php';
 require_once 'CME/dataobjects/CMEQuizResponse.php';
@@ -47,8 +48,10 @@ abstract class CMEAccount extends StoreAccount
 		$evaluation = $front_matter->evaluation;
 		if ($evaluation instanceof CMEEvaluation) {
 			$evaluation_response = $evaluation->getResponseByAccount($this);
-			$complete = ($evaluation_response instanceof InquisitionResponse &&
-				$evaluation_response->complete_date instanceof SwatDate);
+			$complete = (
+				$evaluation_response instanceof CMEEvaluationResponse &&
+				$evaluation_response->complete_date instanceof SwatDate
+			);
 		}
 
 		return $complete;
@@ -93,7 +96,7 @@ abstract class CMEAccount extends StoreAccount
 		$earned = false;
 
 		foreach ($this->earned_cme_credits as $earned_credit) {
-			if ($earned_credit->id === $credit->id) {
+			if ($earned_credit->credit->id === $credit->id) {
 				$earned = true;
 				break;
 			}

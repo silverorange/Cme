@@ -14,6 +14,7 @@ CME:
     admin/packages/cme/admin/styles/cme-credit-edit.css:
 
     # JavaScript
+    packages/cme/javascript/cme-certificate-page.js:
     packages/cme/javascript/cme-evaluation-page.js:
     packages/cme/javascript/cme-front-matter-display.js:
     packages/cme/javascript/cme-quiz-page.js:

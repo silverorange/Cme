@@ -3,7 +3,7 @@
 require_once 'Site/pages/SiteUiPage.php';
 require_once 'Swat/SwatDetailsStore.php';
 require_once 'CME/CME.php';
-require_once 'CME/dataobjects/CMECreditWrapper.php';
+require_once 'CME/dataobjects/CMEAccountEarnedCMECreditWrapper.php';
 require_once 'CME/dataobjects/CMEProviderWrapper.php';
 
 /**
@@ -15,11 +15,71 @@ require_once 'CME/dataobjects/CMEProviderWrapper.php';
  */
 abstract class CMECertificatePage extends SiteUiPage
 {
+	// {{{ protected properties
+
+	/**
+	 * @var CMEAccountEarnedCMECreditWrapper
+	 */
+	protected $credits;
+
+	/**
+	 * @var array
+	 */
+	protected $credits_by_provider;
+
+	/**
+	 * @var CMEAccountEarnedCMECreditWrapper
+	 */
+	protected $selected_credits;
+
+	/**
+	 * @var array
+	 */
+	protected $selected_credits_by_provider;
+
+	/**
+	 * @var boolean
+	 */
+	protected $has_pre_selection = false;
+
+	// }}}
 	// {{{ protected function getUiXml()
 
 	protected function getUiXml()
 	{
 		return 'CME/pages/cme-certificate.xml';
+	}
+
+	// }}}
+	// {{{ protected function getCreditsByProvider()
+
+	protected function getCreditsByProvider($shortname)
+	{
+		if (isset($this->credits_by_provider[$shortname])) {
+			$credits = $this->credits_by_provider[$shortname];
+		} else {
+			$wrapper = SwatDBClassMap::get('CMEAccountEarnedCMECreditWrapper');
+			$credits = new $wrapper();
+			$credits->setDatabase($this->app->db);
+		}
+
+		return $credits;
+	}
+
+	// }}}
+	// {{{ protected function getSelectedCreditsByProvider()
+
+	protected function getSelectedCreditsByProvider($shortname)
+	{
+		if (isset($this->selected_credits_by_provider[$shortname])) {
+			$credits = $this->selected_credits_by_provider[$shortname];
+		} else {
+			$wrapper = SwatDBClassMap::get('CMEAccountEarnedCMECreditWrapper');
+			$credits = new $wrapper();
+			$credits->setDatabase($this->app->db);
+		}
+
+		return $credits;
 	}
 
 	// }}}
@@ -44,7 +104,7 @@ abstract class CMECertificatePage extends SiteUiPage
 
 		$hours = $this->app->getCacheValue($key, 'cme-hours');
 		if ($hours === false) {
-			$hours = $account->getCMECreditHours();
+			$hours = $account->getEarnedCMECreditHours();
 			$this->app->addCacheValue($hours, $key, 'cme-hours');
 		}
 
@@ -74,7 +134,21 @@ abstract class CMECertificatePage extends SiteUiPage
 	protected function initCredits()
 	{
 		$account = $this->app->session->account;
-		return $account->earned_cme_credits;
+		$this->credits = $account->earned_cme_credits;
+		$this->credits_by_provider = array();
+
+		$wrapper = SwatDBClassMap::get('CMEAccountEarnedCMECreditWrapper');
+
+		foreach ($this->credits as $credit) {
+			$provider = $credit->credit->front_matter->provider->shortname;
+			if (!isset($this->credits_by_provider[$provider])) {
+				$this->credits_by_provider[$provider] = new $wrapper();
+				$this->credits_by_provider[$provider]->setDatabase(
+					$this->app->db
+				);
+			}
+			$this->credits_by_provider[$provider]->add($credit);
+		}
 	}
 
 	// }}}
@@ -86,22 +160,44 @@ abstract class CMECertificatePage extends SiteUiPage
 		$list = $this->ui->getWidget('credits');
 
 		foreach ($this->credits as $credit) {
-			$option = new SwatOption(
-				$credit->id,
-				$this->getListOptionTitle($credit),
-				'text/xml'
+			$list->addOption(
+				$this->getListOption($credit),
+				$this->getListOptionMetaData($credit)
 			);
 
-			$list->addOption($option);
+			if ($this->isPreSelected($credit)) {
+				$this->has_pre_selection = true;
+				$values[] = $credit->id;
+			}
 		}
 
 		$list->values = $values;
 	}
 
 	// }}}
+	// {{{ protected function getListOption()
+
+	protected function getListOption(CMEAccountEarnedCMECredit $credit)
+	{
+		return new SwatOption(
+			$credit->id,
+			$this->getListOptionTitle($credit),
+			'text/xml'
+		);
+	}
+
+	// }}}
+	// {{{ protected function getListOptionMetaData()
+
+	protected function getListOptionMetaData(CMEAccountEarnedCMECredit $credit)
+	{
+		return array();
+	}
+
+	// }}}
 	// {{{ protected function getListOptionTitle()
 
-	protected function getListOptionTitle(CMECredit $credit)
+	protected function getListOptionTitle(CMEAccountEarnedCMECredit $credit)
 	{
 		ob_start();
 
@@ -115,7 +211,7 @@ abstract class CMECertificatePage extends SiteUiPage
 		$formatted_provider_credit_title = sprintf(
 			'<em>%s</em>',
 			SwatString::minimizeEntities(
-				$credit->front_matter->provider->credit_title
+				$credit->credit->front_matter->provider->credit_title
 			)
 		);
 
@@ -125,11 +221,11 @@ abstract class CMECertificatePage extends SiteUiPage
 			sprintf(
 				CME::_('%s %s from %s'),
 				SwatString::minimizeEntities(
-					$locale->formatNumber($credit->hours)
+					$locale->formatNumber($credit->credit->hours)
 				),
 				$formatted_provider_credit_title,
 				SwatString::minimizeEntities(
-					$credit->front_matter->provider->title
+					$credit->credit->front_matter->provider->title
 				)
 			),
 			'text/xml'
@@ -150,17 +246,79 @@ abstract class CMECertificatePage extends SiteUiPage
 	// }}}
 	// {{{ abstract protected function getCreditTitle()
 
-	abstract protected function getCreditTitle(CMECredit $credit);
+	abstract protected function getCreditTitle(
+		CMEAccountEarnedCMECredit $credit);
 
 	// }}}
 	// {{{ protected function getCreditDetails()
 
-	protected function getCreditDetails(CMECredit $credit)
+	protected function getCreditDetails(CMEAccountEarnedCMECredit $credit)
 	{
 		return '';
 	}
 
 	// }}}
+	// {{{ protected function isPreSelected()
+
+	protected function isPreSelected(CMEAccountEarnedCMECredit $credit)
+	{
+		return false;
+	}
+
+	// }}}
+
+	// process phase
+	// {{{ protected function processInternal()
+
+	protected function processInternal()
+	{
+		$list = $this->ui->getWidget('credits')->values;
+
+		$this->selected_credits_by_provider = array();
+
+		$wrapper = SwatDBClassMap::get('CMEAccountEarnedCMECreditWrapper');
+
+		$this->selected_credits = new $wrapper();
+		$this->selected_credits->setDatabase($this->app->db);
+
+		$has_credit = false;
+
+		foreach ($this->credits as $credit) {
+			if (in_array($credit->id, $list)) {
+				$has_credit = true;
+				$this->selected_credits->add($credit);
+				$provider = $credit->credit->front_matter->provider->shortname;
+				if (!isset($this->selected_credits_by_provider[$provider])) {
+					$this->selected_credits_by_provider[$provider] =
+						new $wrapper();
+
+					$this->selected_credits_by_provider[$provider]->setDatabase(
+						$this->app->db
+					);
+				}
+				$this->selected_credits_by_provider[$provider]->add($credit);
+			}
+		}
+
+		$form = $this->ui->getWidget('certificate_form');
+		if ($form->isProcessed() && !$has_credit) {
+			$this->ui->getWidget('message_display')->add(
+				new SwatMessage(
+					CME::_('No credits were selected to print.')
+				),
+				SwatMessageDisplay::DISMISS_OFF
+			);
+		}
+	}
+
+	// }}}
+	// {{{ protected function isProcessed()
+
+	protected function isProcessed()
+	{
+		$form = $this->ui->getWidget('certificate_form');
+		return ($this->has_pre_selection || $form->isProcessed());
+	}
 
 	// build phase
 	// {{{ protected function buildInternal()
@@ -172,9 +330,9 @@ abstract class CMECertificatePage extends SiteUiPage
 		$form = $this->ui->getWidget('certificate_form');
 		$form->action = $this->getSource();
 
-		if ($form->isProcessed()) {
+		if ($this->isProcessed()) {
+			$this->buildCertificates();
 			ob_start();
-			$this->displayCertificates();
 			Swat::displayInlineJavaScript($this->getInlineJavaScript());
 			$this->ui->getWidget('certificate')->content = ob_get_clean();
 		}
@@ -204,9 +362,9 @@ abstract class CMECertificatePage extends SiteUiPage
 	}
 
 	// }}}
-	// {{{ abstract protected function displayCertificates()
+	// {{{ abstract protected function buildCertificates()
 
-	abstract protected function displayCertificates();
+	abstract protected function buildCertificates();
 
 	// }}}
 	// {{{ protected function getInlineJavaScript()
@@ -228,46 +386,6 @@ JAVASCRIPT;
 	}
 
 	// }}}
-	// {{{ protected function getCompleteDate()
-
-	protected function getCompleteDate(CMECredit $credit)
-	{
-		$account = $this->app->session->account;
-		$dates = array();
-
-		if ($credit->front_matter->evaluation instanceof CMEEvaluation) {
-			$response = $credit->evaluation->getResponseByAccount($account);
-			if ($response instanceof InquisitionResponse) {
-				$dates[] = clone $response->complete_date;
-			}
-		}
-
-		if ($credit->quiz instanceof CMEQuiz) {
-			$response = $credit->quiz->getResponseByAccount($account);
-			if ($response instanceof InquisitionResponse) {
-				$dates[] = clone $response->complete_date;
-			}
-		}
-
-		// if there are no complete dates, just use today
-		if (count($dates) === 0) {
-			$dates[] = new SwatDate();
-		}
-
-		// get latest date
-		$latest_date = null;
-		foreach ($dates as $date) {
-			if (!$latest_date instanceof SwatDate ||
-				$latest_date->before($date)) {
-
-				$latest_date = $date;
-			}
-		}
-
-		return $latest_date;
-	}
-
-	// }}}
 
 	// finalize phase
 	// {{{ public function finalize()
@@ -276,10 +394,14 @@ JAVASCRIPT;
 	{
 		parent::finalize();
 
-		$this->layout->addBodyClass('cme-account-certificate');
+		$this->layout->addBodyClass('cme-certificate-page');
 
 		$yui = new SwatYUI(array('dom', 'event'));
 		$this->layout->addHtmlHeadEntrySet($yui->getHtmlHeadEntrySet());
+
+		$this->layout->addHtmlHeadEntry(
+			'packages/cme/javascript/cme-certificate-page.js'
+		);
 	}
 
 	// }}}

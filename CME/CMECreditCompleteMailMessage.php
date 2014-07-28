@@ -11,7 +11,8 @@ require_once 'CME/dataobjects/CMECredit.php';
  * @copyright 2011-2014 silverorange
  * @license   http://www.opensource.org/licenses/mit-license.html MIT License
  */
-abstract class CMECreditCompleteMailMessage extends AccountMailMessage
+abstract class CMECreditCompleteMailMessage extends
+	SiteReplacementMarkerMailMessage
 {
 	// {{{ protected properties
 
@@ -97,7 +98,7 @@ abstract class CMECreditCompleteMailMessage extends AccountMailMessage
 	{
 		return sprintf(
 			CME::_('%s Quiz Completed'),
-			$this->credit->provider->title
+			$this->credit->front_matter->provider->title
 		);
 	}
 
@@ -107,9 +108,9 @@ abstract class CMECreditCompleteMailMessage extends AccountMailMessage
 	protected function getBodyText()
 	{
 		if ($this->response->isPassed()) {
-			$bodytext = $this->credit->quiz->email_content_pass;
+			$bodytext = $this->credit->email_content_pass;
 		} else {
-			$bodytext = $this->credit->quiz->email_content_fail;
+			$bodytext = $this->credit->email_content_fail;
 		}
 
 		return $bodytext;

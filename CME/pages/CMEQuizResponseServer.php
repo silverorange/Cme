@@ -186,7 +186,7 @@ class CMEQuizResponseServer extends SiteArticlePage
 			$this->app->db->quote(true, 'boolean')
 		);
 
-		return SwatBD::query(
+		return SwatDB::query(
 			$this->app->db,
 			$sql,
 			SwatDBClassMap::get('CMECreditWrapper')
@@ -239,7 +239,7 @@ class CMEQuizResponseServer extends SiteArticlePage
 		$response = $quiz->getResponseByAccount($this->app->session->account);
 
 		// get new response
-		if (!$response instanceof InquisitionResponse) {
+		if (!$response instanceof CMEQuizResponse) {
 			$class_name = SwatDBClassMap::get('CMEQuizResponse');
 			$response = new $class_name();
 
