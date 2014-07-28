@@ -539,6 +539,7 @@ abstract class CMEQuizPage extends SiteDBEditPage
 		}
 
 		$this->ui->getWidget('quiz_frame')->visible = false;
+		$this->ui->getWidget('quiz_keyboard_help')->visible = false;
 		$this->ui->getWidget('quiz_response_container')->visible = true;
 	}
 
