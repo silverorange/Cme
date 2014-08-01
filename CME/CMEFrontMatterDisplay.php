@@ -40,7 +40,15 @@ class CMEFrontMatterDisplay extends SwatControl
 	{
 		parent::__construct($id);
 
-		$yui = new SwatYUI(array('dom', 'event', 'animation', 'connection'));
+		$yui = new SwatYUI(
+			array(
+				'dom',
+				'event',
+				'animation',
+				'connection',
+				'container_core',
+			)
+		);
 		$this->html_head_entry_set->addEntrySet($yui->getHtmlHeadEntrySet());
 
 		$this->addJavaScript(
