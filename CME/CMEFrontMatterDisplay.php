@@ -47,10 +47,10 @@ class CMEFrontMatterDisplay extends SwatControl
 			'packages/swat/javascript/swat-z-index-manager.js'
 		);
 		$this->addJavaScript(
-			'packages/cme/javascript/cme-front-matter-display.js'
+			'packages/site/javascript/site-dialog.js'
 		);
-		$this->addStyleSheet(
-			'packages/cme/styles/cme-front-matter-display.css'
+		$this->addJavaScript(
+			'packages/cme/javascript/cme-front-matter-display.js'
 		);
 	}
 
