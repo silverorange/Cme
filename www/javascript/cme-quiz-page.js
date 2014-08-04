@@ -8,12 +8,7 @@ function CMEQuizPage(el, response_server, current_question)
 	this.dialog_question        = null;
 	this.dialog_question_index  = null;
 	this.is_submitted           = false;
-	this.body_hidden            = false;
-	this.scroll_top             = 0;
-
-	this.media_query = (window.matchMedia)
-		? window.matchMedia('(min-width: 768px)')
-		: { matches: false };
+	this.dialog                 = null;
 
 	YAHOO.util.Event.onDOMReady(function() {
 		this.initQuestions();
@@ -516,6 +511,7 @@ proto.drawReviewPage = function()
 		(function () {
 			var index = i;
 			Event.on(change_button, 'click', function(e) {
+				this.dialog.config.toggle_element = Event.getTarget(e);
 				this.openDialog(index);
 			}, that, true);
 		})();
@@ -557,51 +553,27 @@ proto.drawReviewPage = function()
 
 proto.drawDialog = function()
 {
-	var mask = document.createElement('a');
-	mask.href = '#close';
-	mask.className = 'quiz-question-overlay-mask';
-
-	Event.on(mask, 'click', function(e) {
-		Event.preventDefault(e);
-		this.closeDialog();
-	}, this, true);
+	this.dialog = new SiteDialog(null, {
+		class_name: 'quiz-question-dialog',
+		resize_mode: SiteDialog.RESIZE_CENTER
+	});
 
 	this.dialog_title = document.createElement('span');
 	this.dialog_title.className = 'quiz-question-dialog-title';
-
-	var header = document.createElement('div');
-	header.className = 'quiz-question-dialog-header';
-	header.appendChild(this.dialog_title);
+	this.dialog.appendToHeader(this.dialog_title);
 
 	var close = document.createElement('input');
 	close.className = 'btn btn-primary quiz-button-dialog-close';
 	close.setAttribute('type', 'button');
 	close.value = CMEQuizPage.close_text;
 	Event.on(close, 'click', this.closeDialog, this, true);
-
-	var footer = document.createElement('div');
-	footer.className = 'quiz-question-dialog-footer';
-	footer.appendChild(close);
+	this.dialog.appendToFooter(close);
 
 	this.dialog_content = document.createElement('div');
 	this.dialog_content.className = 'quiz-question-dialog-content';
-
-	this.dialog = document.createElement('div');
-	this.dialog.className = 'quiz-question-dialog';
-	this.dialog.appendChild(header);
-	this.dialog.appendChild(this.dialog_content);
-	this.dialog.appendChild(footer);
-
-	this.overlay = document.createElement('div');
-	this.overlay.className = 'quiz-question-overlay';
-	this.overlay.style.display = 'none';
-	this.overlay.appendChild(mask);
-	this.overlay.appendChild(this.dialog);
+	this.dialog.appendToBody(this.dialog_content);
 
 	this.dialog_question_shim = document.createElement('div');
-
-	this.body = document.getElementsByTagName('body')[0];
-	this.body.appendChild(this.overlay);
 };
 
 // }}}
@@ -646,27 +618,12 @@ proto.openDialog = function(question_index)
 		this.dialog_question
 	);
 
-	// set z-indexes
-	SwatZIndexManager.raiseElement(this.overlay);
-	SwatZIndexManager.raiseElement(this.overlay.firstChild);
-	SwatZIndexManager.raiseElement(this.dialog);
-	SwatZIndexManager.raiseElement(this.dialog.firstChild);
-
 	this.dialog_content.appendChild(this.dialog_question);
 	this.dialog_question.style.display = 'block';
 
-	Dom.setStyle(this.dialog, 'opacity', 1);
-
-	// reset filter for IE to prevent rendering bugs.
-	this.dialog.style.filter = '';
-
-	this.overlay.style.display = 'block';
-
-	this.handleResize();
+	this.dialog.openWithAnimation();
 
 	this.focusQuestion(question_index);
-
-	Event.on(window, 'resize', this.handleResize, this, true);
 };
 
 // }}}
@@ -692,101 +649,9 @@ proto.closeDialog = function()
 		this.dialog_question_index = null;
 	}
 
-	if (this.media_query.matches) {
-		var anim = new Anim(
-			this.dialog,
-			{ opacity: { to: 0 } },
-			CMEQuizPage.dialog_fade_period,
-			Easing.easeOut
-		);
-
-		anim.onComplete.subscribe(function() {
-			this.updateReviewPage();
-
-			reinsertQuestion.call(this);
-
-			// reset filter for IE to prevent rendering bugs.
-			this.dialog.style.filter = '';
-
-			this.overlay.style.display = 'none';
-		}, this, true);
-
-		anim.animate();
-	} else {
-		if (this.body_hidden) {
-			// show all body children again
-			var children = YAHOO.util.Dom.getChildren(document.body);
-			for (var i = 0; i < children.length; i++) {
-				YAHOO.util.Dom.removeClass(children[i], 'quiz-hidden');
-			}
-
-			// restore scroll position
-			window.scrollTo(0, this.scroll_top);
-
-			this.body_hidden = false;
-		}
-
-		this.updateReviewPage();
-		reinsertQuestion.call(this);
-		this.overlay.style.display = 'none';
-	}
-
-	Event.removeListener(window, 'resize', this.handleResize);
-};
-
-// }}}
-// {{{ positionDialog()
-
-proto.positionDialog = function()
-{
-	if (this.media_query.matches) {
-		var region   = Dom.getRegion(this.dialog);
-		var viewport = Dom.getViewportHeight();
-		this.dialog.style.top = (viewport - region.height) / 2 + 'px';
-	} else {
-		this.dialog.style.top = 0;
-	}
-};
-
-// }}}
-// {{{ handleResize()
-
-proto.handleResize = function()
-{
-	if (this.media_query.matches) {
-		this.overlay.style.height = Dom.getViewportHeight() + 'px';
-		if (this.body_hidden) {
-			// show all body children again
-			var children = Dom.getChildren(document.body);
-			for (var i = 0; i < children.length; i++) {
-				Dom.removeClass(children[i], 'quiz-hidden');
-			}
-
-			// restore scroll position
-			window.scrollTo(0, this.scroll_top);
-
-			this.body_hidden = false;
-		}
-	} else {
-		if (!this.body_hidden) {
-			// save scroll position for when we close the dialog
-			this.scroll_top = Dom.getDocumentScrollTop();
-
-			// hide all body children
-			var children = Dom.getChildren(document.body);
-			for (var i = 0; i < children.length; i++) {
-				if (children[i] !== this.container) {
-					Dom.addClass(children[i], 'quiz-hidden');
-				}
-			}
-
-			window.scrollTo(0, 0);
-
-			this.body_hidden = true;
-		}
-	}
-
-	this.positionDialog();
+	this.updateReviewPage();
+	reinsertQuestion.call(this);
+	this.dialog.closeWithAnimation();
 };
 
 // }}}
@@ -962,6 +827,7 @@ proto.updateReviewPage = function()
 			);
 			Event.on(anchor, 'click', function(e) {
 				Event.preventDefault(e);
+				this.dialog.config.toggle_element = Event.getTarget(e);
 				this.openDialog(unanswered[0]);
 			}, this, true);
 			this.review_status.appendChild(anchor);
@@ -996,6 +862,7 @@ proto.updateReviewPage = function()
 					var index = unanswered[i];
 					Event.on(anchor, 'click', function(e) {
 						Event.preventDefault(e);
+						that.dialog.config.toggle_element = Event.getTarget(e);
 						that.openDialog(index);
 					}, that, true);
 				})();
