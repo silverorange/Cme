@@ -973,11 +973,15 @@ abstract class CMEQuizPage extends SiteDBEditPage
 				'connection',
 				'json',
 				'animation',
+				'container_core',
 			)
 		);
 		$this->layout->addHtmlHeadEntrySet($yui->getHtmlHeadEntrySet());
 		$this->layout->addHtmlHeadEntry(
 			'packages/swat/javascript/swat-z-index-manager.js'
+		);
+		$this->layout->addHtmlHeadEntry(
+			'packages/site/javascript/site-dialog.js'
 		);
 		$this->layout->addHtmlHeadEntry(
 			'packages/cme/javascript/cme-quiz-page.js'
