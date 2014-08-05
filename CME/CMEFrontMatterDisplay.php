@@ -40,17 +40,25 @@ class CMEFrontMatterDisplay extends SwatControl
 	{
 		parent::__construct($id);
 
-		$yui = new SwatYUI(array('dom', 'event', 'animation', 'connection'));
+		$yui = new SwatYUI(
+			array(
+				'dom',
+				'event',
+				'animation',
+				'connection',
+				'container_core',
+			)
+		);
 		$this->html_head_entry_set->addEntrySet($yui->getHtmlHeadEntrySet());
 
 		$this->addJavaScript(
 			'packages/swat/javascript/swat-z-index-manager.js'
 		);
 		$this->addJavaScript(
-			'packages/cme/javascript/cme-front-matter-display.js'
+			'packages/site/javascript/site-dialog.js'
 		);
-		$this->addStyleSheet(
-			'packages/cme/styles/cme-front-matter-display.css'
+		$this->addJavaScript(
+			'packages/cme/javascript/cme-front-matter-display.js'
 		);
 	}
 
