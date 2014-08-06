@@ -320,6 +320,8 @@ abstract class CMECertificatePage extends SiteUiPage
 		return ($this->has_pre_selection || $form->isProcessed());
 	}
 
+	// }}}
+
 	// build phase
 	// {{{ protected function buildInternal()
 
