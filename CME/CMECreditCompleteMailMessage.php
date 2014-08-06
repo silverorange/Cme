@@ -132,7 +132,7 @@ abstract class CMECreditCompleteMailMessage extends
 
 		case 'quiz-passing-grade':
 			return $locale->formatNumber(
-				$this->credit->quiz->passing_grade * 100
+				$this->credit->passing_grade * 100
 			).'%';
 
 		case 'quiz-grade':
