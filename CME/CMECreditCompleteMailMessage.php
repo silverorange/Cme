@@ -124,8 +124,8 @@ abstract class CMECreditCompleteMailMessage extends
 		$locale = SwatI18NLocale::get();
 
 		switch ($marker_id) {
-		case 'certificate-link':
-			return $this->getCertificateLink();
+		case 'cme-certificate-link':
+			return $this->getCertificateLinkURI();
 
 		case 'quiz-passing-grade':
 			return $locale->formatNumber(
