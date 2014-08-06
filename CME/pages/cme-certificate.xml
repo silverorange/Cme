@@ -17,7 +17,7 @@
 			</widget>
 		</widget>
 	</widget>
-	<widget class="SwatContainer" id="cme_certificates">
+	<widget class="SwatDisplayableContainer" id="cme_certificates">
 		<widget class="SwatContentBlock" id="certificate">
 			<property name="content_type">text/xml</property>
 		</widget>
