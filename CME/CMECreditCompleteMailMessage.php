@@ -124,6 +124,9 @@ abstract class CMECreditCompleteMailMessage extends
 		$locale = SwatI18NLocale::get();
 
 		switch ($marker_id) {
+		case 'account-full-name':
+			return $this->account->getFullName();
+
 		case 'cme-certificate-link':
 			return $this->getCertificateLinkURI();
 
@@ -135,9 +138,6 @@ abstract class CMECreditCompleteMailMessage extends
 		case 'quiz-grade':
 			$grade = $this->response->getGrade();
 			return $locale->formatNumber(round($grade * 1000) / 10).'%';
-
-		case 'account-full-name':
-			return $this->account->getFullName();
 
 		default:
 			return parent::getReplacementMarkerText($marker_id);
