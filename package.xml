@@ -13,10 +13,10 @@
   <email>mike@silverorange.com</email>
   <active>yes</active>
  </lead>
- <date>2014-07-03</date>
- <time>14:23:29</time>
+ <date>2014-08-07</date>
+ <time>11:57:23</time>
  <version>
-  <release>0.1.1</release>
+  <release>0.1.2</release>
   <api>0.1.0</api>
  </version>
  <stability>
@@ -90,6 +90,9 @@ beta release
      </dir> <!-- /CME/admin/components -->
      <file name="CMEQuizResponseResetDependency.php" role="php" />
     </dir> <!-- /CME/admin -->
+    <dir name="certificates">
+     <file name="CMECertificate.php" role="php" />
+    </dir> <!-- /CME/certificates -->
     <dir name="dataobjects">
      <file name="CMEAccount.php" role="php" />
      <file name="CMEAccountEarnedCMECredit.php" role="php" />
@@ -99,6 +102,8 @@ beta release
      <file name="CMEEvaluation.php" role="php" />
      <file name="CMEEvaluationReport.php" role="php" />
      <file name="CMEEvaluationReportWrapper.php" role="php" />
+     <file name="CMEEvaluationResponse.php" role="php" />
+     <file name="CMEEvaluationResponseWrapper.php" role="php" />
      <file name="CMEEvaluationWrapper.php" role="php" />
      <file name="CMEFrontMatter.php" role="php" />
      <file name="CMEFrontMatterWrapper.php" role="php" />
@@ -122,6 +127,7 @@ beta release
      <file name="CMEQuizResponseServer.php" role="php" />
     </dir> <!-- /CME/pages -->
     <file name="CME.php" role="php" />
+    <file name="CMECertificateFactory.php" role="php" />
     <file name="CMECreditCompleteMailMessage.php" role="php" />
     <file name="CMEEvaluationReportGenerator.php" role="php" />
     <file name="CMEEvaluationReportUpdater.php" role="php" />
@@ -141,6 +147,7 @@ beta release
      <file name="CMEFrontMatter.sql" role="data" />
      <file name="CMEProvider.sql" role="data" />
      <file name="EvaluationReport.sql" role="data" />
+     <file name="InquisitionResponse.sql" role="data" />
      <file name="QuizReport.sql" role="data" />
     </dir> <!-- /sql/tables -->
    </dir> <!-- /sql -->
@@ -152,13 +159,11 @@ beta release
      <file name="inquisition-edit.css" role="data" />
     </dir> <!-- /www/admin -->
     <dir name="javascript">
+     <file name="cme-certificate-page.js" role="data" />
      <file name="cme-evaluation-page.js" role="data" />
      <file name="cme-front-matter-display.js" role="data" />
      <file name="cme-quiz-page.js" role="data" />
     </dir> <!-- /www/javascript -->
-    <dir name="styles">
-     <file name="cme-front-matter-display.css" role="data" />
-    </dir> <!-- /www/styles -->
    </dir> <!-- /www -->
    <file name="LICENSE" role="doc" />
    <file name="README.md" role="doc" />
@@ -205,14 +210,14 @@ beta release
  <changelog>
   <release>
    <version>
-    <release>0.1.1</release>
+    <release>0.1.2</release>
     <api>0.1.0</api>
    </version>
    <stability>
     <release>beta</release>
     <api>beta</api>
    </stability>
-   <date>2014-07-03</date>
+   <date>2014-08-07</date>
    <license uri="http://www.opensource.org/licenses/mit-license.html">MIT License</license>
    <notes>
 beta release
