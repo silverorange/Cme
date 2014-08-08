@@ -167,7 +167,7 @@ HTML;
 	// }}}
 	// {{{ protected function validateProvider()
 
-	protected function validateProvider(CMEProvider $provider)
+	protected function validateProvider(CMEProvider $provider = null)
 	{
 		return true;
 	}
