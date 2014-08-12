@@ -206,6 +206,7 @@ abstract class CMEEvaluationPage extends SiteDBEditPage
 	{
 		$container = new SwatDisplayableContainer();
 		$container->classes[] = 'question';
+		$container->classes[] = 'question'.$count;
 
 		$response_value = $this->getResponseValue($question_binding);
 		$view = $question_binding->getView();
