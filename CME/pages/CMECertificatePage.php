@@ -211,6 +211,7 @@ abstract class CMECertificatePage extends SiteUiPage
 		$provider = $credit->credit->front_matter->provider;
 		$formatted_provider_credit_title = sprintf(
 			'<em>%s</em>',
+			// not using ngettext because hours is a float
 			SwatString::minimizeEntities(
 				($credit->credit->hours == 1)
 					? $provider->credit_title
