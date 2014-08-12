@@ -36,8 +36,10 @@ YAHOO.util.Event.onDOMReady(function() {
 						function(e) {
 							var target = YAHOO.util.Event.getTarget(e);
 							if (target === item) {
-								radio.checked = true;
-								updateListSelection(the_radio_buttons);
+								if (!radio.disabled) {
+									radio.checked = true;
+									updateListSelection(the_radio_buttons);
+								}
 							}
 						}
 					);
