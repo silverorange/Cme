@@ -109,3 +109,73 @@ YAHOO.util.Event.onDOMReady(function() {
 		}
 	}
 });
+
+function CMEEvaluationPage(questions)
+{
+	this.questions = questions;
+
+	YAHOO.util.Event.onDOMReady(this.init, this, true);
+}
+
+/* {{{ CMEEvaluationPage.prototype.init() */
+
+CMEEvaluationPage.prototype.init = function()
+{
+	for (var i = 0; i < this.questions.length; i++) {
+		var question = this.questions[i];
+		var name = 'question' + question.binding + '_' + question.question;
+
+		YAHOO.util.Event.on(document.getElementsByName(name), 'click', function(e) {
+			this.updateView();
+		}, this, true);
+	}
+
+	this.updateView();
+};
+
+/* }}} */
+/* {{{ CMEEvaluationPage.prototype.updateView() */
+
+CMEEvaluationPage.prototype.updateView = function()
+{
+	for (var i = 0; i < this.questions.length; i++) {
+		var show = true;
+		var question = this.questions[i];
+
+		var element = document.getElementById(
+			'question' +
+			question.binding + '_' + 
+			question.question
+		);
+
+		for (var j = 0; j < question.dependencies.length; j++) {
+			var selected = false;
+			var dependency = question.dependencies[j];
+
+			for (var k = 0; k < dependency.options.length; k++) {
+				var option = document.getElementById(
+					'question' +
+					dependency.binding + '_' +
+					dependency.question + '_' +
+					dependency.options[k]
+				);
+
+				// Dependant options can be not visible, so if they don't exist
+				// in the DOM skip trying to show them.
+				if (option !== null) {
+					selected = selected || option.checked;
+				}
+			}
+
+			show = show && selected;
+		}
+
+		var parentEl = YAHOO.util.Dom.getAncestorBy(element, function(el) {
+			return YAHOO.util.Dom.hasClass(el, 'question');
+		});
+
+		parentEl.style.display = (show) ? 'block' : 'none';
+	}
+};
+
+/* }}} */
