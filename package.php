@@ -122,7 +122,7 @@ $package->addPackageDepWithChannel(
 	'required',
 	'Inquisition',
 	'pear.silverorange.com',
-	'0.0.28'
+	'0.0.32'
 );
 
 $package->addPackageDepWithChannel(
