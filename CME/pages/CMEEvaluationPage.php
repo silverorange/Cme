@@ -223,20 +223,12 @@ abstract class CMEEvaluationPage extends SiteDBEditPage
 		$form_field->title_content_type = 'text/xml';
 		$form_field->addChild($widget);
 
-		// Initially the widgets are not required so that we can process them
-		// and determine which dependent questions will be required and which
-		// questions won't.
-		if ($widget->required) {
-			$widget->required = false;
-			$form_field->required_status_display = false;
-		} else {
-			$form_field->required_status_display =
-				SwatFormField::DISPLAY_OPTIONAL;
-		}
-
 		if ($widget instanceof SwatContainer) {
 			$form_field->display_messages = false;
 			$form_field->required_status_display = null;
+		} else {
+			$form_field->required_status_display =
+				SwatFormField::DISPLAY_OPTIONAL;
 		}
 
 		$container->addChild($form_field);
@@ -281,6 +273,109 @@ abstract class CMEEvaluationPage extends SiteDBEditPage
 	// }}}
 
 	// process phase
+	// {{{ protected function processForm()
+
+	protected function processForm(SwatForm $form)
+	{
+		if ($this->authenticate($form)) {
+			$this->preProcessForm($form);
+
+			parent::processForm($form);
+		}
+	}
+
+	// }}}
+	// {{{ protected function preProcessForm()
+
+	protected function preProcessForm(SwatForm $form)
+	{
+		$bindings = $this->evaluation->visible_question_bindings;
+		foreach ($bindings as $binding) {
+			$this->preProcessQuestionBinding($binding);
+		}
+	}
+
+	// }}}
+	// {{{ protected function preProcessQuestionBinding()
+
+	protected function preProcessQuestionBinding($question_binding)
+	{
+		$bindings = $this->evaluation->visible_question_bindings;
+		$question = $question_binding->question;
+		$options = $question_binding->getDependentOptions();
+		$widget = $this->question_views[$question_binding->id]->getWidget();
+
+		if (count($options) > 0) {
+			foreach ($options as $option) {
+				$this->preProcessQuestionBinding($bindings[$option['binding']]);
+			}
+
+			// If the question view isn't visible then remove any data
+			// that may have been submited to it. Prevents the form from
+			// not validating when imcomplete data is entered on hidden widgets
+			if ($this->questionViewIsVisible($question_binding)) {
+				$widget->required = $question->required;
+			} else {
+				$form = $widget->getForm();
+				$data = &$form->getFormData();
+
+				unset($data[$widget->id]);
+			}
+		} else {
+			$widget->required = $question->required;
+
+			if (!$widget->isProcessed()) {
+				$widget->process();
+			}
+		}
+	}
+
+	// }}}
+	// {{{ protected function questionViewIsVisible()
+
+	protected function questionViewIsVisible(
+		InquisitionInquisitionQuestionBinding $question_binding)
+	{
+		$question_view_visible = true;
+
+		// If the question view is dependent on other options, check to make
+		// sure all dependent options are available and selected.
+		if (count($question_binding->getDependentOptions()) > 0) {
+
+			foreach ($question_binding->getDependentOptions() as $option) {
+				$question_view_visible = false;
+
+				// Check to make sure the dependent view exists. If
+				// InquisitionQuestion.enabled has been set to false, it will
+				// not exist in the available question views.
+				if (isset($this->question_views[$option['binding']])) {
+					$view = $this->question_views[$option['binding']];
+
+					$values = $view->getResponseValue();
+
+					if (!is_array($values)) {
+						$values = array($values);
+					}
+
+					foreach ($values as $value) {
+						$selected = $value->getInternalValue('question_option');
+
+						foreach ($option['options'] as $dependent) {
+							// If the option this question depends on has been
+							// selected than this question's widget is required.
+							if ($selected === $dependent) {
+								$question_view_visible = true;
+							}
+						}
+					}
+				}
+			}
+		}
+
+		return $question_view_visible;
+	}
+
+	// }}}
 	// {{{ protected function saveData()
 
 	protected function saveData(SwatForm $form)
@@ -306,19 +401,23 @@ abstract class CMEEvaluationPage extends SiteDBEditPage
 
 		$question_bindings = $this->evaluation->visible_question_bindings;
 		foreach ($question_bindings as $question_binding) {
-			$view = $this->question_views[$question_binding->id];
+			// Only save the reponse values from visible questions
+			if ($this->questionViewIsVisible($question_binding)) {
+				$view = $this->question_views[$question_binding->id];
 
-			$response_value = $view->getResponseValue();
+				$response_id = $this->inquisition_response->id;
+				$response_value = $view->getResponseValue();
 
-			if (is_array($response_value)) {
-				$response_value_array = $response_value;
-				foreach ($response_value_array as $response_value) {
-					$response_value->response = $this->inquisition_response->id;
+				if (is_array($response_value)) {
+					$response_value_array = $response_value;
+					foreach ($response_value_array as $response_value) {
+						$response_value->response = $response_id;
+						$this->inquisition_response->values[] = $response_value;
+					}
+				} else {
+					$response_value->response = $response_id;
 					$this->inquisition_response->values[] = $response_value;
 				}
-			} else {
-				$response_value->response = $this->inquisition_response->id;
-				$this->inquisition_response->values[] = $response_value;
 			}
 		}
 
@@ -408,88 +507,6 @@ abstract class CMEEvaluationPage extends SiteDBEditPage
 	// {{{ abstract protected function relocateForCompletedEvaluation()
 
 	abstract protected function relocateForCompletedEvaluation();
-
-	// }}}
-
-	// process phase
-	// {{{ protected function processForm()
-
-	protected function processForm(SwatForm $form)
-	{
-		if ($this->authenticate($form)) {
-			$this->preProcessForm($form);
-
-			parent::processForm($form);
-		}
-	}
-
-	// }}}
-	// {{{ protected function preProcessForm()
-
-	protected function preProcessForm(SwatForm $form)
-	{
-		$question_bindings = $this->evaluation->visible_question_bindings;
-		foreach ($question_bindings as $question_binding) {
-			$question = $question_binding->question;
-
-			// Process the widget first to set the values.
-			$widget = $this->question_views[$question_binding->id]->getWidget();
-			$widget->process();
-
-			$widget->required = (
-				$question->required &&
-				$this->questionViewIsVisible($question_binding)
-			);
-
-			// Process again now that the required flags are correctly set.
-			$widget->process();
-		}
-	}
-
-	// }}}
-	// {{{ protected function questionViewIsVisible()
-
-	protected function questionViewIsVisible(
-		InquisitionInquisitionQuestionBinding $question_binding)
-	{
-		$question_view_visible = true;
-
-		// If the question view is dependent on other options, check to make
-		// sure all dependent options are available and selected.
-		if (count($question_binding->getDependentOptions()) > 0) {
-
-			foreach ($question_binding->getDependentOptions() as $option) {
-				$question_view_visible = false;
-
-				// Check to make sure the dependent view exists. If
-				// InquisitionQuestion.enabled has been set to false, it will
-				// not exist in the available question views.
-				if (isset($this->question_views[$option['binding']])) {
-					$view = $this->question_views[$option['binding']];
-
-					$values = $view->getResponseValue();
-
-					if (!is_array($values)) {
-						$values = array($values);
-					}
-
-					foreach ($values as $value) {
-						$selected = $value->getInternalValue('question_option');
-
-						foreach ($option['options'] as $dependent) {
-							// If the option this question depends on has been
-							// selected than this question's widget is required.
-							if ($selected === $dependent) {
-								$question_view_visible = true;
-							}
-						}
-					}
-				}
-			}
-		}
-
-		return $question_view_visible;
-	}
 
 	// }}}
 
