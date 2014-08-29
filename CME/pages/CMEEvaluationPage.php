@@ -403,22 +403,20 @@ abstract class CMEEvaluationPage extends SiteDBEditPage
 
 		$question_bindings = $this->evaluation->visible_question_bindings;
 		foreach ($question_bindings as $question_binding) {
-			if ($this->questionViewIsVisible($question_binding)) {
-				$view = $this->question_views[$question_binding->id];
+			$view = $this->question_views[$question_binding->id];
 
-				$response_id = $this->inquisition_response->id;
-				$response_value = $view->getResponseValue();
+			$response_id = $this->inquisition_response->id;
+			$response_value = $view->getResponseValue();
 
-				if (is_array($response_value)) {
-					$response_value_array = $response_value;
-					foreach ($response_value_array as $response_value) {
-						$response_value->response = $response_id;
-						$this->inquisition_response->values[] = $response_value;
-					}
-				} else {
+			if (is_array($response_value)) {
+				$response_value_array = $response_value;
+				foreach ($response_value_array as $response_value) {
 					$response_value->response = $response_id;
 					$this->inquisition_response->values[] = $response_value;
 				}
+			} else {
+				$response_value->response = $response_id;
+				$this->inquisition_response->values[] = $response_value;
 			}
 		}
 
