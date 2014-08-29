@@ -325,10 +325,10 @@ abstract class CMEEvaluationPage extends SiteDBEditPage
 			}
 		} else {
 			$widget->required = $question->required;
+		}
 
-			if (!$widget->isProcessed()) {
-				$widget->process();
-			}
+		if (!$widget->isProcessed()) {
+			$widget->process();
 		}
 	}
 
