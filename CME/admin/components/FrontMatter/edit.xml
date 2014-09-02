@@ -19,8 +19,9 @@
 			</widget>
 			<widget class="SwatFormField" id="review_date_field">
 				<property name="title" translatable="yes">Date of Latest Review by CME Provider</property>
-				<property name="required" type="boolean">true</property>
-				<widget class="SwatDateEntry" id="review_date" />
+				<widget class="SwatDateEntry" id="review_date">
+					<property name="required" type="boolean">true</property>
+				</widget>
 			</widget>
 			<widget class="SwatFormField" id="enabled_field">
 				<property name="title" translatable="yes">Enabled</property>
