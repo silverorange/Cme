@@ -13,10 +13,10 @@
   <email>mike@silverorange.com</email>
   <active>yes</active>
  </lead>
- <date>2014-08-21</date>
- <time>17:06:11</time>
+ <date>2014-09-04</date>
+ <time>13:57:46</time>
  <version>
-  <release>0.1.4</release>
+  <release>0.1.5</release>
   <api>0.1.0</api>
  </version>
  <stability>
@@ -195,7 +195,7 @@ beta release
    <package>
     <name>Inquisition</name>
     <channel>pear.silverorange.com</channel>
-    <min>0.0.28</min>
+    <min>0.0.33</min>
    </package>
   </required>
   <optional>
@@ -210,14 +210,14 @@ beta release
  <changelog>
   <release>
    <version>
-    <release>0.1.4</release>
+    <release>0.1.5</release>
     <api>0.1.0</api>
    </version>
    <stability>
     <release>beta</release>
     <api>beta</api>
    </stability>
-   <date>2014-08-21</date>
+   <date>2014-09-04</date>
    <license uri="http://www.opensource.org/licenses/mit-license.html">MIT License</license>
    <notes>
 beta release
