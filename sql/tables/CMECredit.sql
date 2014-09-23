@@ -1,7 +1,6 @@
 create table CMECredit (
 	id serial,
 
-	quiz integer references Inquisition(id) on delete set null,
 	front_matter integer not null references CMEFrontMatter(id) on delete cascade,
 
 	hours numeric(5, 2) not null,
