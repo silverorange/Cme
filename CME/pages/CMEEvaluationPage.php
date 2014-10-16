@@ -225,10 +225,9 @@ abstract class CMEEvaluationPage extends SiteDBEditPage
 
 		if ($widget instanceof SwatContainer) {
 			$form_field->display_messages = false;
-			$form_field->required_status_display = null;
+			$form_field->required_status_display = SwatFormField::SHOW_NONE;
 		} else {
-			$form_field->required_status_display =
-				SwatFormField::DISPLAY_OPTIONAL;
+			$form_field->required_status_display = SwatFormField::SHOW_OPTIONAL;
 		}
 
 		$container->addChild($form_field);
@@ -527,7 +526,7 @@ abstract class CMEEvaluationPage extends SiteDBEditPage
 	{
 		parent::buildInternal();
 
-		$this->layout->startCapture('content');	
+		$this->layout->startCapture('content');
 		Swat::displayInlineJavaScript($this->getInlineJavaScript());
 		$this->layout->endCapture();
 	}
