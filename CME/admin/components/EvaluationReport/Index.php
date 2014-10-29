@@ -69,7 +69,7 @@ class CMEEvaluationReportIndex extends AdminIndex
 			$this->app->db,
 			'select min(complete_date) from InquisitionResponse
 			where complete_date is not null
-				and inquisition in (select evaluation from CMECredit)'
+				and inquisition in (select evaluation from CMEFrontMatter)'
 		);
 
 		$this->start_date = new SwatDate($oldest_date_string);
