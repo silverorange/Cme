@@ -5,8 +5,8 @@ require_once 'SwatDB/SwatDB.php';
 require_once 'Site/SiteApplication.php';
 require_once 'Inquisition/dataobjects/InquisitionResponseWrapper.php';
 require_once 'CME/dataobjects/CMEProvider.php';
-require_once 'CME/dataobjects/EvaluationWrapper.php';
-require_once 'CME/dataobjects/EvaluationReport.php';
+require_once 'CME/dataobjects/CMEEvaluationWrapper.php';
+require_once 'CME/dataobjects/CMEEvaluationReport.php';
 
 /**
  * @package   CME
