@@ -269,7 +269,7 @@ class CMEQuizReportGenerator
 
 		if (!$address instanceof StoreAddress) {
 			// If there is no address, set up an empty address
-			$class_name = SwatDBClassMap::get('StoreAddress');
+			$class_name = SwatDBClassMap::get('StoreAccountAddress');
 			$address = new $class_name();
 			$address->first_name = $account->first_name;
 			$address->last_name = $account->last_name;
