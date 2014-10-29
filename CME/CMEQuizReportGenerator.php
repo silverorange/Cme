@@ -275,7 +275,7 @@ class CMEQuizReportGenerator
 		$earned_date->convertTZ($this->app->default_time_zone);
 
 		$address_lines = $this->formatLines($address);
-		$address_suffix = $this->formatSuffix($account, $address);
+		$address_suffix = $this->formatSuffix($account);
 		$address_provstate = $this->formatProvState($address);
 		$address_postal_code = $this->formatPostalCode($address);
 
@@ -362,9 +362,11 @@ class CMEQuizReportGenerator
 	// }}}
 	// {{{ protected function formatSuffix()
 
-	protected function formatSuffix(Account $account, StoreAddress $address)
+	protected function formatSuffix(SiteAccount $account)
 	{
-		return $address->suffix;
+		return ($account->hasPublicProperty('suffix'))
+			? $account->suffix
+			: '';
 	}
 
 	// }}}
