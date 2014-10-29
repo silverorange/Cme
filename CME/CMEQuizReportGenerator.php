@@ -98,7 +98,7 @@ class CMEQuizReportGenerator
 			$this->app->db->quote($this->end_date->getDate(), 'date')
 		);
 
-		$earened_credits = SwatDB::query(
+		$earned_credits = SwatDB::query(
 			$this->app->db,
 			$sql,
 			SwatDBClassMap::get('CMEAccountEarnedCMECreditWrapper')
