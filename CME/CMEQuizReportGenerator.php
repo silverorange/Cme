@@ -5,7 +5,7 @@ require_once 'SwatDB/SwatDB.php';
 require_once 'Site/SiteApplication.php';
 require_once 'Site/dataobjects/SiteAccountWrapper.php';
 require_once 'Store/dataobjects/StoreAccountAddressWrapper.php';
-require_once 'Store/dataobjects/StoreProvstateWrapper.php';
+require_once 'Store/dataobjects/StoreProvStateWrapper.php';
 require_once 'Store/dataobjects/StoreCountryWrapper.php';
 require_once 'CME/dataobjects/CMECreditWrapper.php';
 require_once 'CME/dataobjects/CMEProvider.php';
@@ -188,7 +188,7 @@ class CMEQuizReportGenerator
 			'provstate',
 			$this->app->db,
 			$provstate_sql,
-			SwatDBClassMap::get('StoreProvstateWrapper')
+			SwatDBClassMap::get('StoreProvStateWrapper')
 		);
 
 		$country_sql = 'select * from Country where id in (%s)';
