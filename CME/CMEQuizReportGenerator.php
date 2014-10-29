@@ -133,13 +133,10 @@ class CMEQuizReportGenerator
 	protected function loadAccounts(
 		CMEAccountEarnedCMECreditWrapper $earned_credits)
 	{
-		$account_sql = 'select id, email, default_billing_address from Account
-			where id in (%s)';
-
 		$accounts = $earned_credits->loadAllSubDataObjects(
 			'account',
 			$this->app->db,
-			$account_sql,
+			'select * from Account where id in (%s)',
 			SwatDBClassMap::get('SiteAccountWrapper')
 		);
 
