@@ -9,9 +9,6 @@ require_once 'Site/SiteCommandLineConfigModule.php';
 require_once 'Site/SiteDatabaseModule.php';
 require_once 'CME.php';
 require_once 'CME/dataobjects/CMEProviderWrapper.php';
-require_once 'CME/dataobjects/CMEEvaluationReport.php';
-require_once 'CME/dataobjects/CMEEvaluationReportWrapper.php';
-require_once 'CME/CMEEvaluationReportGenerator.php';
 
 /**
  * @package   CME
