@@ -560,7 +560,7 @@ STYLESHEET;
 	{
 		$locale = SwatI18NLocale::get();
 
-		echo $question->bodytext;
+		echo $this->convertText($question->bodytext);
 
 		echo '<ul>';
 
@@ -590,7 +590,7 @@ STYLESHEET;
 					$li_tag->setContent(
 						sprintf(
 							'%s - %s%% (%s)',
-							$option->title,
+							$this->convertText($option->title),
 							$locale->formatNumber(round($percent * 1000) / 10),
 							$locale->formatNumber(
 								$option_counts[$option->title]
@@ -604,7 +604,7 @@ STYLESHEET;
 						echo '<ul>';
 						foreach ($option_values[$option->title] as $text) {
 							$li_tag = new SwatHtmlTag('li');
-							$li_tag->setContent($text);
+							$li_tag->setContent($this->convertText($text));
 							$li_tag->display();
 						}
 						echo '</ul>';
@@ -679,7 +679,7 @@ STYLESHEET;
 			$count = 0;
 			foreach ($response_values as $value) {
 				$li_tag = new SwatHtmlTag('li');
-				$li_tag->setContent($value->text_value);
+				$li_tag->setContent($this->convertText($value->text_value));
 				$li_tag->display();
 				if ($count++ > 25) break;
 			}
@@ -712,6 +712,14 @@ STYLESHEET;
 
 		echo '</div>';
 		echo '</div>';
+	}
+
+	// }}}
+	// {{{ protected function cleanText()
+
+	protected function convertText($text)
+	{
+		return iconv('UTF-8', 'ISO-8859-1//TRANSLIT', $text);
 	}
 
 	// }}}
