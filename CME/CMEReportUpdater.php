@@ -283,7 +283,7 @@ abstract class CMEReportUpdater extends SiteCommandLineApplication
 		$class_name = $this->getReportClassName();
 		$report = new $class_name();
 		$report->setDatabase($this->db);
-		$report->setFileBase(__DIR__);
+		$report->setFileBase($this->getFileBase());
 
 		$quarter = clone $quarter;
 		$quarter->toUTC();
