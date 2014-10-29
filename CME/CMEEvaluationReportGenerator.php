@@ -420,8 +420,11 @@ ul ul li, ul ul {
 }
 
 .question {
-	page-break-inside: avoid;
 	padding-bottom: 0.4in;
+}
+
+.breaking-question {
+	page-break-inside: avoid;
 }
 
 .question p {
@@ -520,7 +523,20 @@ STYLESHEET;
 	protected function displayQuestion(InquisitionQuestion $question, $index,
 		array $response_values)
 	{
-		echo  '<div class="question">';
+		$classes = 'question';
+		switch ($question->question_type) {
+		case InquisitionQuestion::TYPE_CHECKBOX_ENTRY:
+		case InquisitionQuestion::TYPE_RADIO_ENTRY:
+		case InquisitionQuestion::TYPE_TEXT:
+			// No extra classes.
+			break;
+
+		default:
+			$classes.= ' breaking-question';
+			break;
+		}
+
+		echo  '<div class="'.$classes.'">';
 
 		$header = new SwatHtmlTag('h3');
 		$header->setContent(
