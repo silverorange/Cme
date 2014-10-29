@@ -345,20 +345,22 @@ class CMEQuizReportGenerator
 	{
 		$postal_code = $address->postal_code;
 
-		switch ($address->country->id) {
-		case 'CA':
-			$postal_code = str_replace(array(' ', '-'), '', $postal_code);
-			$postal_code = strtoupper($postal_code);
-			break;
+		if ($address->country instanceof StoreCountry) {
+			switch ($address->country->id) {
+			case 'CA':
+				$postal_code = str_replace(array(' ', '-'), '', $postal_code);
+				$postal_code = strtoupper($postal_code);
+				break;
 
-		case 'US':
-			$matches = array();
-			$postal_code = trim($postal_code);
-			$zip_4 = '/([0-9]{5})[- ][0-9]{4}/u';
-			if (preg_match($zip_4, $postal_code, $matches) === 1) {
-				$postal_code = $matches[1];
+			case 'US':
+				$matches = array();
+				$postal_code = trim($postal_code);
+				$zip_4 = '/([0-9]{5})[- ][0-9]{4}/u';
+				if (preg_match($zip_4, $postal_code, $matches) === 1) {
+					$postal_code = $matches[1];
+				}
+				break;
 			}
-			break;
 		}
 
 		return $postal_code;
