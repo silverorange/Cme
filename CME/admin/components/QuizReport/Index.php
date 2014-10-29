@@ -72,6 +72,8 @@ class CMEQuizReportIndex extends AdminIndex
 		);
 
 		$this->start_date = new SwatDate($oldest_date_string);
+		$this->start_date->convertTZ($this->app->default_time_zone);
+
 	}
 
 	// }}}
@@ -176,28 +178,32 @@ class CMEQuizReportIndex extends AdminIndex
 
 		while ($end_date->before($now)) {
 			for ($i = 1; $i <= 4; $i++) {
+				// Only add the quarter to the table model if the start date
+				// is within or prior to that quarter.
+				if ($this->start_date->before($end_date)) {
 
-				$ds = new SwatDetailsStore();
+					$ds = new SwatDetailsStore();
 
-				$quarter = $start_date->formatLikeIntl('yyyy-qq');
+					$quarter = $start_date->formatLikeIntl('yyyy-qq');
 
-				$ds->date    = clone $start_date;
-				$ds->year    = $year;
-				$ds->quarter = $quarter;
+					$ds->date    = clone $start_date;
+					$ds->year    = $year;
+					$ds->quarter = $quarter;
 
-				$ds->quarter_title = sprintf(
-					CME::_('Q%s - %s to %s'),
-					$i,
-					$start_date->formatLikeIntl('MMMM yyyy'),
-					$display_end_date->formatLikeIntl('MMMM yyyy')
-				);
+					$ds->quarter_title = sprintf(
+						CME::_('Q%s - %s to %s'),
+						$i,
+						$start_date->formatLikeIntl('MMMM yyyy'),
+						$display_end_date->formatLikeIntl('MMMM yyyy')
+					);
 
-				foreach ($this->providers as $provider) {
-					$ds->{'is_'.$provider->shortname.'_sensitive'} =
-						(isset($this->reports_by_quarter[$quarter][$provider->shortname]));
+					foreach ($this->providers as $provider) {
+						$ds->{'is_'.$provider->shortname.'_sensitive'} =
+							(isset($this->reports_by_quarter[$quarter][$provider->shortname]));
+					}
+
+					$store->add($ds);
 				}
-
-				$store->add($ds);
 
 				$start_date->addMonths(3);
 				$end_date->addMonths(3);
