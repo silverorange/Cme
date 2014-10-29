@@ -532,6 +532,9 @@ STYLESHEET;
 		$header->display();
 
 		switch ($question->question_type) {
+		case InquisitionQuestion::TYPE_CHECKBOX_ENTRY:
+			$this->displayCheckboxEntryQuestion($question, $response_values);
+			break;
 		case InquisitionQuestion::TYPE_CHECKBOX_LIST:
 			$this->displayCheckboxListQuestion($question, $response_values);
 			break;
@@ -624,6 +627,15 @@ STYLESHEET;
 	}
 
 	// }}}
+	// {{{ protected function displayCheckboxEntryQuestion()
+
+	protected function displayCheckboxEntryQuestion(
+		InquisitionQuestion $question, array $response_values)
+	{
+		$this->displayRadioEntryQuestion($question, $response_values);
+	}
+
+	// }}}
 	// {{{ protected function displayCheckboxListQuestion()
 
 	protected function displayCheckboxListQuestion(
@@ -656,18 +668,8 @@ STYLESHEET;
 	protected function displayTextQuestion(
 		InquisitionQuestion $question, array $response_values)
 	{
-		// Don't display the response text for now. We require an answer for
-		// every text question. As a consequence it means we'll end up
-		// displaying A LOT of text. We don't want to do that right now.
-		echo $question->bodytext;
+		echo $this->convertText($question->bodytext);
 
-		$p_tag = new SwatHtmlTag('p');
-		$p_tag->setContent(
-			CME::_('Comments are not listed in this report.')
-		);
-		$p_tag->display();
-
-		/*
 		if (count($response_values) > 0) {
 			$p_tag = new SwatHtmlTag('p');
 			$p_tag->setContent(
@@ -691,7 +693,6 @@ STYLESHEET;
 			);
 			$p_tag->display();
 		}
-		*/
 	}
 
 	// }}}
