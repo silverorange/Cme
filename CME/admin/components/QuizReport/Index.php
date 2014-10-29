@@ -198,8 +198,12 @@ class CMEQuizReportIndex extends AdminIndex
 					);
 
 					foreach ($this->providers as $provider) {
-						$ds->{'is_'.$provider->shortname.'_sensitive'} =
-							(isset($this->reports_by_quarter[$quarter][$provider->shortname]));
+						$shortname = $provider->shortname;
+						$sensitive = isset(
+							$this->reports_by_quarter[$quarter][$shortname]
+						);
+
+						$ds->{'is_'.$shortname.'_sensitive'} = $sensitive;
 					}
 
 					$store->add($ds);
