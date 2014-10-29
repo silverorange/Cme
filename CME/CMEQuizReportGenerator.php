@@ -330,7 +330,11 @@ class CMEQuizReportGenerator
 	protected function displayEarnedCredit($file,
 		CMEAccountEarnedCMECredit $earned_credit)
 	{
-		fputcsv($file, $this->getEarnedCreditRow($earned_credit));
+		$earned_credit_row = $this->getEarnedCreditRow($earned_credit);
+
+		if (is_array($earned_credit_row)) {
+			fputcsv($file, $earned_credit_row);
+		}
 	}
 
 	// }}}
