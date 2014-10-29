@@ -108,7 +108,7 @@ class CMEQuizReportGenerator
 		$accounts = $this->loadAccounts($earned_credits);
 
 		// load addresses
-		$addresses = $this->loadAddresses($accounts);
+		$addresses = $this->loadAccountAddresses($accounts);
 
 		// efficiently load credits
 		$credits = $this->loadCredits($earned_credits);
