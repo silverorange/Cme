@@ -589,18 +589,23 @@ STYLESHEET;
 
 		if (count($response_values) > 0) {
 			foreach ($response_values as $value) {
-				$option_text = $value->question_option->title;
-				if (!isset($option_counts[$option_text])) {
-					$option_counts[$option_text] = 0;
-				}
-				$option_counts[$option_text]++;
-				if ($value->text_value != '') {
-					if (!isset($option_values[$option_text])) {
-						$option_values[$option_text] = array();
+				// Optional questions that are unanswered can have rows in the
+				// db with no question options set, so ignore those rows.
+				if ($value->question_option instanceof
+					InquisitionQuestionOption) {
+					$option_text = $value->question_option->title;
+					if (!isset($option_counts[$option_text])) {
+						$option_counts[$option_text] = 0;
 					}
-					$option_values[$option_text][] = $value->text_value;
+					$option_counts[$option_text]++;
+					if ($value->text_value != '') {
+						if (!isset($option_values[$option_text])) {
+							$option_values[$option_text] = array();
+						}
+						$option_values[$option_text][] = $value->text_value;
+					}
+					$total_count++;
 				}
-				$total_count++;
 			}
 			foreach ($question->options as $option) {
 				if (isset($option_counts[$option->title])) {
