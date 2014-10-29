@@ -13,7 +13,7 @@ require_once 'CME/dataobjects/CMEEvaluationReport.php';
  * @copyright 2011-2014 silverorange
  * @license   http://www.opensource.org/licenses/mit-license.html MIT License
  */
-abstract class CMEEvaluationReportGenerator
+class CMEEvaluationReportGenerator
 {
 	// {{{ protected properties
 
@@ -238,9 +238,20 @@ abstract class CMEEvaluationReportGenerator
 	// }}}
 
 	// report display methods
-	// {{{ abstract protected function getTitle()
+	// {{{ protected function getTitle()
 
-	abstract protected function getTitle();
+	protected function getTitle()
+	{
+		$end_date = clone $this->end_date;
+		$end_date->subtractMonths(1);
+
+		return sprintf(
+			CME::_('%s Program Evaluation Report for %s to %s'),
+			$this->app->config->site->title,
+			$this->start_date->formatLikeIntl('MMMM yyyy'),
+			$end_date->formatLikeIntl('MMMM yyyy')
+		);
+	}
 
 	// }}}
 	// {{{ protected function display()
@@ -498,17 +509,8 @@ STYLESHEET;
 
 	protected function displayTitle()
 	{
-		$end_date = clone $this->end_date;
-		$end_date->subtractMonths(1);
-
 		$header = new SwatHtmlTag('h1');
-		$header->setContent(
-			sprintf(
-				CME::_('Program Evaluation Report for %s to %s'),
-				$this->start_date->formatLikeIntl('MMMM yyyy'),
-				$end_date->formatLikeIntl('MMMM yyyy')
-			)
-		);
+		$header->setContent($this->getTitle());
 		$header->display();
 	}
 
