@@ -268,7 +268,11 @@ class CMEQuizReportGenerator
 		}
 
 		if (!$address instanceof StoreAddress) {
-			return;
+			// If there is no address, set up an empty address
+			$class_name = SwatDBClassMap::get('StoreAddress');
+			$address = new $class_name();
+			$address->first_name = $account->first_name;
+			$address->last_name = $account->last_name;
 		}
 
 		$earned_date = clone $earned_credit->earned_date;
@@ -277,6 +281,7 @@ class CMEQuizReportGenerator
 		$address_lines = $this->formatLines($address);
 		$address_suffix = $this->formatSuffix($account);
 		$address_provstate = $this->formatProvState($address);
+		$address_country = $this->formatCountry($address);
 		$address_postal_code = $this->formatPostalCode($address);
 
 		return array(
@@ -288,7 +293,7 @@ class CMEQuizReportGenerator
 			$address->city,
 			$address_provstate,
 			$address_postal_code,
-			$address->country->title,
+			$address_country,
 			$address->phone,
 			$credit->hours,
 			$earned_date->formatLikeIntl('MMMM dd, yyyy'),
@@ -330,11 +335,7 @@ class CMEQuizReportGenerator
 	protected function displayEarnedCredit($file,
 		CMEAccountEarnedCMECredit $earned_credit)
 	{
-		$earned_credit_row = $this->getEarnedCreditRow($earned_credit);
-
-		if (is_array($earned_credit_row)) {
-			fputcsv($file, $earned_credit_row);
-		}
+		fputcsv($file, $this->getEarnedCreditRow($earned_credit));
 	}
 
 	// }}}
@@ -399,6 +400,16 @@ class CMEQuizReportGenerator
 		}
 
 		return $provstate;
+	}
+
+	// }}}
+	// {{{ protected function formatProvState()
+
+	protected function formatCountry(StoreAddress $address)
+	{
+		return ($address->country instanceof StoreCountry)
+			? $address->country->title
+			: '';
 	}
 
 	// }}}
