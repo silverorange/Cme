@@ -262,8 +262,8 @@ abstract class CMEReportUpdater extends SiteCommandLineApplication
 					on CMECredit.front_matter = CMEFrontMatter.id
 			where CMEFrontMatter.provider = %s
 				and Account.delete_date is null
-				and convertTZ(complete_date, %s) >= %s
-				and convertTZ(complete_date, %s) < %s',
+				and convertTZ(earned_date, %s) >= %s
+				and convertTZ(earned_date, %s) < %s',
 			$this->db->quote($provider->id, 'integer'),
 			$this->db->quote($this->config->date->time_zone, 'text'),
 			$this->db->quote($start_date->getDate(), 'date'),
