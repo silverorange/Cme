@@ -72,7 +72,7 @@ class CMEQuizReportIndex extends AdminIndex
 		);
 
 		$this->start_date = new SwatDate($oldest_date_string);
-		$this->start_date->convertTZ($this->app->default_time_zone);
+		$this->start_date->setTimezone($this->app->default_time_zone);
 
 	}
 
@@ -107,7 +107,7 @@ class CMEQuizReportIndex extends AdminIndex
 
 		foreach ($reports as $report) {
 			$quarter = clone $report->quarter;
-			$quarter->convertTZ($this->app->default_time_zone);
+			$quarter->setTimezone($this->app->default_time_zone);
 			$quarter = $quarter->formatLikeIntl('yyyy-qq');
 			$provider = $report->provider->shortname;
 			if (!isset($this->reports_by_quarter[$quarter])) {
@@ -159,7 +159,7 @@ class CMEQuizReportIndex extends AdminIndex
 	protected function getTableModel(SwatView $view)
 	{
 		$now = new SwatDate();
-		$now->convertTZ($this->app->default_time_zone);
+		$now->setTimezone($this->app->default_time_zone);
 
 		$year = $this->start_date->getYear();
 

@@ -273,7 +273,7 @@ class CMEQuizReportGenerator
 		}
 
 		$earned_date = clone $earned_credit->earned_date;
-		$earned_date->convertTZ($this->app->default_time_zone);
+		$earned_date->setTimezone($this->app->default_time_zone);
 
 		$address_lines = $this->formatLines($address);
 		$address_suffix = $this->formatSuffix($account);
