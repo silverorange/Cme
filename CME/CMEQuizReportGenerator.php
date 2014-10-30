@@ -402,7 +402,7 @@ class CMEQuizReportGenerator
 	}
 
 	// }}}
-	// {{{ protected function formatProvState()
+	// {{{ protected function formatCountry()
 
 	protected function formatCountry(StoreAddress $address)
 	{
