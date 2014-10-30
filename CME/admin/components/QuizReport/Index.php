@@ -73,7 +73,6 @@ class CMEQuizReportIndex extends AdminIndex
 
 		$this->start_date = new SwatDate($oldest_date_string);
 		$this->start_date->setTimezone($this->app->default_time_zone);
-
 	}
 
 	// }}}
