@@ -536,8 +536,10 @@ STYLESHEET;
 			break;
 		}
 
-		echo  '<div class="'.$classes.'">';
+		$div = new SwatHtmlTag('div');
+		$div->class = $classes;
 
+		$div->open();
 		$header = new SwatHtmlTag('h3');
 		$header->setContent(
 			sprintf(
@@ -568,7 +570,7 @@ STYLESHEET;
 			break;
 		}
 
-		echo '</div>';
+		$div->close();
 	}
 
 	// }}}
