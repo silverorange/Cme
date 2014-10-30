@@ -7,10 +7,8 @@ require_once 'Site/SiteCommandLineApplication.php';
 require_once 'Site/SiteCommandLineArgument.php';
 require_once 'Site/SiteCommandLineConfigModule.php';
 require_once 'Site/SiteDatabaseModule.php';
+require_once 'CME.php';
 require_once 'CME/dataobjects/CMEProviderWrapper.php';
-require_once 'CME/dataobjects/CMEEvaluationReport.php';
-require_once 'CME/dataobjects/CMEEvaluationReportWrapper.php';
-require_once 'CME/CMEEvaluationReportGenerator.php';
 
 /**
  * @package   CME
@@ -264,8 +262,8 @@ abstract class CMEReportUpdater extends SiteCommandLineApplication
 					on CMECredit.front_matter = CMEFrontMatter.id
 			where CMEFrontMatter.provider = %s
 				and Account.delete_date is null
-				and convertTZ(complete_date, %s) >= %s
-				and convertTZ(complete_date, %s) < %s',
+				and convertTZ(earned_date, %s) >= %s
+				and convertTZ(earned_date, %s) < %s',
 			$this->db->quote($provider->id, 'integer'),
 			$this->db->quote($this->config->date->time_zone, 'text'),
 			$this->db->quote($start_date->getDate(), 'date'),
@@ -285,7 +283,7 @@ abstract class CMEReportUpdater extends SiteCommandLineApplication
 		$class_name = $this->getReportClassName();
 		$report = new $class_name();
 		$report->setDatabase($this->db);
-		$report->setFileBase(__DIR__);
+		$report->setFileBase($this->getFileBase());
 
 		$quarter = clone $quarter;
 		$quarter->toUTC();

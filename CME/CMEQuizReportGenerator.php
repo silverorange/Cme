@@ -5,7 +5,7 @@ require_once 'SwatDB/SwatDB.php';
 require_once 'Site/SiteApplication.php';
 require_once 'Site/dataobjects/SiteAccountWrapper.php';
 require_once 'Store/dataobjects/StoreAccountAddressWrapper.php';
-require_once 'Store/dataobjects/StoreProvstateWrapper.php';
+require_once 'Store/dataobjects/StoreProvStateWrapper.php';
 require_once 'Store/dataobjects/StoreCountryWrapper.php';
 require_once 'CME/dataobjects/CMECreditWrapper.php';
 require_once 'CME/dataobjects/CMEProvider.php';
@@ -98,7 +98,7 @@ class CMEQuizReportGenerator
 			$this->app->db->quote($this->end_date->getDate(), 'date')
 		);
 
-		$earened_credits = SwatDB::query(
+		$earned_credits = SwatDB::query(
 			$this->app->db,
 			$sql,
 			SwatDBClassMap::get('CMEAccountEarnedCMECreditWrapper')
@@ -108,7 +108,7 @@ class CMEQuizReportGenerator
 		$accounts = $this->loadAccounts($earned_credits);
 
 		// load addresses
-		$addresses = $this->loadAddresses($accounts);
+		$addresses = $this->loadAccountAddresses($accounts);
 
 		// efficiently load credits
 		$credits = $this->loadCredits($earned_credits);
@@ -133,13 +133,10 @@ class CMEQuizReportGenerator
 	protected function loadAccounts(
 		CMEAccountEarnedCMECreditWrapper $earned_credits)
 	{
-		$account_sql = 'select id, email, default_billing_address from Account
-			where id in (%s)';
-
 		$accounts = $earned_credits->loadAllSubDataObjects(
 			'account',
 			$this->app->db,
-			$account_sql,
+			'select * from Account where id in (%s)',
 			SwatDBClassMap::get('SiteAccountWrapper')
 		);
 
@@ -188,7 +185,7 @@ class CMEQuizReportGenerator
 			'provstate',
 			$this->app->db,
 			$provstate_sql,
-			SwatDBClassMap::get('StoreProvstateWrapper')
+			SwatDBClassMap::get('StoreProvStateWrapper')
 		);
 
 		$country_sql = 'select * from Country where id in (%s)';
@@ -268,15 +265,20 @@ class CMEQuizReportGenerator
 		}
 
 		if (!$address instanceof StoreAddress) {
-			return;
+			// If there is no address, set up an empty address
+			$class_name = SwatDBClassMap::get('StoreAccountAddress');
+			$address = new $class_name();
+			$address->first_name = $account->first_name;
+			$address->last_name = $account->last_name;
 		}
 
 		$earned_date = clone $earned_credit->earned_date;
-		$earned_date->convertTZ($this->app->default_time_zone);
+		$earned_date->setTimezone($this->app->default_time_zone);
 
 		$address_lines = $this->formatLines($address);
-		$address_suffix = $this->formatSuffix($account, $address);
+		$address_suffix = $this->formatSuffix($account);
 		$address_provstate = $this->formatProvState($address);
+		$address_country = $this->formatCountry($address);
 		$address_postal_code = $this->formatPostalCode($address);
 
 		return array(
@@ -288,7 +290,7 @@ class CMEQuizReportGenerator
 			$address->city,
 			$address_provstate,
 			$address_postal_code,
-			$address->country->title,
+			$address_country,
 			$address->phone,
 			$credit->hours,
 			$earned_date->formatLikeIntl('MMMM dd, yyyy'),
@@ -340,20 +342,22 @@ class CMEQuizReportGenerator
 	{
 		$postal_code = $address->postal_code;
 
-		switch ($address->country->id) {
-		case 'CA':
-			$postal_code = str_replace(array(' ', '-'), '', $postal_code);
-			$postal_code = strtoupper($postal_code);
-			break;
+		if ($address->country instanceof StoreCountry) {
+			switch ($address->country->id) {
+			case 'CA':
+				$postal_code = str_replace(array(' ', '-'), '', $postal_code);
+				$postal_code = strtoupper($postal_code);
+				break;
 
-		case 'US':
-			$matches = array();
-			$postal_code = trim($postal_code);
-			$zip_4 = '/([0-9]{5})[- ][0-9]{4}/u';
-			if (preg_match($zip_4, $postal_code, $matches) === 1) {
-				$postal_code = $matches[1];
+			case 'US':
+				$matches = array();
+				$postal_code = trim($postal_code);
+				$zip_4 = '/([0-9]{5})[- ][0-9]{4}/u';
+				if (preg_match($zip_4, $postal_code, $matches) === 1) {
+					$postal_code = $matches[1];
+				}
+				break;
 			}
-			break;
 		}
 
 		return $postal_code;
@@ -362,9 +366,11 @@ class CMEQuizReportGenerator
 	// }}}
 	// {{{ protected function formatSuffix()
 
-	protected function formatSuffix(Account $account, StoreAddress $address)
+	protected function formatSuffix(SiteAccount $account)
 	{
-		return $address->suffix;
+		return ($account->hasPublicProperty('suffix'))
+			? $account->suffix
+			: '';
 	}
 
 	// }}}
@@ -393,6 +399,16 @@ class CMEQuizReportGenerator
 		}
 
 		return $provstate;
+	}
+
+	// }}}
+	// {{{ protected function formatCountry()
+
+	protected function formatCountry(StoreAddress $address)
+	{
+		return ($address->country instanceof StoreCountry)
+			? $address->country->title
+			: '';
 	}
 
 	// }}}
