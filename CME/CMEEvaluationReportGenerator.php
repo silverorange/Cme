@@ -375,7 +375,7 @@ body {
 h1, h2 {
 	text-align: center;
 	font-size: 18pt;
-	margin: 0 0 0.25in 0;
+	padding: 0 0 0.25in 0;
 }
 
 h2 {
