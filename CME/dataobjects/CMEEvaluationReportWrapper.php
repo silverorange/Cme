@@ -1,7 +1,7 @@
 <?php
 
 require_once 'SwatDB/SwatDBRecordsetWrapper.php';
-require_once 'CME/dataobjects/EvaluationReport.php';
+require_once 'CME/dataobjects/CMEEvaluationReport.php';
 
 /**
  * A recordset wrapper class for CMEEvaluationReport objects

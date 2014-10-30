@@ -5,15 +5,15 @@ require_once 'SwatDB/SwatDB.php';
 require_once 'Site/SiteApplication.php';
 require_once 'Inquisition/dataobjects/InquisitionResponseWrapper.php';
 require_once 'CME/dataobjects/CMEProvider.php';
-require_once 'CME/dataobjects/EvaluationWrapper.php';
-require_once 'CME/dataobjects/EvaluationReport.php';
+require_once 'CME/dataobjects/CMEEvaluationWrapper.php';
+require_once 'CME/dataobjects/CMEEvaluationReport.php';
 
 /**
  * @package   CME
  * @copyright 2011-2014 silverorange
  * @license   http://www.opensource.org/licenses/mit-license.html MIT License
  */
-abstract class CMEEvaluationReportGenerator
+class CMEEvaluationReportGenerator
 {
 	// {{{ protected properties
 
@@ -238,9 +238,20 @@ abstract class CMEEvaluationReportGenerator
 	// }}}
 
 	// report display methods
-	// {{{ abstract protected function getTitle()
+	// {{{ protected function getTitle()
 
-	abstract protected function getTitle();
+	protected function getTitle()
+	{
+		$end_date = clone $this->end_date;
+		$end_date->subtractMonths(1);
+
+		return sprintf(
+			CME::_('%s Program Evaluation Report for %s to %s'),
+			$this->app->config->site->title,
+			$this->start_date->formatLikeIntl('MMMM yyyy'),
+			$end_date->formatLikeIntl('MMMM yyyy')
+		);
+	}
 
 	// }}}
 	// {{{ protected function display()
@@ -364,7 +375,7 @@ body {
 h1, h2 {
 	text-align: center;
 	font-size: 18pt;
-	margin: 0 0 0.25in 0;
+	padding: 0 0 0.25in 0;
 }
 
 h2 {
@@ -409,8 +420,11 @@ ul ul li, ul ul {
 }
 
 .question {
-	page-break-inside: avoid;
 	padding-bottom: 0.4in;
+}
+
+.breaking-question {
+	page-break-inside: avoid;
 }
 
 .question p {
@@ -498,17 +512,8 @@ STYLESHEET;
 
 	protected function displayTitle()
 	{
-		$end_date = clone $this->end_date;
-		$end_date->subtractMonths(1);
-
 		$header = new SwatHtmlTag('h1');
-		$header->setContent(
-			sprintf(
-				CME::_('Program Evaluation Report for %s to %s'),
-				$this->start_date->formatLikeIntl('MMMM yyyy'),
-				$end_date->formatLikeIntl('MMMM yyyy')
-			)
-		);
+		$header->setContent($this->getTitle());
 		$header->display();
 	}
 
@@ -518,8 +523,23 @@ STYLESHEET;
 	protected function displayQuestion(InquisitionQuestion $question, $index,
 		array $response_values)
 	{
-		echo  '<div class="question">';
+		$classes = 'question';
+		switch ($question->question_type) {
+		case InquisitionQuestion::TYPE_CHECKBOX_ENTRY:
+		case InquisitionQuestion::TYPE_RADIO_ENTRY:
+		case InquisitionQuestion::TYPE_TEXT:
+			// No extra classes.
+			break;
 
+		default:
+			$classes.= ' breaking-question';
+			break;
+		}
+
+		$div = new SwatHtmlTag('div');
+		$div->class = $classes;
+
+		$div->open();
 		$header = new SwatHtmlTag('h3');
 		$header->setContent(
 			sprintf(
@@ -530,6 +550,9 @@ STYLESHEET;
 		$header->display();
 
 		switch ($question->question_type) {
+		case InquisitionQuestion::TYPE_CHECKBOX_ENTRY:
+			$this->displayCheckboxEntryQuestion($question, $response_values);
+			break;
 		case InquisitionQuestion::TYPE_CHECKBOX_LIST:
 			$this->displayCheckboxListQuestion($question, $response_values);
 			break;
@@ -547,7 +570,7 @@ STYLESHEET;
 			break;
 		}
 
-		echo '</div>';
+		$div->close();
 	}
 
 	// }}}
@@ -558,7 +581,7 @@ STYLESHEET;
 	{
 		$locale = SwatI18NLocale::get();
 
-		echo $question->bodytext;
+		echo $this->convertText($question->bodytext);
 
 		echo '<ul>';
 
@@ -568,18 +591,23 @@ STYLESHEET;
 
 		if (count($response_values) > 0) {
 			foreach ($response_values as $value) {
-				$option_text = $value->question_option->title;
-				if (!isset($option_counts[$option_text])) {
-					$option_counts[$option_text] = 0;
-				}
-				$option_counts[$option_text]++;
-				if ($value->text_value != '') {
-					if (!isset($option_values[$option_text])) {
-						$option_values[$option_text] = array();
+				// Optional questions that are unanswered can have rows in the
+				// db with no question options set, so ignore those rows.
+				if ($value->question_option instanceof
+					InquisitionQuestionOption) {
+					$option_text = $value->question_option->title;
+					if (!isset($option_counts[$option_text])) {
+						$option_counts[$option_text] = 0;
 					}
-					$option_values[$option_text][] = $value->text_value;
+					$option_counts[$option_text]++;
+					if ($value->text_value != '') {
+						if (!isset($option_values[$option_text])) {
+							$option_values[$option_text] = array();
+						}
+						$option_values[$option_text][] = $value->text_value;
+					}
+					$total_count++;
 				}
-				$total_count++;
 			}
 			foreach ($question->options as $option) {
 				if (isset($option_counts[$option->title])) {
@@ -588,7 +616,7 @@ STYLESHEET;
 					$li_tag->setContent(
 						sprintf(
 							'%s - %s%% (%s)',
-							$option->title,
+							$this->convertText($option->title),
 							$locale->formatNumber(round($percent * 1000) / 10),
 							$locale->formatNumber(
 								$option_counts[$option->title]
@@ -602,7 +630,7 @@ STYLESHEET;
 						echo '<ul>';
 						foreach ($option_values[$option->title] as $text) {
 							$li_tag = new SwatHtmlTag('li');
-							$li_tag->setContent($text);
+							$li_tag->setContent($this->convertText($text));
 							$li_tag->display();
 						}
 						echo '</ul>';
@@ -619,6 +647,15 @@ STYLESHEET;
 		}
 
 		echo '</ul>';
+	}
+
+	// }}}
+	// {{{ protected function displayCheckboxEntryQuestion()
+
+	protected function displayCheckboxEntryQuestion(
+		InquisitionQuestion $question, array $response_values)
+	{
+		$this->displayRadioEntryQuestion($question, $response_values);
 	}
 
 	// }}}
@@ -654,18 +691,8 @@ STYLESHEET;
 	protected function displayTextQuestion(
 		InquisitionQuestion $question, array $response_values)
 	{
-		// Don't display the response text for now. We require an answer for
-		// every text question. As a consequence it means we'll end up
-		// displaying A LOT of text. We don't want to do that right now.
-		echo $question->bodytext;
+		echo $this->convertText($question->bodytext);
 
-		$p_tag = new SwatHtmlTag('p');
-		$p_tag->setContent(
-			CME::_('Comments are not listed in this report.')
-		);
-		$p_tag->display();
-
-		/*
 		if (count($response_values) > 0) {
 			$p_tag = new SwatHtmlTag('p');
 			$p_tag->setContent(
@@ -677,7 +704,7 @@ STYLESHEET;
 			$count = 0;
 			foreach ($response_values as $value) {
 				$li_tag = new SwatHtmlTag('li');
-				$li_tag->setContent($value->text_value);
+				$li_tag->setContent($this->convertText($value->text_value));
 				$li_tag->display();
 				if ($count++ > 25) break;
 			}
@@ -689,7 +716,6 @@ STYLESHEET;
 			);
 			$p_tag->display();
 		}
-		*/
 	}
 
 	// }}}
@@ -710,6 +736,14 @@ STYLESHEET;
 
 		echo '</div>';
 		echo '</div>';
+	}
+
+	// }}}
+	// {{{ protected function cleanText()
+
+	protected function convertText($text)
+	{
+		return iconv('UTF-8', 'ISO-8859-1//TRANSLIT', $text);
 	}
 
 	// }}}
