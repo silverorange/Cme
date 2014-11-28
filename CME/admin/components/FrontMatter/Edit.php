@@ -187,17 +187,23 @@ HTML;
 		parent::updateObject();
 
 		if ($this->isNew()) {
-			$credit = $this->getObject();
-			$credit->planning_committee_no_disclosures =
+			$front_matter = $this->getObject();
+			$front_matter->planning_committee_no_disclosures =
 				$this->getPlanningCommitteeNoDisclosures();
 
-			$credit->support_staff_no_disclosures =
+			$front_matter->planning_committee_with_disclosures =
+				$this->getPlanningCommitteeWithDisclosures();
+
+			$front_matter->support_staff_no_disclosures =
 				$this->getSupportStaffNoDisclosures();
+
+			$front_matter->support_staff_with_disclosures =
+				$this->getSupportStaffWithDisclosures();
 
 			$evaluation = $this->createEvaluation();
 			if ($evaluation instanceof CMEEvaluation) {
-				$credit->evaluation = $evaluation;
-				$credit->evaluation->save();
+				$front_matter->evaluation = $evaluation;
+				$front_matter->evaluation->save();
 			}
 		}
 	}
@@ -216,6 +222,22 @@ HTML;
 	}
 
 	// }}}
+	// {{{ protected function getPlanningCommitteeNoDisclosures()
+
+	protected function getPlanningCommitteeNoDisclosures()
+	{
+		return '';
+	}
+
+	// }}}
+	// {{{ protected function getPlanningCommitteeWithDisclosures()
+
+	protected function getPlanningCommitteeWithDisclosures()
+	{
+		return '';
+	}
+
+	// }}}
 	// {{{ protected function getSupportStaffNoDisclosures()
 
 	protected function getSupportStaffNoDisclosures()
@@ -224,9 +246,9 @@ HTML;
 	}
 
 	// }}}
-	// {{{ protected function getPlanningCommitteeNoDisclosures()
+	// {{{ protected function getSupportStaffWithDisclosures()
 
-	protected function getPlanningCommitteeNoDisclosures()
+	protected function getSupportStaffWithDisclosures()
 	{
 		return '';
 	}

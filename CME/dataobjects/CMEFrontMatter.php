@@ -31,7 +31,17 @@ abstract class CMEFrontMatter extends SwatDBDataObject
 	/**
 	 * @var string
 	 */
+	public $planning_committee_with_disclosures;
+
+	/**
+	 * @var string
+	 */
 	public $support_staff_no_disclosures;
+
+	/**
+	 * @var string
+	 */
+	public $support_staff_with_disclosures;
 
 	/**
 	 * @var SwatDate

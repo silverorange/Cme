@@ -7,7 +7,9 @@ create table CMEFrontMatter (
 	enabled boolean not null default true,
 	objectives text,
 	planning_committee_no_disclosures text,
+	planning_committee_with_disclosures text,
 	support_staff_no_disclosures text,
+	support_staff_with_disclosures text,
 	review_date timestamp,
 
 	primary key(id)
