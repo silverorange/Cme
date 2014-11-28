@@ -191,8 +191,14 @@ HTML;
 			$credit->planning_committee_no_disclosures =
 				$this->getPlanningCommitteeNoDisclosures();
 
+			$credit->planning_committee_with_disclosures =
+				$this->getPlanningCommitteeWithDisclosures();
+
 			$credit->support_staff_no_disclosures =
 				$this->getSupportStaffNoDisclosures();
+
+			$credit->support_staff_with_disclosures =
+				$this->getSupportStaffWithDisclosures();
 
 			$evaluation = $this->createEvaluation();
 			if ($evaluation instanceof CMEEvaluation) {
@@ -216,6 +222,22 @@ HTML;
 	}
 
 	// }}}
+	// {{{ protected function getPlanningCommitteeNoDisclosures()
+
+	protected function getPlanningCommitteeNoDisclosures()
+	{
+		return '';
+	}
+
+	// }}}
+	// {{{ protected function getPlanningCommitteeWithDisclosures()
+
+	protected function getPlanningCommitteeWithDisclosures()
+	{
+		return '';
+	}
+
+	// }}}
 	// {{{ protected function getSupportStaffNoDisclosures()
 
 	protected function getSupportStaffNoDisclosures()
@@ -224,9 +246,9 @@ HTML;
 	}
 
 	// }}}
-	// {{{ protected function getPlanningCommitteeNoDisclosures()
+	// {{{ protected function getSupportStaffWithDisclosures()
 
-	protected function getPlanningCommitteeNoDisclosures()
+	protected function getSupportStaffWithDisclosures()
 	{
 		return '';
 	}
