@@ -165,7 +165,7 @@ abstract class CMEAccount extends StoreAccount
 			$available_credits = SwatDB::query(
 				$this->db,
 				$sql,
-				$wrapper
+				SwatDBClassMap::get('CMECreditWrapper')
 			);
 		} else {
 			$wrapper = SwatDBClassMap::get('CMECreditWrapper');
