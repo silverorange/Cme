@@ -59,8 +59,8 @@ abstract class CMECredit extends SwatDBDataObject
 		// 4.50 -> 4.5
 		// 4.25 -> 4.25
 		$decimal_places = (
-			strlen(substr(strrchr($this->hours, "."), 1)) == 2 &&
-			substr($this->hours, -1) != 0
+			strlen(substr(strrchr($this->hours, "."), 1)) === 2 &&
+			substr($this->hours, -1) !== '0'
 			)
 			? 2
 			: 1;
