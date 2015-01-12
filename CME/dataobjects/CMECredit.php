@@ -6,7 +6,7 @@ require_once 'CME/dataobjects/CMEFrontMatter.php';
 
 /**
  * @package   CME
- * @copyright 2013-2014 silverorange
+ * @copyright 2013-2015 silverorange
  * @license   http://www.opensource.org/licenses/mit-license.html MIT License
  */
 abstract class CMECredit extends SwatDBDataObject
@@ -42,6 +42,31 @@ abstract class CMECredit extends SwatDBDataObject
 	 * @var boolean
 	 */
 	public $resettable;
+
+	// }}}
+	// {{{ protected function getFormattedHours()
+
+	public function getFormattedHours()
+	{
+		$locale  = SwatI18NLocale::get();
+
+		// When displaying credit hours round to single place except when there
+		// are quarter hours, aka two digits past the decimal, where the last
+		// digit is not zero.
+		// Examples:
+		// 4    -> 4.0
+		// 4.5  -> 4.5
+		// 4.50 -> 4.5
+		// 4.25 -> 4.25
+		$decimal_places = (
+			strlen(substr(strrchr($this->hours, "."), 1)) == 2 &&
+			substr($this->hours, -1) != 0
+			)
+			? 2
+			: 1;
+
+		return $locale->formatNumber($this->hours, $decimal_places);
+	}
 
 	// }}}
 	// {{{ public function isEarned()
