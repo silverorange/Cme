@@ -5,7 +5,7 @@ require_once 'CME/dataobjects/CMEFrontMatterWrapper.php';
 
 /**
  * @package   CME
- * @copyright 2014 silverorange
+ * @copyright 2014-2015 silverorange
  */
 class CMEEvaluationDetails extends InquisitionInquisitionDetails
 {

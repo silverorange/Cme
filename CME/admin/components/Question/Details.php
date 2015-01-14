@@ -7,7 +7,7 @@ require_once 'CME/admin/components/Question/include/CMEQuestionHelper.php';
  * Question edit page for inquisitions
  *
  * @package   CME
- * @copyright 2011-2014 silverorange
+ * @copyright 2011-2015 silverorange
  * @license   http://www.opensource.org/licenses/mit-license.html MIT License
  */
 class CMEQuestionDetails extends InquisitionQuestionDetails

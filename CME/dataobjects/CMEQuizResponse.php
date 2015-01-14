@@ -8,7 +8,7 @@ require_once 'CME/dataobjects/CMEQuiz.php';
  * A quiz response
  *
  * @package   CME
- * @copyright 2011-2014 silverorange
+ * @copyright 2011-2015 silverorange
  * @license   http://www.opensource.org/licenses/mit-license.html MIT License
  */
 class CMEQuizResponse extends InquisitionResponse
