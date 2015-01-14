@@ -8,7 +8,7 @@ require_once 'CME/dataobjects/CMEFrontMatterWrapper.php';
 
 /**
  * @package   CME
- * @copyright 2014 silverorange
+ * @copyright 2014-2015 silverorange
  * @license   http://www.opensource.org/licenses/mit-license.html MIT License
  */
 class CMEQuestionHelper

@@ -10,7 +10,7 @@ require_once 'CME/dataobjects/CMEEvaluationResponse.php';
  * This is because quiz and evaluation responses share the same database table.
  *
  * @package   CME
- * @copyright 2012-2014 silverorange
+ * @copyright 2012-2015 silverorange
  * @license   http://www.opensource.org/licenses/mit-license.html MIT License
  * @see       CMEEvaluationResponse
  */

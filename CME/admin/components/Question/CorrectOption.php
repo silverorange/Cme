@@ -7,7 +7,7 @@ require_once 'CME/admin/components/Question/include/CMEQuestionHelper.php';
  * Edit page for a selecting the correct option to a question
  *
  * @package   CME
- * @copyright 2012-2014 silverorange
+ * @copyright 2012-2015 silverorange
  * @license   http://www.opensource.org/licenses/mit-license.html MIT License
  */
 class CMEQuestionCorrectOption extends InquisitionQuestionCorrectOption
