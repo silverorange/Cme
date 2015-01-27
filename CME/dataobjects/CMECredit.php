@@ -3,6 +3,7 @@
 require_once 'SwatDB/SwatDBDataObject.php';
 require_once 'CME/dataobjects/CMEQuiz.php';
 require_once 'CME/dataobjects/CMEFrontMatter.php';
+require_once 'CME/dataobjects/CMECreditQuestionBindingWrapper.php';
 
 /**
  * @package   CME
