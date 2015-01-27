@@ -1,5 +1,3 @@
-drop table CMECreditQuestionBinding;
-
 create table CMECreditQuestionBinding (
 	id serial,
 	credit integer not null references CMECredit(id) on delete cascade,
