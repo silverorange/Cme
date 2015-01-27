@@ -77,10 +77,40 @@ abstract class CMECredit extends SwatDBDataObject
 			'front_matter',
 			SwatDBClassMap::get('CMEFrontMatter')
 		);
+	}
 
-		$this->registerInternalProperty(
-			'quiz',
-			SwatDBClassMap::get('CMEQuiz')
+	// }}}
+
+	// saver methods
+	// {{{ protected function saveQuestionBindings()
+
+	protected function saveQuestionBindings()
+	{
+		foreach ($this->question_bindings as $question_binding) {
+			$question_binding->credit = $this;
+		}
+
+		$this->question_bindings->setDatabase($this->db);
+		$this->question_bindings->save();
+	}
+
+	// }}}
+
+	// loader methods
+	// {{{ protected function loadQuestionBindings()
+
+	protected function loadQuestionBindings()
+	{
+		$sql = sprintf(
+			'select * from CMECreditQuestionBinding
+			where credit = %s order by displayorder, id',
+			$this->db->quote($this->id, 'integer')
+		);
+
+		return SwatDB::query(
+			$this->db,
+			$sql,
+			SwatDBClassMap::get('CMECreditQuestionBindingWrapper')
 		);
 	}
 
