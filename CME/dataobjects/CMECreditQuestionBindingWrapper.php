@@ -12,8 +12,7 @@ require_once 'CME/dataobjects/CMECreditQuestionBinding.php';
  * @license   http://www.gnu.org/copyleft/lesser.html LGPL License 2.1
  * @see       CMECreditQuestionBinding
  */
-class CMECreditQuestionBindingWrapper
-	extends SwatDBRecordsetWrapper
+class CMECreditQuestionBindingWrapper extends SwatDBRecordsetWrapper
 {
 	// {{{ protected function init()
 
