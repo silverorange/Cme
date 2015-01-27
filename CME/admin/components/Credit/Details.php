@@ -30,7 +30,7 @@ class CMECreditDetails extends InquisitionInquisitionDetails
 	{
 		return sprintf(
 			CME::_('%s Credit'),
-			$this->credit->front_matter->provider->title
+			$this->credit->front_matter->getProviderTitleList()
 		);
 	}
 

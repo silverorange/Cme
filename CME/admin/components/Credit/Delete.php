@@ -97,7 +97,7 @@ class CMECreditDelete extends AdminDBDelete
 	{
 		return sprintf(
 			CME::_('%s Credit'),
-			$credit->front_matter->provider->title
+			$credit->front_matter->getProviderTitleList()
 		);
 	}
 
