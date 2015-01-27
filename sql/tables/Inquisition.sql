@@ -1,2 +1,2 @@
-alter table Inquisition add account integer not null
+alter table Inquisition add account integer
 	references Account(id) on delete cascade;
