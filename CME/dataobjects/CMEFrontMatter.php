@@ -54,6 +54,18 @@ abstract class CMEFrontMatter extends SwatDBDataObject
 	public $enabled;
 
 	// }}}
+	// {{{ public function getProviderTitleList()
+
+	public function getProviderTitleList()
+	{
+		$titles = array();
+		foreach ($this->providers as $provider) {
+			$titles[] = $provider->title;
+		}
+		return SwatString::toList($titles);
+	}
+
+	// }}}
 	// {{{ abstract protected function getAttestationLink()
 
 	abstract protected function getAttestationLink();
