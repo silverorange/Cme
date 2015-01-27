@@ -62,11 +62,6 @@ abstract class CMEFrontMatter extends SwatDBDataObject
 		$this->id_field = 'integer:id';
 
 		$this->registerInternalProperty(
-			'provider',
-			SwatDBClassMap::get('CMEProvider')
-		);
-
-		$this->registerInternalProperty(
 			'evaluation',
 			SwatDBClassMap::get('CMEEvaluation')
 		);
@@ -91,6 +86,30 @@ abstract class CMEFrontMatter extends SwatDBDataObject
 			$this->db,
 			$sql,
 			SwatDBClassMap::get('CMECreditWrapper')
+		);
+	}
+
+	// }}}
+	// {{{ protected function loadProviders()
+
+	protected function loadProviders()
+	{
+		require_once 'CME/dataobjects/CMEProviderWrapper.php';
+
+		$sql = sprintf(
+			'select CMEProvider.*
+			from CMEProvider
+			inner join CMEFrontMatterProviderBinding on
+				CMEFrontMatterProviderBinding.provider = CMEProvider.id
+			where CMEFrontMatterProviderBinding.front_matter = %s
+			order by CMEProvider.id',
+			$this->db->quote($this->id, 'integer')
+		);
+
+		return SwatDB::query(
+			$this->db,
+			$sql,
+			SwatDBClassMap::get('CMEProviderWrapper')
 		);
 	}
 
