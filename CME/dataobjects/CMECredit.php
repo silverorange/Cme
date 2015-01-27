@@ -43,6 +43,11 @@ abstract class CMECredit extends SwatDBDataObject
 	 */
 	public $resettable;
 
+	/**
+	 * @var boolean
+	 */
+	public $is_free;
+
 	// }}}
 	// {{{ public function isEarned()
 
