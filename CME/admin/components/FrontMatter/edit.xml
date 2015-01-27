@@ -6,8 +6,8 @@
 		<property name="title" translatable="yes">CME Front Matter</property>
 		<widget class="SwatForm" id="edit_form">
 			<widget class="SwatFormField" id="provider_field">
-				<property name="title" translatable="yes">CME Provider</property>
-				<widget class="SwatFlydown" id="provider">
+				<property name="title" translatable="yes">CME Providers</property>
+				<widget class="SwatCheckboxList" id="providers">
 					<property name="required" type="boolean">true</property>
 				</widget>
 			</widget>

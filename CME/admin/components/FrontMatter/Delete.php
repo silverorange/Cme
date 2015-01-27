@@ -4,6 +4,7 @@ require_once 'Admin/pages/AdminDBDelete.php';
 require_once 'SwatDB/SwatDB.php';
 require_once 'Admin/AdminListDependency.php';
 require_once 'Admin/AdminSummaryDependency.php';
+require_once 'CME/dataobjects/CMEFrontMatter.php';
 
 /**
  * @package   CME
@@ -61,33 +62,35 @@ class CMEFrontMatterDelete extends AdminDBDelete
 		);
 
 		$sql = sprintf(
-			'select CMEFrontMatter.id, sum(CMECredit.hours) as hours,
-				CMEProvider.title
+			'select CMEFrontMatter.id, sum(CMECredit.hours) as hours
 			from CMEFrontMatter
-				left outer join CMECredit
-					on CMECredit.front_matter = CMEFrontMatter.id
-				inner join CMEProvider
-					on CMEFrontMatter.provider = CMEProvider.id
+			left outer join CMECredit
+				on CMECredit.front_matter = CMEFrontMatter.id
 			where CMEFrontMatter.id in (%s)
-			group by CMEFrontMatter.id, CMEProvider.title',
+			group by CMEFrontMatter.id',
 			$item_list
 		);
 
-		$front_matters = SwatDB::query($this->app->db, $sql);
+		$rs = SwatDB::query($this->app->db, $sql);
 
-		foreach ($front_matters as $front_matter) {
-			$front_matter->status_level = AdminDependency::DELETE;
-			$front_matter->parent = null;
-			$front_matter->title = sprintf(
+		$class_name = SwatDBClassMap::get('CMEFrontMatter');
+
+		foreach ($rs as $row) {
+			$front_matter = new $class_name($row);
+			$front_matter->setDatabase($this->app->db);
+
+			$row->status_level = AdminDependency::DELETE;
+			$row->parent = null;
+			$row->title = sprintf(
 				CME::ngettext(
 					'%s (%s hour)',
 					'%s (%s hours)',
-					$front_matter->hours
+					$row->hours
 				),
-				$front_matter->title,
-				$locale->formatNumber($front_matter->hours)
+				$front_matter->getProviderTitleList(),
+				$locale->formatNumber($row->hours)
 			);
-			$dep->entries[] = new AdminDependencyEntry($front_matter);
+			$dep->entries[] = new AdminDependencyEntry($row);
 		}
 
 		$message = $this->ui->getWidget('confirmation_message');
@@ -97,7 +100,6 @@ class CMEFrontMatterDelete extends AdminDBDelete
 		if ($dep->getStatusLevelCount(AdminDependency::DELETE) === 0) {
 			$this->switchToCancelButton();
 		}
-
 	}
 
 	// }}}
