@@ -1,7 +1,6 @@
 create table CMEFrontMatter (
 	id serial,
 
-	provider integer not null references CMEProvider(id) on delete cascade,
 	evaluation integer references Inquisition(id) on delete set null,
 
 	enabled boolean not null default true,
@@ -14,5 +13,3 @@ create table CMEFrontMatter (
 
 	primary key(id)
 );
-
-create index CMEFrontMatter_provider_index on CMEFrontMatter(provider);
