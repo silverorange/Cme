@@ -58,31 +58,16 @@ abstract class CMECreditEdit extends InquisitionInquisitionEdit
 		AdminDBEdit::initInternal();
 
 		$this->initCredit();
-		$this->initInquisition();
 		$this->initFrontMatter();
 
 		$this->ui->loadFromXML($this->getUiXml());
 
 		// hide question import field when editing an existing credit
-		if ($this->inquisition->id !== null) {
+		if (count($this->credit->question_bindings) > 0) {
 			$this->ui->getWidget('questions_field')->visible = false;
 		}
 
 		$this->setDefaultValues();
-	}
-
-	// }}}
-	// {{{ protected function initInquisition()
-
-	protected function initInquisition()
-	{
-		if ($this->credit->quiz instanceof CMEQuiz) {
-			$this->inquisition = $this->credit->quiz;
-		} else {
-			$class_name = SwatDBClassMap::get('CMEQuiz');
-			$this->inquisition = new $class_name();
-			$this->inquisition->setDatabase($this->app->db);
-		}
 	}
 
 	// }}}
@@ -219,7 +204,6 @@ abstract class CMECreditEdit extends InquisitionInquisitionEdit
 		$this->credit->email_content_fail = $values['email_content_fail'];
 		$this->credit->resettable         = $values['resettable'];
 
-		$this->credit->quiz = $this->inquisition;
 		$this->credit->front_matter = $this->front_matter->id;
 
 		// if hours updated, clear all cached hours for accounts
@@ -237,7 +221,7 @@ abstract class CMECreditEdit extends InquisitionInquisitionEdit
 		return new SwatMessage(
 			sprintf(
 				CME::_('%s CME Credit for %s has been saved.'),
-				$this->credit->front_matter->provider->title,
+				$this->front_matter->getProviderTitleList(),
 				$this->getTitle()
 			)
 		);
@@ -265,8 +249,14 @@ abstract class CMECreditEdit extends InquisitionInquisitionEdit
 	{
 		parent::buildInternal();
 		$this->buildEmailHelp();
+
+		$provider_titles = array();
+		foreach ($this->front_matter->providers as $provider) {
+			$provider_titles[] = $provider->credit_title_plural;
+		}
+
 		$this->ui->getWidget('hours_field')->title =
-			$this->front_matter->provider->credit_title_plural;
+			SwatString::toList($provider_titles, CME::_('or'));
 	}
 
 	// }}}
@@ -278,11 +268,16 @@ abstract class CMECreditEdit extends InquisitionInquisitionEdit
 
 		$this->navbar->popEntry();
 
-		if ($this->isNew()) {
-			$this->navbar->createEntry(CME::_('New CME Credit'));
-		} else {
-			$this->navbar->createEntry(CME::_('Edit CME Credit'));
-		}
+		$title = $this->isNew()
+			? CME::_('New %s CME Credit')
+			: CME::_('Edit %s CME Credit');
+
+		$this->navbar->createEntry(
+			sprintf(
+				$title,
+				$this->front_matter->getProviderTitleList()
+			)
+		);
 	}
 
 	// }}}
