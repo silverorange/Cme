@@ -269,7 +269,7 @@ abstract class CMECreditEdit extends InquisitionInquisitionEdit
 		}
 
 		$this->ui->getWidget('hours_field')->title =
-			SwatString::toList($provider_titles, CME::_('or'));
+			SwatString::toList($provider_titles);
 	}
 
 	// }}}

@@ -52,7 +52,7 @@ class CMECreditDetails extends InquisitionInquisitionDetails
 		}
 
 		$local_ui->getWidget('details_view')->getField('hour')->title =
-			SwatString::toList($provider_titles, CME::_('or'));
+			SwatString::toList($provider_titles);
 
 		$view = $this->ui->getWidget('details_view');
 		foreach ($local_ui->getWidget('details_view')->getFields() as $field) {
