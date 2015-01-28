@@ -92,6 +92,17 @@ abstract class CMECredit extends SwatDBDataObject
 	}
 
 	// }}}
+	// {{{ public function getTitle()
+
+	public function getTitle()
+	{
+		return sprintf(
+			CME::_('%s CME Credit'),
+			$this->front_matter->getProviderTitleList()
+		);
+	}
+
+	// }}}
 	// {{{ abstract protected function getQuizLink()
 
 	abstract protected function getQuizLink();

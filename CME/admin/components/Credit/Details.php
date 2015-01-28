@@ -24,17 +24,6 @@ class CMECreditDetails extends InquisitionInquisitionDetails
 	}
 
 	// }}}
-	// {{{ protected function getTitle()
-
-	protected function getTitle()
-	{
-		return sprintf(
-			CME::_('%s Credit'),
-			$this->credit->front_matter->getProviderTitleList()
-		);
-	}
-
-	// }}}
 
 	// init phase
 	// {{{ protected function initInternal()
@@ -129,7 +118,8 @@ class CMECreditDetails extends InquisitionInquisitionDetails
 	{
 		parent::buildInternal();
 
-		$this->ui->getWidget('details_frame')->title = $this->getTitle();
+		$this->ui->getWidget('details_frame')->title =
+			$this->credit->getTitle();
 
 		$view = $this->ui->getWidget('details_view');
 		$view->getField('title')->visible = false;
@@ -162,7 +152,7 @@ class CMECreditDetails extends InquisitionInquisitionDetails
 		parent::buildNavBar();
 
 		$this->navbar->popEntry();
-		$this->navbar->createEntry($this->getTitle());
+		$this->navbar->createEntry($this->credit->getTitle());
 	}
 
 	// }}}
