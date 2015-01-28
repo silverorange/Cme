@@ -58,16 +58,31 @@ abstract class CMECreditEdit extends InquisitionInquisitionEdit
 		AdminDBEdit::initInternal();
 
 		$this->initCredit();
+		$this->initInquisition();
 		$this->initFrontMatter();
 
 		$this->ui->loadFromXML($this->getUiXml());
 
 		// hide question import field when editing an existing credit
-		if (count($this->credit->question_bindings) > 0) {
+		if ($this->credit->quiz instanceof CMEQuiz) {
 			$this->ui->getWidget('questions_field')->visible = false;
 		}
 
 		$this->setDefaultValues();
+	}
+
+	// }}}
+	// {{{ protected function initInquisition()
+
+	protected function initInquisition()
+	{
+		if ($this->credit->quiz instanceof CMEQuiz) {
+			$this->inquisition = $this->credit->quiz;
+		} else {
+			$class_name = SwatDBClassMap::get('CMEQuiz');
+			$this->inquisition = new $class_name();
+			$this->inquisition->setDatabase($this->app->db);
+		}
 	}
 
 	// }}}
@@ -204,6 +219,7 @@ abstract class CMECreditEdit extends InquisitionInquisitionEdit
 		$this->credit->email_content_fail = $values['email_content_fail'];
 		$this->credit->resettable         = $values['resettable'];
 
+		$this->credit->quiz = $this->inquisition;
 		$this->credit->front_matter = $this->front_matter->id;
 
 		// if hours updated, clear all cached hours for accounts

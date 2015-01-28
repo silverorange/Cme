@@ -57,8 +57,13 @@ class CMECreditDetails extends InquisitionInquisitionDetails
 		$local_ui = new SwatUI();
 		$local_ui->loadFromXML($this->getCreditDetailsViewXml());
 
+		$provider_titles = array();
+		foreach ($this->credit->front_matter->providers as $provider) {
+			$provider_titles[] = $provider->credit_title_plural;
+		}
+
 		$local_ui->getWidget('details_view')->getField('hour')->title =
-			$this->credit->front_matter->provider->credit_title_plural;
+			SwatString::toList($provider_titles, CME::_('or'));
 
 		$view = $this->ui->getWidget('details_view');
 		foreach ($local_ui->getWidget('details_view')->getFields() as $field) {
