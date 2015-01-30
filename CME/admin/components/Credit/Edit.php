@@ -26,11 +26,6 @@ abstract class CMECreditEdit extends InquisitionInquisitionEdit
 	protected $credit;
 
 	/**
-	 * @var CMEFrontMatter
-	 */
-	protected $front_matter;
-
-	/**
 	 * @var integer
 	 */
 	protected $new_question_count;
