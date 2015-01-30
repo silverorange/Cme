@@ -63,25 +63,26 @@ abstract class CMEFrontMatterEdit extends AdminObjectEdit
 			);
 		}
 
+		$this->setDefaultProviders($providers);
+		$this->setDefaultValues();
+
 		// if there's just one provider, select it by default
 		if (count($providers) === 1) {
 			$providers_widget->values = array($providers->getFirst()->id);
 		}
-
-		$this->setDefaultValues();
 	}
 
 	// }}}
-	// {{{ protected function getDefaultProviderShortname()
+	// {{{ protected function getDefaultProviderShortnames()
 
 	/**
-	 * @return string the default provider shortname. If an empty string is
+	 * @return array the default provider shortnames. If an empty array is
 	 *                returned, the first provider in the list is selected
 	 *                by default.
 	 */
-	protected function getDefaultProviderShortname()
+	protected function getDefaultProviderShortnames()
 	{
-		return '';
+		return array();
 	}
 
 	// }}}
@@ -91,9 +92,33 @@ abstract class CMEFrontMatterEdit extends AdminObjectEdit
 	{
 		return SwatDB::query(
 			$this->app->db,
-			'select * from CMEProvider',
+			'select * from CMEProvider order by id',
 			SwatDBClassMap::get('CMEProviderWrapper')
 		);
+	}
+
+	// }}}
+	// {{{ protected function setDefaultProviders()
+
+	protected function setDefaultProviders(CMEProviderWrapper $providers)
+	{
+		$shortnames = $this->getDefaultProviderShortnames();
+		if (count($shortnames) > 0) {
+			$sql = sprintf(
+				'select id from CMEProvider where shortname in (%s)',
+				$this->app->db->datatype->implodeArray($shortnames, 'text')
+			);
+
+			$rows = SwatDB::query($this->app->db, $sql);
+			foreach ($rows as $row) {
+				$this->ui->getWidget('providers')->values[] = $row->id;
+			}
+		}
+
+		if (count($this->ui->getWidget('providers')->values) === 0) {
+			$this->ui->getWidget('providers')->values[] =
+				$providers->getFirst()->id;
+		}
 	}
 
 	// }}}
@@ -101,28 +126,12 @@ abstract class CMEFrontMatterEdit extends AdminObjectEdit
 
 	protected function setDefaultValues()
 	{
-		$shortname = $this->getDefaultProviderShortname();
-		if ($shortname != '') {
-			$sql = sprintf(
-				'select id from CMEProvider where shortname = %s',
-				$this->app->db->quote(
-					$this->getDefaultProviderShortname(),
-					'text'
-				)
-			);
-
-			$default_provider_id = SwatDB::queryOne($this->app->db, $sql);
-			$this->ui->getWidget('providers')->values =
-				array($default_provider_id);
-		}
-
 		$this->ui->getWidget('enabled')->value = true;
 		$this->ui->getWidget('objectives')->value = <<<HTML
 <ul>
 <li>objective1</li>
 <li>objective2</li>
 </ul>
-
 HTML;
 	}
 
