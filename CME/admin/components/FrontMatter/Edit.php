@@ -310,13 +310,10 @@ HTML;
 	protected function loadDBData()
 	{
 		parent::loadDBData();
-		$this->ui->getWidget('providers')->values = SwatDB::queryColumn(
-			$this->app->db,
-			'CMEFrontMatterProviderBinding',
-			'provider',
-			'front_matter',
-			$this->getObject()->id
-		);
+
+		foreach ($this->getObject()->providers as $provider) {
+			$this->ui->getWidget('providers')->values[] = $provider->id;
+		}
 	}
 
 	// }}}
