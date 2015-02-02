@@ -63,12 +63,14 @@ abstract class CMEFrontMatterEdit extends AdminObjectEdit
 			);
 		}
 
-		$this->setDefaultProviders($providers);
-		$this->setDefaultValues();
+		if ($this->isNew()) {
+			$this->setDefaultProviders($providers);
+			$this->setDefaultValues();
 
-		// if there's just one provider, select it by default
-		if (count($providers) === 1) {
-			$providers_widget->values = array($providers->getFirst()->id);
+			// if there's just one provider, select it by default
+			if (count($providers) === 1) {
+				$providers_widget->values = array($providers->getFirst()->id);
+			}
 		}
 	}
 
