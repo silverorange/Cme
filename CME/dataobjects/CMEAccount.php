@@ -7,6 +7,7 @@ require_once 'CME/dataobjects/CMEEvaluationResponse.php';
 require_once 'CME/dataobjects/CMEFrontMatter.php';
 require_once 'CME/dataobjects/CMEQuiz.php';
 require_once 'CME/dataobjects/CMEQuizResponse.php';
+require_once 'CME/dataobjects/CMEAccountCMEProgress.php';
 
 /**
  * CME specific Account object
@@ -174,6 +175,34 @@ abstract class CMEAccount extends StoreAccount
 
 		$available_credits->setDatabase($this->db);
 		return $available_credits;
+	}
+
+	// }}}
+	// {{{ public function getCMEProgress()
+
+	public function getCMEProgress(RapCredit $credit)
+	{
+		require_once 'CME/dataobjects/CMEAccountCMEProgressWrapper.php';
+
+		$this->checkDB();
+
+		$sql = sprintf(
+			'select AccountCMEProgress.*
+			from AccountCMEProgress
+			where AccountCMEProgress.account = %s
+			and AccountCMEProgress.id in (
+				select progress from AccountCMEProgressCreditBinding
+				where AccountCMEProgressCreditBinding.credit = %s
+			)',
+			$this->db->quote($this->id, 'integer'),
+			$this->db->quote($credit->id, 'integer'),
+		);
+
+		return SwatDB::query(
+			$this->app->db,
+			$sql,
+			SwatDBClassMap::get('CMEAccountCMEProgressWrapper');
+		)->getFirst();
 	}
 
 	// }}}
