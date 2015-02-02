@@ -38,7 +38,6 @@ abstract class CMEFrontMatterEdit extends AdminObjectEdit
 	protected function getObjectUiValueNames()
 	{
 		return array(
-			'provider',
 			'objectives',
 			'review_date',
 			'enabled',
@@ -55,35 +54,37 @@ abstract class CMEFrontMatterEdit extends AdminObjectEdit
 		parent::initInternal();
 
 		// add available providers
-		$provider_widget = $this->ui->getWidget('provider');
+		$providers_widget = $this->ui->getWidget('providers');
 		$providers = $this->getAvailableProviders();
 		foreach ($providers as $provider) {
-			$provider_widget->addOption(
+			$providers_widget->addOption(
 				$provider->id,
 				$provider->title
 			);
 		}
 
-		// If there is only one provider, don't show the blank option. One
-		// less click for admin users.
-		if (count($providers) < 2) {
-			$provider_widget->show_blank = false;
-		}
+		if ($this->isNew()) {
+			$this->setDefaultProviders($providers);
+			$this->setDefaultValues();
 
-		$this->setDefaultValues();
+			// if there's just one provider, select it by default
+			if (count($providers) === 1) {
+				$providers_widget->values = array($providers->getFirst()->id);
+			}
+		}
 	}
 
 	// }}}
-	// {{{ protected function getDefaultProviderShortname()
+	// {{{ protected function getDefaultProviderShortnames()
 
 	/**
-	 * @return string the default provider shortname. If an empty string is
+	 * @return array the default provider shortnames. If an empty array is
 	 *                returned, the first provider in the list is selected
 	 *                by default.
 	 */
-	protected function getDefaultProviderShortname()
+	protected function getDefaultProviderShortnames()
 	{
-		return '';
+		return array();
 	}
 
 	// }}}
@@ -93,9 +94,33 @@ abstract class CMEFrontMatterEdit extends AdminObjectEdit
 	{
 		return SwatDB::query(
 			$this->app->db,
-			'select * from CMEProvider',
+			'select * from CMEProvider order by id',
 			SwatDBClassMap::get('CMEProviderWrapper')
 		);
+	}
+
+	// }}}
+	// {{{ protected function setDefaultProviders()
+
+	protected function setDefaultProviders(CMEProviderWrapper $providers)
+	{
+		$shortnames = $this->getDefaultProviderShortnames();
+		if (count($shortnames) > 0) {
+			$sql = sprintf(
+				'select id from CMEProvider where shortname in (%s)',
+				$this->app->db->datatype->implodeArray($shortnames, 'text')
+			);
+
+			$rows = SwatDB::query($this->app->db, $sql);
+			foreach ($rows as $row) {
+				$this->ui->getWidget('providers')->values[] = $row->id;
+			}
+		}
+
+		if (count($this->ui->getWidget('providers')->values) === 0) {
+			$this->ui->getWidget('providers')->values[] =
+				$providers->getFirst()->id;
+		}
 	}
 
 	// }}}
@@ -103,27 +128,12 @@ abstract class CMEFrontMatterEdit extends AdminObjectEdit
 
 	protected function setDefaultValues()
 	{
-		$shortname = $this->getDefaultProviderShortname();
-		if ($shortname != '') {
-			$sql = sprintf(
-				'select id from CMEProvider where shortname = %s',
-				$this->app->db->quote(
-					$this->getDefaultProviderShortname(),
-					'text'
-				)
-			);
-
-			$default_provider_id = SwatDB::queryOne($this->app->db, $sql);
-			$this->ui->getWidget('provider')->value = $default_provider_id;
-		}
-
 		$this->ui->getWidget('enabled')->value = true;
 		$this->ui->getWidget('objectives')->value = <<<HTML
 <ul>
 <li>objective1</li>
 <li>objective2</li>
 </ul>
-
 HTML;
 	}
 
@@ -141,27 +151,25 @@ HTML;
 	{
 		parent::validate();
 
-		$provider_widget = $this->ui->getWidget('provider');
-		$provider = SwatDB::query(
-			$this->app->db,
-			sprintf(
-				'select * from CMEProvider where id = %s',
-				$this->app->db->quote($provider_widget->value, 'integer')
-			),
-			SwatDBClassMap::get('CMEProviderWrapper')
-		)->getFirst();
+		$class_name = SwatDBClassMap::get('CMEProviderWrapper');
+		$providers = new $class_name();
+		$providers->setDatabase($this->app->db);
+		$providers->load($this->ui->getWidget('providers')->values);
 
-		if ($this->isNew() && !$this->validateProvider($provider)) {
-			$message = new SwatMessage(
-				sprintf(
-					CME::_('%s already has %s CME.'),
-					$this->getTitle(),
-					$provider->title
-				),
-				'error'
-			);
-			$provider_widget->addMessage($message);
+		foreach ($providers as $provider) {
+			if ($this->isNew() && !$this->validateProvider($provider)) {
+				$message = new SwatMessage(
+					sprintf(
+						CME::_('%s already has %s CME.'),
+						$this->getTitle(),
+						$provider->title
+					),
+					'error'
+				);
+				$this->ui->getWidget('providers')->addMessage($message);
+			}
 		}
+
 	}
 
 	// }}}
@@ -177,13 +185,6 @@ HTML;
 
 	protected function updateObject()
 	{
-		// Required because of weird behaviour with sub-data-objects in
-		// SwatDBDataObject. Setting a new provider id without first setting
-		// the subobject to null will update the data-object internal value
-		// to the new id but NOT update the loaded provider object itself. This
-		// will cause save confirmation messages to display incorrectly.
-		$this->getObject()->provider = null;
-
 		parent::updateObject();
 
 		if ($this->isNew()) {
@@ -206,6 +207,44 @@ HTML;
 				$front_matter->evaluation->save();
 			}
 		}
+	}
+
+	// }}}
+	// {{{ protected function postSaveObject()
+
+	protected function postSaveObject()
+	{
+		parent::postSaveObject();
+
+		$this->saveProviderBindingTable();
+	}
+
+	// }}}
+	// {{{ protected function saveProviderBindingTable()
+
+	protected function saveProviderBindingTable()
+	{
+		$front_matter = $this->getObject();
+
+		$providers = $this->ui->getWidget('providers')->values;
+
+		$delete_sql = sprintf(
+			'delete from CMEFrontMatterProviderBinding
+			where front_matter = %s',
+			$this->app->db->quote($front_matter->id, 'integer')
+		);
+
+		SwatDB::exec($this->app->db, $delete_sql);
+
+		$insert_sql = sprintf(
+			'insert into CMEFrontMatterProviderBinding
+			(front_matter, provider)
+			select %s, id from CMEProvider where id in (%s)',
+			$this->app->db->quote($front_matter->id, 'integer'),
+			$this->app->db->datatype->implodeArray($providers, 'integer')
+		);
+
+		SwatDB::exec($this->app->db, $insert_sql);
 	}
 
 	// }}}
@@ -260,7 +299,7 @@ HTML;
 	{
 		return sprintf(
 			CME::_('%s CME front matter for %s has been saved.'),
-			$this->getObject()->provider->title,
+			$this->getObject()->getProviderTitleList(),
 			$this->getTitle()
 		);
 	}
@@ -268,6 +307,18 @@ HTML;
 	// }}}
 
 	// build phase
+	// {{{ protected function loadDBData()
+
+	protected function loadDBData()
+	{
+		parent::loadDBData();
+
+		foreach ($this->getObject()->providers as $provider) {
+			$this->ui->getWidget('providers')->values[] = $provider->id;
+		}
+	}
+
+	// }}}
 	// {{{ protected function buildNavBar()
 
 	protected function buildNavBar()

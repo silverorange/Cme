@@ -26,19 +26,9 @@ abstract class CMECreditEdit extends InquisitionInquisitionEdit
 	protected $credit;
 
 	/**
-	 * @var CMEFrontMatter
-	 */
-	protected $front_matter;
-
-	/**
 	 * @var integer
 	 */
 	protected $new_question_count;
-
-	// }}}
-	// {{{ abstract protected function getTitle()
-
-	abstract protected function getTitle();
 
 	// }}}
 	// {{{ protected function getUiXml()
@@ -64,7 +54,7 @@ abstract class CMECreditEdit extends InquisitionInquisitionEdit
 		$this->ui->loadFromXML($this->getUiXml());
 
 		// hide question import field when editing an existing credit
-		if ($this->inquisition->id !== null) {
+		if ($this->credit->quiz instanceof CMEQuiz) {
 			$this->ui->getWidget('questions_field')->visible = false;
 		}
 
@@ -103,6 +93,9 @@ abstract class CMECreditEdit extends InquisitionInquisitionEdit
 					)
 				);
 			}
+		} else {
+			$this->credit->is_free =
+				($this->app->initVar('credit_type') === 'free');
 		}
 	}
 
@@ -114,9 +107,9 @@ abstract class CMECreditEdit extends InquisitionInquisitionEdit
 		if ($this->isNew()) {
 			$front_matter_id = SiteApplication::initVar('front-matter');
 			$class_name = SwatDBClassMap::get('CMEFrontMatter');
-			$this->front_matter = new $class_name();
-			$this->front_matter->setDatabase($this->app->db);
-			if (!$this->front_matter->load($front_matter_id)) {
+			$this->credit->front_matter = new $class_name();
+			$this->credit->front_matter->setDatabase($this->app->db);
+			if (!$this->credit->front_matter->load($front_matter_id)) {
 				throw new AdminNotFoundException(
 					sprintf(
 						'A CME front matter with the id of ‘%s’ does not '.
@@ -125,8 +118,6 @@ abstract class CMECreditEdit extends InquisitionInquisitionEdit
 					)
 				);
 			}
-		} else {
-			$this->front_matter = $this->credit->front_matter;
 		}
 	}
 
@@ -220,7 +211,7 @@ abstract class CMECreditEdit extends InquisitionInquisitionEdit
 		$this->credit->resettable         = $values['resettable'];
 
 		$this->credit->quiz = $this->inquisition;
-		$this->credit->front_matter = $this->front_matter->id;
+		$this->credit->front_matter = $this->credit->front_matter->id;
 
 		// if hours updated, clear all cached hours for accounts
 		if (!$this->isNew() &&
@@ -236,9 +227,8 @@ abstract class CMECreditEdit extends InquisitionInquisitionEdit
 	{
 		return new SwatMessage(
 			sprintf(
-				CME::_('%s CME Credit for %s has been saved.'),
-				$this->credit->front_matter->provider->title,
-				$this->getTitle()
+				CME::_('%s has been saved.'),
+				$this->credit->getTitle()
 			)
 		);
 	}
@@ -265,8 +255,16 @@ abstract class CMECreditEdit extends InquisitionInquisitionEdit
 	{
 		parent::buildInternal();
 		$this->buildEmailHelp();
+
+		$this->ui->getWidget('edit_frame')->title = $this->credit->getTitle();
+
+		$provider_titles = array();
+		foreach ($this->credit->front_matter->providers as $provider) {
+			$provider_titles[] = $provider->credit_title_plural;
+		}
+
 		$this->ui->getWidget('hours_field')->title =
-			$this->front_matter->provider->credit_title_plural;
+			SwatString::toList($provider_titles);
 	}
 
 	// }}}
@@ -278,11 +276,16 @@ abstract class CMECreditEdit extends InquisitionInquisitionEdit
 
 		$this->navbar->popEntry();
 
-		if ($this->isNew()) {
-			$this->navbar->createEntry(CME::_('New CME Credit'));
-		} else {
-			$this->navbar->createEntry(CME::_('Edit CME Credit'));
-		}
+		$title = $this->isNew()
+			? CME::_('New %s')
+			: CME::_('Edit %s');
+
+		$this->navbar->createEntry(
+			sprintf(
+				$title,
+				$this->credit->getTitle()
+			)
+		);
 	}
 
 	// }}}
@@ -295,7 +298,7 @@ abstract class CMECreditEdit extends InquisitionInquisitionEdit
 		if ($this->isNew()) {
 			$this->ui->getWidget('edit_form')->addHiddenField(
 				'front-matter',
-				$this->front_matter->id
+				$this->credit->front_matter->id
 			);
 		}
 	}

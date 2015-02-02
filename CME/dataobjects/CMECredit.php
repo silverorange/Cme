@@ -1,9 +1,9 @@
 <?php
 
 require_once 'SwatDB/SwatDBDataObject.php';
+require_once 'Inquisition/dataobjects/InquisitionInquisition.php';
 require_once 'CME/dataobjects/CMEQuiz.php';
 require_once 'CME/dataobjects/CMEFrontMatter.php';
-require_once 'CME/dataobjects/CMECreditQuestionBindingWrapper.php';
 
 /**
  * @package   CME
@@ -92,6 +92,17 @@ abstract class CMECredit extends SwatDBDataObject
 	}
 
 	// }}}
+	// {{{ public function getTitle()
+
+	public function getTitle()
+	{
+		return sprintf(
+			CME::_('%s CME Credit'),
+			$this->front_matter->getProviderTitleList()
+		);
+	}
+
+	// }}}
 	// {{{ abstract protected function getQuizLink()
 
 	abstract protected function getQuizLink();
@@ -108,40 +119,10 @@ abstract class CMECredit extends SwatDBDataObject
 			'front_matter',
 			SwatDBClassMap::get('CMEFrontMatter')
 		);
-	}
 
-	// }}}
-
-	// saver methods
-	// {{{ protected function saveQuestionBindings()
-
-	protected function saveQuestionBindings()
-	{
-		foreach ($this->question_bindings as $question_binding) {
-			$question_binding->credit = $this;
-		}
-
-		$this->question_bindings->setDatabase($this->db);
-		$this->question_bindings->save();
-	}
-
-	// }}}
-
-	// loader methods
-	// {{{ protected function loadQuestionBindings()
-
-	protected function loadQuestionBindings()
-	{
-		$sql = sprintf(
-			'select * from CMECreditQuestionBinding
-			where credit = %s order by displayorder, id',
-			$this->db->quote($this->id, 'integer')
-		);
-
-		return SwatDB::query(
-			$this->db,
-			$sql,
-			SwatDBClassMap::get('CMECreditQuestionBindingWrapper')
+		$this->registerInternalProperty(
+			'quiz',
+			SwatDBClassMap::get('CMEQuiz')
 		);
 	}
 
