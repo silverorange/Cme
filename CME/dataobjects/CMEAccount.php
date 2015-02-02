@@ -195,13 +195,13 @@ abstract class CMEAccount extends StoreAccount
 				where AccountCMEProgressCreditBinding.credit = %s
 			)',
 			$this->db->quote($this->id, 'integer'),
-			$this->db->quote($credit->id, 'integer'),
+			$this->db->quote($credit->id, 'integer')
 		);
 
 		return SwatDB::query(
 			$this->db,
 			$sql,
-			SwatDBClassMap::get('CMEAccountCMEProgressWrapper');
+			SwatDBClassMap::get('CMEAccountCMEProgressWrapper')
 		)->getFirst();
 	}
 
