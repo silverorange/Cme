@@ -305,6 +305,21 @@ HTML;
 	// }}}
 
 	// build phase
+	// {{{ protected function loadDBData()
+
+	protected function loadDBData()
+	{
+		parent::loadDBData();
+		$this->ui->getWidget('providers')->values = SwatDB::queryColumn(
+			$this->app->db,
+			'CMEFrontMatterProviderBinding',
+			'provider',
+			'front_matter',
+			$this->getObject()->id
+		);
+	}
+
+	// }}}
 	// {{{ protected function buildNavBar()
 
 	protected function buildNavBar()
