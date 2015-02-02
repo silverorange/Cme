@@ -81,12 +81,12 @@ class CMEFrontMatterDelete extends AdminDBDelete
 
 			$row->status_level = AdminDependency::DELETE;
 			$row->parent = null;
+
+			// not using ngettext because hours is a float
 			$row->title = sprintf(
-				CME::ngettext(
-					'%s (%s hour)',
-					'%s (%s hours)',
-					$row->hours
-				),
+				($row->hours == 1)
+					? CME::_('%s (1 hour)')
+					: CME::_('%s (%s hours)'),
 				$front_matter->getProviderTitleList(),
 				$locale->formatNumber($row->hours)
 			);
