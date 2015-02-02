@@ -1,10 +1,7 @@
 create table AccountEarnedCMECredit (
 	id serial,
-
 	account integer not null references Account(id) on delete cascade,
-	quiz_response integer not null references InquisitionResponse(id) on delete cascade,
 	earned_date timestamp not null,
-
 	primary key (id)
 );
 
