@@ -199,7 +199,7 @@ abstract class CMEAccount extends StoreAccount
 		);
 
 		return SwatDB::query(
-			$this->app->db,
+			$this->db,
 			$sql,
 			SwatDBClassMap::get('CMEAccountCMEProgressWrapper');
 		)->getFirst();
