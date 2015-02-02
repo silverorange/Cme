@@ -93,7 +93,7 @@ abstract class CMECreditEdit extends InquisitionInquisitionEdit
 					)
 				);
 			}
-
+		} else {
 			$this->credit->is_free =
 				($this->app->initVar('credit_type') === 'free');
 		}
