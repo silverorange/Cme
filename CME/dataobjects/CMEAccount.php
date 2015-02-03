@@ -206,6 +206,33 @@ abstract class CMEAccount extends StoreAccount
 	}
 
 	// }}}
+	// {{{ public function hasSameCMEProgress()
+
+	public function hasSameCMEProgress(RapCredit $credit1, RapCredit $credit2)
+	{
+		$progress1 = $this->getCMEProgress($credit1);
+		$progress2 = $this->getCMEProgress($credit2);
+
+		// combine credits if they have the same progress
+		if ($progress1 instanceof CMEAccountCMEProgress &&
+			$progress2 instanceof CMEAccountCMEProgress &&
+			$progress1->id === $progress2->id) {
+
+			$combine = true;
+
+		// combine credits if they both haven't been started
+		} elseif (!$progress1 instanceof CMEAccountCMEProgress &&
+			!$progress2 instanceof CMEAccountCMEProgress) {
+
+			$combine = true;
+		} else {
+			$combine = false;
+		}
+
+		return $combine;
+	}
+
+	// }}}
 
 	// loader methods
 	// {{{ protected function loadEarnedCMECredits()
