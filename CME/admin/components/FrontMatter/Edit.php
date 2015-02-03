@@ -41,6 +41,10 @@ abstract class CMEFrontMatterEdit extends AdminObjectEdit
 			'objectives',
 			'review_date',
 			'enabled',
+			'passing_grade',
+			'email_content_pass',
+			'email_content_fail',
+			'resettable',
 		);
 	}
 
@@ -187,9 +191,8 @@ HTML;
 	{
 		parent::updateObject();
 
-		$front_matter = $this->getObject();
-
 		if ($this->isNew()) {
+			$front_matter = $this->getObject();
 			$front_matter->planning_committee_no_disclosures =
 				$this->getPlanningCommitteeNoDisclosures();
 
@@ -208,20 +211,6 @@ HTML;
 				$front_matter->evaluation->save();
 			}
 		}
-
-		$values = $this->ui->getValues(
-			array(
-				'passing_grade',
-				'email_content_pass',
-				'email_content_fail',
-				'resettable',
-			)
-		);
-
-		$front_matter->passing_grade      = $values['passing_grade'];
-		$front_matter->email_content_pass = $values['email_content_pass'];
-		$front_matter->email_content_fail = $values['email_content_fail'];
-		$front_matter->resettable         = $values['resettable'];
 	}
 
 	// }}}
