@@ -25,26 +25,6 @@ abstract class CMECredit extends SwatDBDataObject
 	public $hours;
 
 	/**
-	 * @var integer
-	 */
-	public $passing_grade;
-
-	/**
-	 * @var string
-	 */
-	public $email_content_pass;
-
-	/**
-	 * @var string
-	 */
-	public $email_content_fail;
-
-	/**
-	 * @var boolean
-	 */
-	public $resettable;
-
-	/**
 	 * @var boolean
 	 */
 	public $is_free;

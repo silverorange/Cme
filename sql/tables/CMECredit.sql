@@ -5,10 +5,6 @@ create table CMECredit (
 	quiz integer not null references Inquisition(id) on delete cascade,
 
 	hours numeric(5, 2) not null,
-	passing_grade decimal(5, 2),
-	email_content_pass text,
-	email_content_fail text,
-	resettable boolean not null default true,
 	displayorder integer not null default 0,
 	is_free boolean not null default false,
 

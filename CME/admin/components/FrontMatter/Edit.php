@@ -187,8 +187,9 @@ HTML;
 	{
 		parent::updateObject();
 
+		$front_matter = $this->getObject();
+
 		if ($this->isNew()) {
-			$front_matter = $this->getObject();
 			$front_matter->planning_committee_no_disclosures =
 				$this->getPlanningCommitteeNoDisclosures();
 
@@ -207,6 +208,20 @@ HTML;
 				$front_matter->evaluation->save();
 			}
 		}
+
+		$values = $this->ui->getValues(
+			array(
+				'passing_grade',
+				'email_content_pass',
+				'email_content_fail',
+				'resettable',
+			)
+		);
+
+		$front_matter->passing_grade      = $values['passing_grade'];
+		$front_matter->email_content_pass = $values['email_content_pass'];
+		$front_matter->email_content_fail = $values['email_content_fail'];
+		$front_matter->resettable         = $values['resettable'];
 	}
 
 	// }}}
@@ -307,6 +322,15 @@ HTML;
 	// }}}
 
 	// build phase
+	// {{{ protected function buildInternal()
+
+	protected function buildInternal()
+	{
+		parent::buildInternal();
+		$this->buildEmailHelp();
+	}
+
+	// }}}
 	// {{{ protected function loadDBData()
 
 	protected function loadDBData()
@@ -332,6 +356,92 @@ HTML;
 		} else {
 			$this->navbar->createEntry(CME::_('Edit CME Front Matter'));
 		}
+	}
+
+	// }}}
+	// {{{ protected function buildEmailHelp()
+
+	protected function buildEmailHelp()
+	{
+		$help = $this->ui->getWidget('email_help_text');
+
+		ob_start();
+
+		$p_tag = new SwatHtmlTag('p');
+		$p_tag->setContent(
+			CME::_(
+				'The following variables may be used in email content:'
+			)
+		);
+		$p_tag->display();
+
+		echo '<table><tbody>';
+
+		$definitions = $this->getEmailHelpVariableDefinitions();
+		$keys = array_keys($definitions);
+		$half_index = ceil(count($definitions) / 2);
+		for ($i = 0; $i < $half_index; $i++) {
+			echo '<tr>';
+
+			$th = new SwatHtmlTag('th');
+			$th->setContent('['.$keys[$i].']');
+			$th->display();
+
+			$td = new SwatHtmlTag('td');
+			$td->setContent($definitions[$keys[$i]]);
+			$td->display();
+
+			if (isset($keys[$i + $half_index])) {
+				$th = new SwatHtmlTag('th');
+				$th->setContent('['.$keys[$i + $half_index].']');
+				$th->display();
+
+				$td = new SwatHtmlTag('td');
+				$td->setContent($definitions[$keys[$i + $half_index]]);
+				$td->display();
+			}
+			echo '</tr>';
+		}
+
+		echo '</tbody></table>';
+
+		$help->content = ob_get_clean();
+		$help->content_type = 'text/xml';
+	}
+
+	// }}}
+	// {{{ protected function getEmailHelpVariableDefinitions()
+
+	protected function getEmailHelpVariableDefinitions()
+	{
+		return array(
+			'account-full-name' => CME::_(
+				'the full name of the user'
+			),
+			'cme-certificate-link' => CME::_(
+				'the link to download the CME certificates'
+			),
+			'quiz-grade' => CME::_(
+				'the grade the user got on the quiz'
+			),
+			'quiz-passing-grade' => CME::_(
+				'the grade required to pass the quiz'
+			),
+		);
+	}
+
+	// }}}
+
+	// finalize phase
+	// {{{ public function finalize()
+
+	public function finalize()
+	{
+		parent::finalize();
+
+		$this->layout->addHtmlHeadEntry(
+			'packages/cme/admin/styles/cme-front-matter-edit.css'
+		);
 	}
 
 	// }}}

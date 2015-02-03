@@ -22,33 +22,6 @@
 					<property name="required" type="boolean">true</property>
 				</widget>
 			</widget>
-			<widget class="SwatFormField">
-				<property name="title" translatable="yes">Passing Grade</property>
-				<widget class="SwatPercentageEntry" id="passing_grade">
-					<property name="required" type="boolean">true</property>
-					<property name="minimum_value" type="float">0.0</property>
-					<property name="maximum_value" type="float">1.0</property>
-				</widget>
-			</widget>
-			<widget class="SwatFormField">
-				<property name="title" translatable="yes">CME quiz can be retaken by users</property>
-				<widget class="SwatCheckbox" id="resettable">
-					<property name="value" type="boolean">true</property>
-				</widget>
-			</widget>
-			<widget class="AdminNote" id="email_help_text" />
-			<widget class="SwatFormField">
-				<property name="title" translatable="yes">Pass Email Content</property>
-				<widget class="SwatTextarea" id="email_content_pass">
-					<property name="required" type="boolean">true</property>
-				</widget>
-			</widget>
-			<widget class="SwatFormField">
-				<property name="title" translatable="yes">Fail Email Content</property>
-				<widget class="SwatTextarea" id="email_content_fail">
-					<property name="required" type="boolean">true</property>
-				</widget>
-			</widget>
 			<widget class="SwatFooterFormField">
 				<widget class="SwatButton" id="submit_button" />
 			</widget>

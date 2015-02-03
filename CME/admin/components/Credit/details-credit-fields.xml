@@ -8,30 +8,5 @@
 				<property name="value" type="data">hours</property>
 			</object>
 		</object>
-		<object class="SwatDetailsViewField" id="resettable">
-			<property name="title" translatable="yes">Quiz Can Be Retaken</property>
-			<object class="SwatBooleanCellRenderer">
-				<property name="value" type="data">resettable</property>
-				<property name="false_content" translatable="yes">no</property>
-			</object>
-		</object>
-		<object class="SwatDetailsViewField" id="passing_grade">
-			<property name="title" translatable="yes">Quiz Passing Grade</property>
-			<object class="SwatPercentageCellRenderer">
-				<property name="value" type="data">passing_grade</property>
-			</object>
-		</object>
-		<object class="SwatDetailsViewField" id="email_content_pass">
-			<property name="title" translatable="yes">Quiz Passed Email Content</property>
-			<object class="SwatTextCellRenderer">
-				<property name="text" type="data">email_content_pass</property>
-			</object>
-		</object>
-		<object class="SwatDetailsViewField" id="email_content_fail">
-			<property name="title" translatable="yes">Quiz Failed Email Content</property>
-			<object class="SwatTextCellRenderer">
-				<property name="text" type="data">email_content_fail</property>
-			</object>
-		</object>
 	</widget>
 </swatml>
