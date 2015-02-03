@@ -53,6 +53,26 @@ abstract class CMEFrontMatter extends SwatDBDataObject
 	 */
 	public $enabled;
 
+	/**
+	 * @var integer
+	 */
+	public $passing_grade;
+
+	/**
+	 * @var string
+	 */
+	public $email_content_pass;
+
+	/**
+	 * @var string
+	 */
+	public $email_content_fail;
+
+	/**
+	 * @var boolean
+	 */
+	public $resettable;
+
 	// }}}
 	// {{{ public function getProviderTitleList()
 
