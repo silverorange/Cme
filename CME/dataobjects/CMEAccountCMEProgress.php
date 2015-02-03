@@ -21,7 +21,6 @@ class CMEAccountCMEProgress extends SwatDBDataObject
 	 */
 	public $id;
 
-
 	// }}}
 	// {{{ protected function init()
 
