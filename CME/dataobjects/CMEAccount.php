@@ -252,7 +252,7 @@ abstract class CMEAccount extends StoreAccount
 				inner join CMEFrontMatter
 					on CMECredit.front_matter = CMEFrontMatter.id
 			where account = %s
-			order by CMEFrontMatter.provider, CMECredit.displayorder',
+			order by CMEFrontMatter.id, CMECredit.displayorder',
 			$this->db->quote($this->id, 'integer')
 		);
 
