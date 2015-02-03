@@ -4,3 +4,6 @@ create table AccountCMEProgressCreditBinding (
 
 	primary key (progress, credit)
 );
+
+create index AccountCMEProgressCreditBinding_credit_index
+	on AccountCMEProgressCreditBinding(credit);
