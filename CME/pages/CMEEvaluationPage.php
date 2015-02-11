@@ -255,7 +255,7 @@ abstract class CMEEvaluationPage extends SiteDBEditPage
 		$this->evaluation = $this->app->getCacheValue($this->getCacheKey());
 
 		if ($this->evaluation === false) {
-			if (!$this->progress->evaluation instanceof CMEQuiz) {
+			if (!$this->progress->evaluation instanceof CMEEvaluation) {
 				$this->progress->evaluation = $this->front_matter->evaluation;
 				$this->progress->save();
 			}
