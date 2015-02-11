@@ -554,7 +554,7 @@ abstract class CMEQuizPage extends SiteDBEditPage
 					$this->app->db->quote($account->id, 'integer')
 				);
 
-				if (SwatDB::queryOne($this->app->db, $sql) == 0) {
+				if (SwatDB::queryOne($this->app->db, $sql) === 0) {
 					$earned_date = new SwatDate();
 					$earned_date->toUTC();
 
