@@ -42,16 +42,19 @@ abstract class CMEAccount extends StoreAccount
 	// }}}
 	// {{{ public function isEvaluationComplete()
 
-	public function isEvaluationComplete(CMEFrontMatter $front_matter)
+	public function isEvaluationComplete(CMECredit $credit)
 	{
 		$complete = false;
 
-		$evaluation = $front_matter->evaluation;
-		if ($evaluation instanceof CMEEvaluation) {
-			$evaluation_response = $evaluation->getResponseByAccount($this);
+		$progress = $this->getCMEProgress($credit);
+
+		if ($progress instanceof CMEAccountCMEProgress &&
+			$progress->evaluation instanceof CMEEvaluation) {
+
+			$response = $progress->evaluation->getResponseByAccount($this);
 			$complete = (
-				$evaluation_response instanceof CMEEvaluationResponse &&
-				$evaluation_response->complete_date instanceof SwatDate
+				$response instanceof CMEEvaluationResponse &&
+				$response->complete_date instanceof SwatDate
 			);
 		}
 
@@ -65,8 +68,12 @@ abstract class CMEAccount extends StoreAccount
 	{
 		$complete = false;
 
-		if ($credit->quiz instanceof CMEQuiz) {
-			$quiz_response = $credit->quiz->getResponseByAccount($this);
+		$progress = $this->getCMEProgress($credit);
+
+		if ($progress instanceof CMEAccountCMEProgress &&
+			$progress->quiz instanceof CMEQuiz) {
+
+			$quiz_response = $progress->quiz->getResponseByAccount($this);
 			$complete = ($quiz_response instanceof CMEQuizResponse &&
 				$quiz_response->complete_date instanceof SwatDate);
 		}
@@ -82,7 +89,8 @@ abstract class CMEAccount extends StoreAccount
 		$passed = false;
 
 		if ($this->isQuizComplete($credit)) {
-			$quiz_response = $credit->quiz->getResponseByAccount($this);
+			$progress = $this->getCMEProgress($credit);
+			$quiz_response = $progress->quiz->getResponseByAccount($this);
 			$passed = $quiz_response->isPassed();
 		}
 

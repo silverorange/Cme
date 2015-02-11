@@ -7,6 +7,7 @@ require_once 'Inquisition/dataobjects/InquisitionQuestionWrapper.php';
 require_once 'Inquisition/dataobjects/InquisitionQuestionOptionWrapper.php';
 require_once 'CME/CME.php';
 require_once 'CME/dataobjects/CMEEvaluationWrapper.php';
+require_once 'CME/dataobjects/CMECreditWrapper.php';
 require_once 'CME/dataobjects/CMEFrontMatterWrapper.php';
 require_once 'CME/dataobjects/CMEEvaluationResponse.php';
 require_once 'CME/dataobjects/CMEAccountEarnedCMECredit.php';
@@ -20,6 +21,16 @@ require_once 'CME/dataobjects/CMEAccountEarnedCMECreditWrapper.php';
 abstract class CMEEvaluationPage extends SiteDBEditPage
 {
 	// {{{ protected properties
+
+	/**
+	 * @var CMECreditWrapper
+	 */
+	protected $credits;
+
+	/**
+	 * @var CMEAccountCMEProgress
+	 */
+	protected $progress;
 
 	/**
 	 * @var CMEFrontMatter
@@ -65,7 +76,7 @@ abstract class CMEEvaluationPage extends SiteDBEditPage
 
 	protected function getCacheKey()
 	{
-		return 'cme-evaluation-page-'.$this->front_matter->id;
+		return 'cme-evaluation-page-'.$this->progress->id;
 	}
 
 	// }}}
@@ -74,7 +85,7 @@ abstract class CMEEvaluationPage extends SiteDBEditPage
 	protected function getArgumentMap()
 	{
 		return array(
-			'front_matter' => array(0, null),
+			'credits' => array(0, null),
 		);
 	}
 
@@ -97,7 +108,9 @@ abstract class CMEEvaluationPage extends SiteDBEditPage
 	{
 		parent::initInternal();
 
+		$this->initCredits();
 		$this->initFrontMatter();
+		$this->initProgress();
 		$this->initEvaluation();
 		$this->initResponse();
 
@@ -117,32 +130,121 @@ abstract class CMEEvaluationPage extends SiteDBEditPage
 	}
 
 	// }}}
+	// {{{ protected function initCredits()
+
+	protected function initCredits()
+	{
+		$ids = array();
+		foreach (explode('-', $this->getArgument('credits')) as $id) {
+			if ($id != '') {
+				$ids[] = $this->app->db->quote($id, 'integer');
+			}
+		}
+
+		if (count($ids) === 0) {
+			throw new SiteNotFoundException('A CME credit must be provided.');
+		}
+
+		$sql = sprintf(
+			'select CMECredit.* from CMECredit
+				inner join CMEFrontMatter
+					on CMECredit.front_matter = CMEFrontMatter.id
+			where CMECredit.id in (%s) and CMEFrontMatter.enabled = %s',
+			implode(',', $ids),
+			$this->app->db->quote(true, 'boolean')
+		);
+
+		$this->credits = SwatDB::query(
+			$this->app->db,
+			$sql,
+			SwatDBClassMap::get('CMECreditWrapper')
+		);
+
+		if (count($this->credits) === 0) {
+			throw new SiteNotFoundException(
+				'No CME credits found for the ids provided.'
+			);
+		}
+	}
+
+	// }}}
 	// {{{ protected function initFrontMatter()
 
 	protected function initFrontMatter()
 	{
-		$front_matter_id = $this->getArgument('front_matter');
+		$this->front_matter = $this->credits->getFirst()->front_matter;
+	}
 
-		$sql = sprintf(
-			'select * from CMEFrontMatter where id = %s and enabled = %s',
-			$this->app->db->quote($front_matter_id, 'integer'),
-			$this->app->db->quote(true, 'boolean')
-		);
+	// }}}
+	// {{{ protected function initProgress()
 
-		$this->front_matter = SwatDB::query(
-			$this->app->db,
-			$sql,
-			SwatDBClassMap::get('CMEFrontMatterWrapper')
-		)->getFirst();
+	protected function initProgress()
+	{
+		$account = $this->app->session->account;
 
-		if (!$this->front_matter instanceof CMEFrontMatter) {
-			throw new SiteNotFoundException(
-				sprintf(
-					'CME front matter %s not found.',
-					$front_matter_id
-				)
-			);
+		$progress = $this->getProgress();
+
+		if (!$progress instanceof CMEAccountCMEProgress) {
+			$progress = new CMEAccountCMEProgress();
+			$progress->setDatabase($this->app->db);
+			$progress->account = $account;
+			$progress->save();
+
+			foreach ($this->credits as $credit) {
+				$sql = sprintf(
+					'insert into AccountCMEProgressCreditBinding
+						(progress, credit)
+					values
+						(%s, %s)',
+					$this->app->db->quote($progress->id, 'integer'),
+					$this->app->db->quote($credit->id, 'integer')
+				);
+
+				SwatDB::exec($this->app->db, $sql);
+			}
 		}
+
+		$this->progress = $progress;
+	}
+
+	// }}}
+	// {{{ protected function getProgress()
+
+	protected function getProgress()
+	{
+		$first_run = true;
+		$progress1 = null;
+
+		foreach ($this->credits as $credit) {
+			$progress2 = $this->app->session->account->getCMEProgress($credit);
+
+			if ($first_run) {
+				$first_run = false;
+
+				$progress1 = $progress2;
+			}
+
+			$same_object = (
+				$progress1 instanceof CMEAccountCMEProgress &&
+				$progress2 instanceof CMEAccountCMEProgress &&
+				$progress1->id === $progress2->id
+			);
+
+			$both_null = (
+				!$progress1 instanceof CMEAccountCMEProgress &&
+				!$progress2 instanceof CMEAccountCMEProgress
+			);
+
+			if ($same_object || $both_null) {
+				$progress1 = $progress2;
+			} else {
+				throw new SiteNotFoundException(
+					'CME credits do not share the same progress.'
+				);
+			}
+		}
+
+		return $progress1;
 	}
 
 	// }}}
@@ -153,6 +255,11 @@ abstract class CMEEvaluationPage extends SiteDBEditPage
 		$this->evaluation = $this->app->getCacheValue($this->getCacheKey());
 
 		if ($this->evaluation === false) {
+			if (!$this->progress->evaluation instanceof CMEQuiz) {
+				$this->progress->evaluation = $this->front_matter->evaluation;
+				$this->progress->save();
+			}
+
 			$this->evaluation = $this->front_matter->evaluation;
 
 			if (!$this->evaluation instanceof CMEEvaluation) {
@@ -482,7 +589,7 @@ abstract class CMEEvaluationPage extends SiteDBEditPage
 				),
 				$formatted_title,
 				SwatString::minimizeEntities(
-					$this->front_matter->provider->title
+					$this->front_matter->getProviderTitleList()
 				)
 			)
 		);
@@ -515,7 +622,9 @@ abstract class CMEEvaluationPage extends SiteDBEditPage
 	{
 		$this->layout->data->title = sprintf(
 			CME::_('%s Evaluation'),
-			SwatString::minimizeEntities($this->front_matter->provider->title)
+			SwatString::minimizeEntities(
+				$this->front_matter->getProviderTitleList()
+			)
 		);
 	}
 

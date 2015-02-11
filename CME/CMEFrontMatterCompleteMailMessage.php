@@ -4,14 +4,14 @@ require_once 'SwatI18N/SwatI18NLocale.php';
 require_once 'Site/SiteReplacementMarkerMailMessage.php';
 require_once 'Site/dataobjects/SiteAccount.php';
 require_once 'CME/CME.php';
-require_once 'CME/dataobjects/CMECredit.php';
+require_once 'CME/dataobjects/CMEFrontMatter.php';
 
 /**
  * @package   CME
  * @copyright 2011-2015 silverorange
  * @license   http://www.opensource.org/licenses/mit-license.html MIT License
  */
-abstract class CMECreditCompleteMailMessage extends
+abstract class CMEFrontMatterCompleteMailMessage extends
 	SiteReplacementMarkerMailMessage
 {
 	// {{{ protected properties
@@ -24,9 +24,9 @@ abstract class CMECreditCompleteMailMessage extends
 	protected $account;
 
 	/**
-	 * @var CMECredit
+	 * @var CMEFrontMatter
 	 */
-	protected $credit;
+	protected $front_matter;
 
 	/**
 	 * @var CMEQuizResponse
@@ -39,19 +39,15 @@ abstract class CMECreditCompleteMailMessage extends
 	/**
 	 * @param SiteApplication $app
 	 * @param SiteAccount $account the account to create the email for.
-	 * @param CMECredit $credit
+	 * @param CMEFrontMatter $front_matter
 	 * @param InquisitionResponse $response
 	 */
 	public function __construct(SiteApplication $app, SiteAccount $account,
-		CMECredit $credit, InquisitionResponse $response)
+		CMEFrontMatter $front_matter, InquisitionResponse $response)
 	{
-		$this->account  = $account;
-		$this->credit   = $credit;
-		$this->response = $response;
-
-		if (!$this->credit->quiz instanceof InquisitionInquisition) {
-			throw new SiteMailException('CME credit does not have a quiz.');
-		}
+		$this->account      = $account;
+		$this->front_matter = $front_matter;
+		$this->response     = $response;
 
 		if ($this->response->complete_date === null) {
 			throw new SiteMailException(
@@ -98,7 +94,7 @@ abstract class CMECreditCompleteMailMessage extends
 	{
 		return sprintf(
 			CME::_('%s Quiz Completed'),
-			$this->credit->front_matter->provider->title
+			$this->front_matter->getProviderTitleList()
 		);
 	}
 
@@ -108,9 +104,9 @@ abstract class CMECreditCompleteMailMessage extends
 	protected function getBodyText()
 	{
 		if ($this->response->isPassed()) {
-			$bodytext = $this->credit->email_content_pass;
+			$bodytext = $this->front_matter->email_content_pass;
 		} else {
-			$bodytext = $this->credit->email_content_fail;
+			$bodytext = $this->front_matter->email_content_fail;
 		}
 
 		return $bodytext;
@@ -132,7 +128,7 @@ abstract class CMECreditCompleteMailMessage extends
 
 		case 'quiz-passing-grade':
 			return $locale->formatNumber(
-				$this->credit->passing_grade * 100
+				$this->front_matter->passing_grade * 100
 			).'%';
 
 		case 'quiz-grade':

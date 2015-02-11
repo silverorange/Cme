@@ -9,7 +9,7 @@ require_once 'Site/pages/SiteDBEditPage.php';
 require_once 'Inquisition/dataobjects/InquisitionInquisitionWrapper.php';
 require_once 'Inquisition/dataobjects/InquisitionQuestionWrapper.php';
 require_once 'Inquisition/dataobjects/InquisitionQuestionOptionWrapper.php';
-require_once 'CME/CMECreditCompleteMailMessage.php';
+require_once 'CME/CMEFrontMatterCompleteMailMessage.php';
 require_once 'CME/dataobjects/CMEQuiz.php';
 require_once 'CME/dataobjects/CMECreditWrapper.php';
 require_once 'CME/dataobjects/CMEAccountEarnedCMECredit.php';
@@ -24,9 +24,19 @@ abstract class CMEQuizPage extends SiteDBEditPage
 	// {{{ protected properties
 
 	/**
-	 * @var CMECredit
+	 * @var CMECreditWrapper
 	 */
-	protected $credit;
+	protected $credits;
+
+	/**
+	 * @var CMEAccountCMEProgress
+	 */
+	protected $progress;
+
+	/**
+	 * @var CMEFrontMatter
+	 */
+	protected $front_matter;
 
 	/**
 	 * @var InquisitionInquisition
@@ -72,7 +82,7 @@ abstract class CMEQuizPage extends SiteDBEditPage
 
 	protected function getCacheKey()
 	{
-		return 'cme-quiz-page-'.$this->credit->id;
+		return 'cme-quiz-page-'.$this->progress->id;
 	}
 
 	// }}}
@@ -81,7 +91,7 @@ abstract class CMEQuizPage extends SiteDBEditPage
 	protected function getArgumentMap()
 	{
 		return array(
-			'credit' => array(0, null),
+			'credits' => array(0, null),
 		);
 	}
 
@@ -104,7 +114,9 @@ abstract class CMEQuizPage extends SiteDBEditPage
 	{
 		parent::initInternal();
 
-		$this->initCredit();
+		$this->initCredits();
+		$this->initFrontMatter();
+		$this->initProgress();
 		$this->initQuiz();
 
 		// if there is no quiz, go to evaluation page
@@ -128,35 +140,121 @@ abstract class CMEQuizPage extends SiteDBEditPage
 	}
 
 	// }}}
-	// {{{ protected function initCredit()
+	// {{{ protected function initCredits()
 
-	protected function initCredit()
+	protected function initCredits()
 	{
-		$credit_id = $this->getArgument('credit');
+		$ids = array();
+		foreach (explode('-', $this->getArgument('credits')) as $id) {
+			if ($id != '') {
+				$ids[] = $this->app->db->quote($id, 'integer');
+			}
+		}
+
+		if (count($ids) === 0) {
+			throw new SiteNotFoundException('A CME credit must be provided.');
+		}
 
 		$sql = sprintf(
 			'select CMECredit.* from CMECredit
 				inner join CMEFrontMatter
 					on CMECredit.front_matter = CMEFrontMatter.id
-			where CMECredit.id = %s and CMEFrontMatter.enabled = %s',
-			$this->app->db->quote($credit_id, 'integer'),
+			where CMECredit.id in (%s) and CMEFrontMatter.enabled = %s',
+			implode(',', $ids),
 			$this->app->db->quote(true, 'boolean')
 		);
 
-		$this->credit = SwatDB::query(
+		$this->credits = SwatDB::query(
 			$this->app->db,
 			$sql,
 			SwatDBClassMap::get('CMECreditWrapper')
-		)->getFirst();
+		);
 
-		if (!$this->credit instanceof CMECredit) {
+		if (count($this->credits) === 0) {
 			throw new SiteNotFoundException(
-				sprintf(
-					'CME credit %s not found.',
-					$credit_id
-				)
+				'No CME credits found for the ids provided.'
 			);
 		}
+	}
+
+	// }}}
+	// {{{ protected function initFrontMatter()
+
+	protected function initFrontMatter()
+	{
+		$this->front_matter = $this->credits->getFirst()->front_matter;
+	}
+
+	// }}}
+	// {{{ protected function initProgress()
+
+	protected function initProgress()
+	{
+		$account = $this->app->session->account;
+
+		$progress = $this->getProgress();
+
+		if (!$progress instanceof CMEAccountCMEProgress) {
+			$progress = new CMEAccountCMEProgress();
+			$progress->setDatabase($this->app->db);
+			$progress->account = $account;
+			$progress->save();
+
+			foreach ($this->credits as $credit) {
+				$sql = sprintf(
+					'insert into AccountCMEProgressCreditBinding
+						(progress, credit)
+					values
+						(%s, %s)',
+					$this->app->db->quote($progress->id, 'integer'),
+					$this->app->db->quote($credit->id, 'integer')
+				);
+
+				SwatDB::exec($this->app->db, $sql);
+			}
+		}
+
+		$this->progress = $progress;
+	}
+
+	// }}}
+	// {{{ protected function getProgress()
+
+	protected function getProgress()
+	{
+		$first_run = true;
+		$progress1 = null;
+
+		foreach ($this->credits as $credit) {
+			$progress2 = $this->app->session->account->getCMEProgress($credit);
+
+			if ($first_run) {
+				$first_run = false;
+
+				$progress1 = $progress2;
+			}
+
+			$same_object = (
+				$progress1 instanceof CMEAccountCMEProgress &&
+				$progress2 instanceof CMEAccountCMEProgress &&
+				$progress1->id === $progress2->id
+			);
+
+			$both_null = (
+				!$progress1 instanceof CMEAccountCMEProgress &&
+				!$progress2 instanceof CMEAccountCMEProgress
+			);
+
+			if ($same_object || $both_null) {
+				$progress1 = $progress2;
+			} else {
+				throw new SiteNotFoundException(
+					'CME credits do not share the same progress.'
+				);
+			}
+		}
+
+		return $progress1;
 	}
 
 	// }}}
@@ -167,7 +265,12 @@ abstract class CMEQuizPage extends SiteDBEditPage
 		$this->quiz = $this->app->getCacheValue($this->getCacheKey());
 
 		if ($this->quiz === false) {
-			$this->quiz = $this->credit->quiz;
+			if (!$this->progress->quiz instanceof CMEQuiz) {
+				$this->progress->quiz = $this->generateQuiz();
+				$this->progress->save();
+			}
+
+			$this->quiz = $this->progress->quiz;
 
 			if (!$this->quiz instanceof CMEQuiz) {
 				throw new SiteNotFoundException(
@@ -205,6 +308,51 @@ abstract class CMEQuizPage extends SiteDBEditPage
 			$this->addCacheValue($this->quiz, $this->getCacheKey());
 		} else {
 			$this->quiz->setDatabase($this->app->db);
+		}
+	}
+
+	// }}}
+	// {{{ protected function generateQuiz()
+
+	protected function generateQuiz()
+	{
+		$class_name = SwatDBClassMap::get('CMEQuiz');
+
+		$quiz = new $class_name();
+		$quiz->setDatabase($this->app->db);
+
+		$quiz->createdate = new SwatDate();
+		$quiz->createdate->toUTC();
+		$quiz->save();
+
+		$this->generateQuizQuestions($quiz);
+
+		return $quiz;
+	}
+
+	// }}}
+	// {{{ protected function generateQuizQuestions()
+
+	protected function generateQuizQuestions(CMEQuiz $quiz)
+	{
+		$count = 0;
+
+		foreach ($this->credits as $credit) {
+			if ($credit->quiz instanceof CMEQuiz) {
+				foreach ($credit->quiz->question_bindings as $binding) {
+					$sql = sprintf(
+						'insert into InquisitionInquisitionQuestionBinding
+						(inquisition, question, displayorder) values
+						(%s, %s, %s)',
+						$this->app->db->quote($quiz->id, 'integer'),
+						$this->app->db->quote($binding->question->id, 'integer'),
+						$this->app->db->quote($count, 'integer')
+					);
+
+					SwatDB::exec($this->app->db, $sql);
+					$count++;
+				}
+			}
 		}
 	}
 
@@ -341,7 +489,7 @@ abstract class CMEQuizPage extends SiteDBEditPage
 	protected function saveQuizData(SwatForm $form)
 	{
 		if (!$this->response instanceof InquisitionResponse) {
-			$class_name = SwatDBClassMap::get('InquisitionResponse');
+			$class_name = SwatDBClassMap::get('CMEQuizResponse');
 			$this->response = new $class_name();
 
 			$this->response->account     = $this->app->session->account->id;
@@ -392,29 +540,35 @@ abstract class CMEQuizPage extends SiteDBEditPage
 	protected function saveEarnedCredit()
 	{
 		$account = $this->app->session->account;
-		if ($this->credit->isEarned($account)) {
-			// check for existing earned credit before saving
-			$sql = sprintf(
-				'select count(1)
-				from AccountEarnedCMECredit
-				where credit = %s and account = %s',
-				$this->app->db->quote($this->credit->id, 'integer'),
-				$this->app->db->quote($account->id, 'integer')
-			);
 
-			if (SwatDB::queryOne($this->app->db, $sql) == 0) {
-				$earned_date = new SwatDate();
-				$earned_date->toUTC();
+		foreach ($this->credits as $credit) {
+			if ($credit->isEarned($account)) {
+				// check for existing earned credit before saving
+				$sql = sprintf(
+					'select count(1)
+					from AccountEarnedCMECredit
+					where credit = %s and account = %s',
+					$this->app->db->quote($credit->id, 'integer'),
+					$this->app->db->quote($account->id, 'integer')
+				);
 
-				$class_name = SwatDBClassMap::get('CMEAccountEarnedCMECredit');
-				$earned_credit = new $class_name();
-				$earned_credit->setDatabase($this->app->db);
+				if (SwatDB::queryOne($this->app->db, $sql) == 0) {
+					$earned_date = new SwatDate();
+					$earned_date->toUTC();
 
-				$earned_credit->account = $account->id;
-				$earned_credit->credit = $this->credit->id;
-				$earned_credit->earned_date = $earned_date;
+					$class_name = SwatDBClassMap::get(
+						'CMEAccountEarnedCMECredit'
+					);
 
-				$earned_credit->save();
+					$earned_credit = new $class_name();
+					$earned_credit->setDatabase($this->app->db);
+
+					$earned_credit->account = $account->id;
+					$earned_credit->credit = $this->credit->id;
+					$earned_credit->earned_date = $earned_date;
+
+					$earned_credit->save();
+				}
 			}
 		}
 	}
@@ -427,7 +581,7 @@ abstract class CMEQuizPage extends SiteDBEditPage
 		// response can be null when refreshing the quiz page immediately after
 		// resetting a quiz, or resetting it in another window, and attempting
 		// to reset a second time.
-		if (!$this->credit->resettable ||
+		if (!$this->front_matter->resettable ||
 			!$this->response instanceof InquisitionResponse) {
 			return;
 		}
@@ -455,7 +609,7 @@ abstract class CMEQuizPage extends SiteDBEditPage
 			$message = new $class_name(
 				$this->app,
 				$this->app->session->account,
-				$this->credit,
+				$this->front_matter,
 				$this->response
 			);
 			$message->send();
@@ -528,7 +682,9 @@ abstract class CMEQuizPage extends SiteDBEditPage
 		$this->buildQuizResponseMessages();
 
 		// answers
-		if ($this->credit->resettable && !$this->response->isPassed()) {
+		if ($this->front_matter->resettable &&
+			!$this->response->isPassed()) {
+
 			$this->ui->getWidget('reset_form')->visible = true;
 		} else {
 			ob_start();
@@ -583,7 +739,7 @@ abstract class CMEQuizPage extends SiteDBEditPage
 			)
 		);
 
-		if (!$this->credit->resettable) {
+		if (!$this->front_matter->resettable) {
 			echo ' ';
 			echo SwatString::minimizeEntities(
 				CME::_(
@@ -597,7 +753,7 @@ abstract class CMEQuizPage extends SiteDBEditPage
 		if ($this->response->isPassed()) {
 
 			$account = $this->app->session->account;
-			if ($account->isEvaluationComplete($this->credit->front_matter)) {
+			if ($account->isEvaluationComplete($this->credits->getFirst())) {
 				echo '<p>';
 				echo SwatString::minimizeEntities(
 					CME::_('You’ve already completed the evaluation.')
@@ -629,7 +785,7 @@ abstract class CMEQuizPage extends SiteDBEditPage
 						'credit.'
 					),
 					$locale->formatNumber(
-						$this->credit->passing_grade * 100
+						$this->front_matter->passing_grade * 100
 					)
 				)
 			);
@@ -662,7 +818,7 @@ abstract class CMEQuizPage extends SiteDBEditPage
 
 		$grade_span = new SwatHtmlTag('span');
 		$grade_span->setContent(
-			$locale->formatNumber($this->credit->passing_grade * 100).'%'
+			$locale->formatNumber($this->front_matter->passing_grade * 100).'%'
 		);
 
 		printf(
@@ -726,7 +882,7 @@ abstract class CMEQuizPage extends SiteDBEditPage
 		$this->layout->data->title = sprintf(
 			CME::_('%s Quiz'),
 			SwatString::minimizeEntities(
-				$this->credit->front_matter->provider->title
+				$this->front_matter->getProviderTitleList()
 			)
 		);
 	}
