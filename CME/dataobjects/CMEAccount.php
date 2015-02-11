@@ -121,6 +121,24 @@ abstract class CMEAccount extends StoreAccount
 	}
 
 	// }}}
+	// {{{ public function getEarnedCMECreditHoursByProvider()
+
+	public function getEarnedCMECreditHoursByProvider(CMEProvider $provider)
+	{
+		$hours = 0;
+
+		foreach ($this->earned_cme_credits as $earned_credit) {
+			$cme_providers = $earned_credit->credit->front_matter->providers;
+			$cme_provider = $providers->getByIndex($provider->id);
+			if ($cme_provider instanceof CMEProvider) {
+				$hours += $earned_credit->credit->hours;
+			}
+		}
+
+		return $hours;
+	}
+
+	// }}}
 	// {{{ public function getEnabledEarnedCMECreditHours()
 
 	public function getEnabledEarnedCMECreditHours(SwatDate $start_date = null,
