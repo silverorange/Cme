@@ -6,7 +6,6 @@ require_once 'Inquisition/dataobjects/InquisitionResponse.php';
 require_once 'Inquisition/dataobjects/InquisitionResponseWrapper.php';
 require_once 'Inquisition/dataobjects/InquisitionInquisitionWrapper.php';
 require_once 'Inquisition/dataobjects/InquisitionInquisition.php';
-require_once 'CME/dataobjects/CMECredit.php';
 require_once 'CME/dataobjects/CMEQuiz.php';
 require_once 'CME/dataobjects/CMEQuizResponse.php';
 require_once 'CME/dataobjects/CMECreditWrapper.php';
@@ -37,7 +36,7 @@ class CMEQuizResponseServer extends SiteArticlePage
 	protected function getArgumentMap()
 	{
 		return array(
-			'credit' => array(0, null),
+			'credits' => array(0, null),
 		);
 	}
 
@@ -72,12 +71,7 @@ class CMEQuizResponseServer extends SiteArticlePage
 
 			$account = $this->app->session->account;
 
-			$credit = $this->getCredit();
-			if (!$credit instanceof CMECredit) {
-				return $this->getErrorResponse('CME credit not found.');
-			}
-
-			$quiz = $this->getQuiz($credit);
+			$quiz = $this->getQuiz($this->getProgress($this->getCredits()));
 			if (!$quiz instanceof CMEQuiz) {
 				return $this->getErrorResponse('Quiz not found.');
 			}
@@ -171,39 +165,88 @@ class CMEQuizResponseServer extends SiteArticlePage
 	}
 
 	// }}}
-	// {{{ protected function getCredit()
+	// {{{ protected function getCredits()
 
-	protected function getCredit()
+	protected function getCredits()
 	{
-		$credit_id = $this->getArgument('credit');
+		$ids = array();
+		foreach (explode('-', $this->getArgument('credits')) as $id) {
+			if ($id != '') {
+				$ids[] = $this->app->db->quote($id, 'integer');
+			}
+		}
+
+		if (count($ids) === 0) {
+			throw new SiteNotFoundException('A CME credit must be provided.');
+		}
 
 		$sql = sprintf(
 			'select CMECredit.* from CMECredit
 				inner join CMEFrontMatter
 					on CMECredit.front_matter = CMEFrontMatter.id
-			where CMECredit.id = %s and CMEFrontMatter.enabled = %s',
-			$this->app->db->quote($credit_id, 'integer'),
+			where CMECredit.id in (%s) and CMEFrontMatter.enabled = %s',
+			implode(',', $ids),
 			$this->app->db->quote(true, 'boolean')
 		);
 
-		return SwatDB::query(
+		$credits = SwatDB::query(
 			$this->app->db,
 			$sql,
 			SwatDBClassMap::get('CMECreditWrapper')
-		)->getFirst();
+		);
+
+		if (count($credits) === 0) {
+			throw new SiteNotFoundException(
+				'No CME credits found for the ids provided.'
+			);
+		}
+
+		return $credits;
+	}
+
+	// }}}
+	// {{{ protected function getProgress()
+
+	protected function getProgress(CMECreditWrapper $credits)
+	{
+		$first_run = true;
+		$progress1 = null;
+
+		foreach ($credits as $credit) {
+			$progress2 = $this->app->session->account->getCMEProgress($credit);
+
+			if ($first_run) {
+				$first_run = false;
+
+				$progress1 = $progress2;
+			}
+
+			if ($progress1 instanceof CMEAccountCMEProgress &&
+				$progress2 instanceof CMEAccountCMEProgress &&
+				$progress1->id === $progress2->id) {
+
+				$progress1 = $progress2;
+			} else {
+				throw new SiteNotFoundException(
+					'CME credits do not share the same progress.'
+				);
+			}
+		}
+
+		return $progress1;
 	}
 
 	// }}}
 	// {{{ protected function getQuiz()
 
-	protected function getQuiz(CMECredit $credit)
+	protected function getQuiz(CMEAccountCMEProgress $progress)
 	{
 		$quiz = $this->app->getCacheValue(
-			$this->getCacheKey($credit)
+			$this->getCacheKey($progress)
 		);
 
 		if ($quiz === false) {
-			$quiz = $credit->quiz;
+			$quiz = $progress->quiz;
 		} else {
 			$quiz->setDatabase($this->app->db);
 		}
@@ -330,9 +373,9 @@ class CMEQuizResponseServer extends SiteArticlePage
 	// }}}
 	// {{{ protected function getCacheKey()
 
-	protected function getCacheKey(CMECredit $credit)
+	protected function getCacheKey(CMEAccountCMEProgress $progress)
 	{
-		return 'cme-quiz-page-'.$credit->id;
+		return 'cme-quiz-page-'.$progress->id;
 	}
 
 	// }}}
