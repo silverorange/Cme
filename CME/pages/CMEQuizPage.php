@@ -195,7 +195,9 @@ abstract class CMEQuizPage extends SiteDBEditPage
 		$progress = $this->getProgress();
 
 		if (!$progress instanceof CMEAccountCMEProgress) {
-			$progress = new CMEAccountCMEProgress();
+			$class_name = SwatDBClassMap::get('CMEAccountCMEProgress');
+
+			$progress = new $class_name();
 			$progress->setDatabase($this->app->db);
 			$progress->account = $account;
 			$progress->save();
