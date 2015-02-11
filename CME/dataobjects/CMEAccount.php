@@ -129,7 +129,7 @@ abstract class CMEAccount extends StoreAccount
 
 		foreach ($this->earned_cme_credits as $earned_credit) {
 			$cme_providers = $earned_credit->credit->front_matter->providers;
-			$cme_provider = $providers->getByIndex($provider->id);
+			$cme_provider = $cme_providers->getByIndex($provider->id);
 			if ($cme_provider instanceof CMEProvider) {
 				$hours += $earned_credit->credit->hours;
 			}
