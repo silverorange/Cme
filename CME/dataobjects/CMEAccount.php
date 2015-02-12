@@ -121,6 +121,24 @@ abstract class CMEAccount extends StoreAccount
 	}
 
 	// }}}
+	// {{{ public function getEarnedCMECreditHoursByProvider()
+
+	public function getEarnedCMECreditHoursByProvider(CMEProvider $provider)
+	{
+		$hours = 0;
+
+		foreach ($this->earned_cme_credits as $earned_credit) {
+			$cme_providers = $earned_credit->credit->front_matter->providers;
+			$cme_provider = $cme_providers->getByIndex($provider->id);
+			if ($cme_provider instanceof CMEProvider) {
+				$hours += $earned_credit->credit->hours;
+			}
+		}
+
+		return $hours;
+	}
+
+	// }}}
 	// {{{ public function getEnabledEarnedCMECreditHours()
 
 	public function getEnabledEarnedCMECreditHours(SwatDate $start_date = null,
@@ -158,7 +176,7 @@ abstract class CMEAccount extends StoreAccount
 						select credit from AccountEarnedCMECredit
 						where account = %s
 					)
-				order by CMEFrontMatter.provider, CMECredit.displayorder',
+				order by CMEFrontMatter.id, CMECredit.displayorder',
 				$this->db->quote(true, 'boolean'),
 				$this->db->quote($this->id, 'integer')
 			);
@@ -281,12 +299,7 @@ abstract class CMEAccount extends StoreAccount
 				SwatDBClassMap::get('CMEFrontMatterWrapper')
 			);
 
-			$providers = $front_matters->loadAllSubDataObjects(
-				'provider',
-				$this->db,
-				'select * from CMEProvider where id in(%s)',
-				SwatDBClassMap::get('CMEProviderWrapper')
-			);
+			$front_matters->loadProviders();
 		}
 
 		return $earned_credits;
@@ -310,7 +323,7 @@ abstract class CMEAccount extends StoreAccount
 						AccountAttestedCMEFrontMatter.front_matter and
 						account = %s
 			where CMECredit.hours > 0
-			order by CMEFrontMatter.provider, CMECredit.displayorder',
+			order by CMEFrontMatter.id, CMECredit.displayorder',
 			$this->db->quote($this->id, 'integer')
 		);
 
