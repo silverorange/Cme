@@ -299,12 +299,7 @@ abstract class CMEAccount extends StoreAccount
 				SwatDBClassMap::get('CMEFrontMatterWrapper')
 			);
 
-			$providers = $front_matters->loadAllSubDataObjects(
-				'provider',
-				$this->db,
-				'select * from CMEProvider where id in(%s)',
-				SwatDBClassMap::get('CMEProviderWrapper')
-			);
+			$front_matters->loadProviders();
 		}
 
 		return $earned_credits;
