@@ -257,18 +257,18 @@ abstract class CMEEvaluationPage extends SiteDBEditPage
 		$this->evaluation = $this->app->getCacheValue($this->getCacheKey());
 
 		if ($this->evaluation === false) {
-			if (!$this->progress->evaluation instanceof CMEEvaluation) {
-				$this->progress->evaluation = $this->front_matter->evaluation;
-				$this->progress->save();
-			}
-
-			$this->evaluation = $this->front_matter->evaluation;
-
-			if (!$this->evaluation instanceof CMEEvaluation) {
+			if (!$this->front_matter->evaluation instanceof CMEEvaluation) {
 				throw new SiteNotFoundException(
 					'Evaluation not found for CME front matter.'
 				);
 			}
+
+			if (!$this->progress->evaluation instanceof CMEEvaluation) {
+				$this->progress->evaluation = $this->generateEvaluation();
+				$this->progress->save();
+			}
+
+			$this->evaluation = $this->progress->evaluation;
 
 			// efficiently load questions
 			$bindings = $this->evaluation->visible_question_bindings;
@@ -295,6 +295,46 @@ abstract class CMEEvaluationPage extends SiteDBEditPage
 		} else {
 			$this->evaluation->setDatabase($this->app->db);
 		}
+	}
+
+	// }}}
+	// {{{ protected function generateEvaluation()
+
+	protected function generateEvaluation()
+	{
+		$class_name = SwatDBClassMap::get('CMEEvaluation');
+
+		$evaluation = new $class_name();
+		$evaluation->setDatabase($this->app->db);
+
+		$evaluation->createdate = new SwatDate();
+		$evaluation->createdate->toUTC();
+		$evaluation->save();
+
+		$this->generateEvaluationQuestions($evaluation);
+
+		return $evaluation;
+	}
+
+	// }}}
+	// {{{ protected function generateEvaluationQuestions()
+
+	protected function generateEvaluationQuestions(CMEEvaluation $evaluation)
+	{
+		$sql = sprintf(
+			'insert into InquisitionInquisitionQuestionBinding
+			(inquisition, question, displayorder)
+			select %s, question, displayorder
+			from InquisitionInquisitionQuestionBinding
+			where inquisition = %s',
+			$this->app->db->quote($evaluation->id, 'integer'),
+			$this->app->db->quote(
+				$this->front_matter->evaluation->id,
+				'integer'
+			)
+		);
+
+		SwatDB::exec($this->app->db, $sql);
 	}
 
 	// }}}
