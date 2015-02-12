@@ -176,7 +176,7 @@ abstract class CMEAccount extends StoreAccount
 						select credit from AccountEarnedCMECredit
 						where account = %s
 					)
-				order by CMEFrontMatter.provider, CMECredit.displayorder',
+				order by CMEFrontMatter.id, CMECredit.displayorder',
 				$this->db->quote(true, 'boolean'),
 				$this->db->quote($this->id, 'integer')
 			);
@@ -328,7 +328,7 @@ abstract class CMEAccount extends StoreAccount
 						AccountAttestedCMEFrontMatter.front_matter and
 						account = %s
 			where CMECredit.hours > 0
-			order by CMEFrontMatter.provider, CMECredit.displayorder',
+			order by CMEFrontMatter.id, CMECredit.displayorder',
 			$this->db->quote($this->id, 'integer')
 		);
 
