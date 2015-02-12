@@ -58,13 +58,16 @@ class CMEQuizResponse extends InquisitionResponse
 
 	public function isPassed()
 	{
-		return ($this->getGrade() >= $this->getCredit()->passing_grade);
+		return (
+			$this->getGrade() >=
+			$this->getCredits()->getFirst()->front_matter->passing_grade
+		);
 	}
 
 	// }}}
-	// {{{ public function getCredit()
+	// {{{ public function getCredits()
 
-	public function getCredit()
+	public function getCredits()
 	{
 		require_once 'CME/dataobjects/CMECreditWrapper.php';
 
@@ -73,7 +76,13 @@ class CMEQuizResponse extends InquisitionResponse
 		$inquisition_id = $this->getInternalValue('inquisition');
 
 		$sql = sprintf(
-			'select * from CMECredit where quiz = %s',
+			'select CMECredit.* from CMECredit
+				inner join AccountCMEProgressCreditBinding on
+					AccountCMEProgressCreditBinding.credit = CMECredit.id
+				inner join AccountCMEProgress on
+					AccountCMEProgress.id =
+					AccountCMEProgressCreditBinding.progress
+			where AccountCMEProgress.quiz = %s',
 			$this->db->quote($inquisition_id, 'integer')
 		);
 
@@ -81,7 +90,7 @@ class CMEQuizResponse extends InquisitionResponse
 			$this->db,
 			$sql,
 			SwatDBClassMap::get('CMECreditWrapper')
-		)->getFirst();
+		);
 	}
 
 	// }}}
