@@ -155,7 +155,8 @@ abstract class CMEAccount extends StoreAccount
 		$hours = 0;
 
 		foreach ($this->earned_cme_credits as $earned_credit) {
-			if ($earned_credit->credit->front_matter->id == $front_matter->id) {
+			$credit = $earned_credit->credit;
+			if ($credit->front_matter->id === $front_matter->id) {
 				$hours += $earned_credit->credit->hours;
 			}
 		}
