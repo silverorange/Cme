@@ -53,6 +53,38 @@ abstract class CMEFrontMatter extends SwatDBDataObject
 	 */
 	public $enabled;
 
+	/**
+	 * @var integer
+	 */
+	public $passing_grade;
+
+	/**
+	 * @var string
+	 */
+	public $email_content_pass;
+
+	/**
+	 * @var string
+	 */
+	public $email_content_fail;
+
+	/**
+	 * @var boolean
+	 */
+	public $resettable;
+
+	// }}}
+	// {{{ public function getProviderTitleList()
+
+	public function getProviderTitleList()
+	{
+		$titles = array();
+		foreach ($this->providers as $provider) {
+			$titles[] = $provider->title;
+		}
+		return SwatString::toList($titles);
+	}
+
 	// }}}
 	// {{{ abstract protected function getAttestationLink()
 
@@ -70,11 +102,6 @@ abstract class CMEFrontMatter extends SwatDBDataObject
 	{
 		$this->table = 'CMEFrontMatter';
 		$this->id_field = 'integer:id';
-
-		$this->registerInternalProperty(
-			'provider',
-			SwatDBClassMap::get('CMEProvider')
-		);
 
 		$this->registerInternalProperty(
 			'evaluation',
@@ -101,6 +128,30 @@ abstract class CMEFrontMatter extends SwatDBDataObject
 			$this->db,
 			$sql,
 			SwatDBClassMap::get('CMECreditWrapper')
+		);
+	}
+
+	// }}}
+	// {{{ protected function loadProviders()
+
+	protected function loadProviders()
+	{
+		require_once 'CME/dataobjects/CMEProviderWrapper.php';
+
+		$sql = sprintf(
+			'select CMEProvider.*
+			from CMEProvider
+			inner join CMEFrontMatterProviderBinding on
+				CMEFrontMatterProviderBinding.provider = CMEProvider.id
+			where CMEFrontMatterProviderBinding.front_matter = %s
+			order by CMEProvider.id',
+			$this->db->quote($this->id, 'integer')
+		);
+
+		return SwatDB::query(
+			$this->db,
+			$sql,
+			SwatDBClassMap::get('CMEProviderWrapper')
 		);
 	}
 

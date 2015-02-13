@@ -24,17 +24,6 @@ class CMECreditDetails extends InquisitionInquisitionDetails
 	}
 
 	// }}}
-	// {{{ protected function getTitle()
-
-	protected function getTitle()
-	{
-		return sprintf(
-			CME::_('%s Credit'),
-			$this->credit->front_matter->provider->title
-		);
-	}
-
-	// }}}
 
 	// init phase
 	// {{{ protected function initInternal()
@@ -57,8 +46,13 @@ class CMECreditDetails extends InquisitionInquisitionDetails
 		$local_ui = new SwatUI();
 		$local_ui->loadFromXML($this->getCreditDetailsViewXml());
 
+		$provider_titles = array();
+		foreach ($this->credit->front_matter->providers as $provider) {
+			$provider_titles[] = $provider->credit_title_plural;
+		}
+
 		$local_ui->getWidget('details_view')->getField('hour')->title =
-			$this->credit->front_matter->provider->credit_title_plural;
+			SwatString::toList($provider_titles);
 
 		$view = $this->ui->getWidget('details_view');
 		foreach ($local_ui->getWidget('details_view')->getFields() as $field) {
@@ -124,7 +118,8 @@ class CMECreditDetails extends InquisitionInquisitionDetails
 	{
 		parent::buildInternal();
 
-		$this->ui->getWidget('details_frame')->title = $this->getTitle();
+		$this->ui->getWidget('details_frame')->title =
+			$this->credit->getTitle();
 
 		$view = $this->ui->getWidget('details_view');
 		$view->getField('title')->visible = false;
@@ -157,7 +152,7 @@ class CMECreditDetails extends InquisitionInquisitionDetails
 		parent::buildNavBar();
 
 		$this->navbar->popEntry();
-		$this->navbar->createEntry($this->getTitle());
+		$this->navbar->createEntry($this->credit->getTitle());
 	}
 
 	// }}}
@@ -166,18 +161,7 @@ class CMECreditDetails extends InquisitionInquisitionDetails
 	protected function getDetailsStore(InquisitionInquisition $inquisition)
 	{
 		$ds = parent::getDetailsStore($inquisition);
-
-		$ds->resettable    = $this->credit->resettable;
-		$ds->passing_grade = $this->credit->passing_grade;
-		$ds->hours         = $this->credit->hours;
-
-		$ds->email_content_pass = SwatString::condense(
-			$this->credit->email_content_pass
-		);
-		$ds->email_content_fail = SwatString::condense(
-			$this->credit->email_content_fail
-		);
-
+		$ds->hours = $this->credit->hours;
 		return $ds;
 	}
 

@@ -76,7 +76,7 @@ class CMECreditDelete extends AdminDBDelete
 			$data->id = $credit->id;
 			$data->status_level = AdminDependency::DELETE;
 			$data->parent = null;
-			$data->title = $this->getCreditTitle($credit);
+			$data->title = $credit->getTitle();
 			$dep->entries[] = new AdminDependencyEntry($data);
 		}
 
@@ -88,17 +88,6 @@ class CMECreditDelete extends AdminDBDelete
 			$this->switchToCancelButton();
 		}
 
-	}
-
-	// }}}
-	// {{{ protected function getCreditTitle()
-
-	protected function getCreditTitle(CMECredit $credit)
-	{
-		return sprintf(
-			CME::_('%s Credit'),
-			$credit->front_matter->provider->title
-		);
 	}
 
 	// }}}

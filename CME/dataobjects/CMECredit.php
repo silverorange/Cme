@@ -1,6 +1,7 @@
 <?php
 
 require_once 'SwatDB/SwatDBDataObject.php';
+require_once 'Inquisition/dataobjects/InquisitionInquisition.php';
 require_once 'CME/dataobjects/CMEQuiz.php';
 require_once 'CME/dataobjects/CMEFrontMatter.php';
 
@@ -24,29 +25,14 @@ abstract class CMECredit extends SwatDBDataObject
 	public $hours;
 
 	/**
-	 * @var integer
-	 */
-	public $passing_grade;
-
-	/**
-	 * @var string
-	 */
-	public $email_content_pass;
-
-	/**
-	 * @var string
-	 */
-	public $email_content_fail;
-
-	/**
 	 * @var boolean
 	 */
-	public $resettable;
+	public $is_free;
 
 	// }}}
-	// {{{ protected function getFormattedHours()
+	// {{{ public static function formatCreditHours()
 
-	public function getFormattedHours()
+	public static function formatCreditHours($hours)
 	{
 		$locale  = SwatI18NLocale::get();
 
@@ -59,13 +45,21 @@ abstract class CMECredit extends SwatDBDataObject
 		// 4.50 -> 4.5
 		// 4.25 -> 4.25
 		$decimal_places = (
-			strlen(substr(strrchr($this->hours, "."), 1)) === 2 &&
-			substr($this->hours, -1) !== '0'
+			strlen(substr(strrchr($hours, "."), 1)) === 2 &&
+			substr($hours, -1) !== '0'
 			)
 			? 2
 			: 1;
 
-		return $locale->formatNumber($this->hours, $decimal_places);
+		return $locale->formatNumber($hours, $decimal_places);
+	}
+
+	// }}}
+	// {{{ public function getFormattedHours()
+
+	public function getFormattedHours()
+	{
+		return static::formatCreditHours($this->hours);
 	}
 
 	// }}}
@@ -81,8 +75,19 @@ abstract class CMECredit extends SwatDBDataObject
 				$account->isQuizPassed($this)
 			) && (
 				!$this->front_matter->evaluation instanceof CMEEvaluation ||
-				$account->isEvaluationComplete($this->front_matter)
+				$account->isEvaluationComplete($this)
 			);
+	}
+
+	// }}}
+	// {{{ public function getTitle()
+
+	public function getTitle()
+	{
+		return sprintf(
+			CME::_('%s CME Credit'),
+			$this->front_matter->getProviderTitleList()
+		);
 	}
 
 	// }}}

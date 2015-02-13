@@ -26,19 +26,9 @@ abstract class CMECreditEdit extends InquisitionInquisitionEdit
 	protected $credit;
 
 	/**
-	 * @var CMEFrontMatter
-	 */
-	protected $front_matter;
-
-	/**
 	 * @var integer
 	 */
 	protected $new_question_count;
-
-	// }}}
-	// {{{ abstract protected function getTitle()
-
-	abstract protected function getTitle();
 
 	// }}}
 	// {{{ protected function getUiXml()
@@ -64,7 +54,7 @@ abstract class CMECreditEdit extends InquisitionInquisitionEdit
 		$this->ui->loadFromXML($this->getUiXml());
 
 		// hide question import field when editing an existing credit
-		if ($this->inquisition->id !== null) {
+		if ($this->credit->quiz instanceof CMEQuiz) {
 			$this->ui->getWidget('questions_field')->visible = false;
 		}
 
@@ -103,6 +93,9 @@ abstract class CMECreditEdit extends InquisitionInquisitionEdit
 					)
 				);
 			}
+		} else {
+			$this->credit->is_free =
+				($this->app->initVar('credit_type') === 'free');
 		}
 	}
 
@@ -114,9 +107,9 @@ abstract class CMECreditEdit extends InquisitionInquisitionEdit
 		if ($this->isNew()) {
 			$front_matter_id = SiteApplication::initVar('front-matter');
 			$class_name = SwatDBClassMap::get('CMEFrontMatter');
-			$this->front_matter = new $class_name();
-			$this->front_matter->setDatabase($this->app->db);
-			if (!$this->front_matter->load($front_matter_id)) {
+			$this->credit->front_matter = new $class_name();
+			$this->credit->front_matter->setDatabase($this->app->db);
+			if (!$this->credit->front_matter->load($front_matter_id)) {
 				throw new AdminNotFoundException(
 					sprintf(
 						'A CME front matter with the id of ‘%s’ does not '.
@@ -125,8 +118,6 @@ abstract class CMECreditEdit extends InquisitionInquisitionEdit
 					)
 				);
 			}
-		} else {
-			$this->front_matter = $this->credit->front_matter;
 		}
 	}
 
@@ -206,21 +197,12 @@ abstract class CMECreditEdit extends InquisitionInquisitionEdit
 		$values = $this->ui->getValues(
 			array(
 				'hours',
-				'passing_grade',
-				'email_content_pass',
-				'email_content_fail',
-				'resettable',
 			)
 		);
 
-		$this->credit->hours              = $values['hours'];
-		$this->credit->passing_grade      = $values['passing_grade'];
-		$this->credit->email_content_pass = $values['email_content_pass'];
-		$this->credit->email_content_fail = $values['email_content_fail'];
-		$this->credit->resettable         = $values['resettable'];
-
+		$this->credit->hours = $values['hours'];
 		$this->credit->quiz = $this->inquisition;
-		$this->credit->front_matter = $this->front_matter->id;
+		$this->credit->front_matter = $this->credit->front_matter->id;
 
 		// if hours updated, clear all cached hours for accounts
 		if (!$this->isNew() &&
@@ -236,9 +218,8 @@ abstract class CMECreditEdit extends InquisitionInquisitionEdit
 	{
 		return new SwatMessage(
 			sprintf(
-				CME::_('%s CME Credit for %s has been saved.'),
-				$this->credit->front_matter->provider->title,
-				$this->getTitle()
+				CME::_('%s has been saved.'),
+				$this->credit->getTitle()
 			)
 		);
 	}
@@ -264,9 +245,16 @@ abstract class CMECreditEdit extends InquisitionInquisitionEdit
 	protected function buildInternal()
 	{
 		parent::buildInternal();
-		$this->buildEmailHelp();
+
+		$this->ui->getWidget('edit_frame')->title = $this->credit->getTitle();
+
+		$provider_titles = array();
+		foreach ($this->credit->front_matter->providers as $provider) {
+			$provider_titles[] = $provider->credit_title_plural;
+		}
+
 		$this->ui->getWidget('hours_field')->title =
-			$this->front_matter->provider->credit_title_plural;
+			SwatString::toList($provider_titles);
 	}
 
 	// }}}
@@ -278,11 +266,16 @@ abstract class CMECreditEdit extends InquisitionInquisitionEdit
 
 		$this->navbar->popEntry();
 
-		if ($this->isNew()) {
-			$this->navbar->createEntry(CME::_('New CME Credit'));
-		} else {
-			$this->navbar->createEntry(CME::_('Edit CME Credit'));
-		}
+		$title = $this->isNew()
+			? CME::_('New %s')
+			: CME::_('Edit %s');
+
+		$this->navbar->createEntry(
+			sprintf(
+				$title,
+				$this->credit->getTitle()
+			)
+		);
 	}
 
 	// }}}
@@ -295,7 +288,7 @@ abstract class CMECreditEdit extends InquisitionInquisitionEdit
 		if ($this->isNew()) {
 			$this->ui->getWidget('edit_form')->addHiddenField(
 				'front-matter',
-				$this->front_matter->id
+				$this->credit->front_matter->id
 			);
 		}
 	}
@@ -308,92 +301,6 @@ abstract class CMECreditEdit extends InquisitionInquisitionEdit
 		parent::loadDBData();
 
 		$this->ui->setValues(get_object_vars($this->credit));
-	}
-
-	// }}}
-	// {{{ protected function buildEmailHelp()
-
-	protected function buildEmailHelp()
-	{
-		$help = $this->ui->getWidget('email_help_text');
-
-		ob_start();
-
-		$p_tag = new SwatHtmlTag('p');
-		$p_tag->setContent(
-			CME::_(
-				'The following variables may be used in email content:'
-			)
-		);
-		$p_tag->display();
-
-		echo '<table><tbody>';
-
-		$definitions = $this->getEmailHelpVariableDefinitions();
-		$keys = array_keys($definitions);
-		$half_index = ceil(count($definitions) / 2);
-		for ($i = 0; $i < $half_index; $i++) {
-			echo '<tr>';
-
-			$th = new SwatHtmlTag('th');
-			$th->setContent('['.$keys[$i].']');
-			$th->display();
-
-			$td = new SwatHtmlTag('td');
-			$td->setContent($definitions[$keys[$i]]);
-			$td->display();
-
-			if (isset($keys[$i + $half_index])) {
-				$th = new SwatHtmlTag('th');
-				$th->setContent('['.$keys[$i + $half_index].']');
-				$th->display();
-
-				$td = new SwatHtmlTag('td');
-				$td->setContent($definitions[$keys[$i + $half_index]]);
-				$td->display();
-			}
-			echo '</tr>';
-		}
-
-		echo '</tbody></table>';
-
-		$help->content = ob_get_clean();
-		$help->content_type = 'text/xml';
-	}
-
-	// }}}
-	// {{{ protected function getEmailHelpVariableDefinitions()
-
-	protected function getEmailHelpVariableDefinitions()
-	{
-		return array(
-			'account-full-name' => CME::_(
-				'the full name of the user'
-			),
-			'cme-certificate-link' => CME::_(
-				'the link to download the CME certificates'
-			),
-			'quiz-grade' => CME::_(
-				'the grade the user got on the quiz'
-			),
-			'quiz-passing-grade' => CME::_(
-				'the grade required to pass the quiz'
-			),
-		);
-	}
-
-	// }}}
-
-	// finalize phase
-	// {{{ public function finalize()
-
-	public function finalize()
-	{
-		parent::finalize();
-
-		$this->layout->addHtmlHeadEntry(
-			'packages/cme/admin/styles/cme-credit-edit.css'
-		);
 	}
 
 	// }}}

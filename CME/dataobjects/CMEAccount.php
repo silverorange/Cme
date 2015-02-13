@@ -7,6 +7,7 @@ require_once 'CME/dataobjects/CMEEvaluationResponse.php';
 require_once 'CME/dataobjects/CMEFrontMatter.php';
 require_once 'CME/dataobjects/CMEQuiz.php';
 require_once 'CME/dataobjects/CMEQuizResponse.php';
+require_once 'CME/dataobjects/CMEAccountCMEProgress.php';
 
 /**
  * CME specific Account object
@@ -41,16 +42,19 @@ abstract class CMEAccount extends StoreAccount
 	// }}}
 	// {{{ public function isEvaluationComplete()
 
-	public function isEvaluationComplete(CMEFrontMatter $front_matter)
+	public function isEvaluationComplete(CMECredit $credit)
 	{
 		$complete = false;
 
-		$evaluation = $front_matter->evaluation;
-		if ($evaluation instanceof CMEEvaluation) {
-			$evaluation_response = $evaluation->getResponseByAccount($this);
+		$progress = $this->getCMEProgress($credit);
+
+		if ($progress instanceof CMEAccountCMEProgress &&
+			$progress->evaluation instanceof CMEEvaluation) {
+
+			$response = $progress->evaluation->getResponseByAccount($this);
 			$complete = (
-				$evaluation_response instanceof CMEEvaluationResponse &&
-				$evaluation_response->complete_date instanceof SwatDate
+				$response instanceof CMEEvaluationResponse &&
+				$response->complete_date instanceof SwatDate
 			);
 		}
 
@@ -64,8 +68,12 @@ abstract class CMEAccount extends StoreAccount
 	{
 		$complete = false;
 
-		if ($credit->quiz instanceof CMEQuiz) {
-			$quiz_response = $credit->quiz->getResponseByAccount($this);
+		$progress = $this->getCMEProgress($credit);
+
+		if ($progress instanceof CMEAccountCMEProgress &&
+			$progress->quiz instanceof CMEQuiz) {
+
+			$quiz_response = $progress->quiz->getResponseByAccount($this);
 			$complete = ($quiz_response instanceof CMEQuizResponse &&
 				$quiz_response->complete_date instanceof SwatDate);
 		}
@@ -81,7 +89,8 @@ abstract class CMEAccount extends StoreAccount
 		$passed = false;
 
 		if ($this->isQuizComplete($credit)) {
-			$quiz_response = $credit->quiz->getResponseByAccount($this);
+			$progress = $this->getCMEProgress($credit);
+			$quiz_response = $progress->quiz->getResponseByAccount($this);
 			$passed = $quiz_response->isPassed();
 		}
 
@@ -114,6 +123,42 @@ abstract class CMEAccount extends StoreAccount
 
 		foreach ($this->earned_cme_credits as $earned_credit) {
 			$hours += $earned_credit->credit->hours;
+		}
+
+		return $hours;
+	}
+
+	// }}}
+	// {{{ public function getEarnedCMECreditHoursByProvider()
+
+	public function getEarnedCMECreditHoursByProvider(CMEProvider $provider)
+	{
+		$hours = 0;
+
+		foreach ($this->earned_cme_credits as $earned_credit) {
+			$cme_providers = $earned_credit->credit->front_matter->providers;
+			$cme_provider = $cme_providers->getByIndex($provider->id);
+			if ($cme_provider instanceof CMEProvider) {
+				$hours += $earned_credit->credit->hours;
+			}
+		}
+
+		return $hours;
+	}
+
+	// }}}
+	// {{{ public function getEarnedCMECreditHoursByFrontMatter()
+
+	public function getEarnedCMECreditHoursByFrontMatter(
+		CMEFrontMatter $front_matter)
+	{
+		$hours = 0;
+
+		foreach ($this->earned_cme_credits as $earned_credit) {
+			$credit = $earned_credit->credit;
+			if ($credit->front_matter->id === $front_matter->id) {
+				$hours += $earned_credit->credit->hours;
+			}
 		}
 
 		return $hours;
@@ -157,7 +202,7 @@ abstract class CMEAccount extends StoreAccount
 						select credit from AccountEarnedCMECredit
 						where account = %s
 					)
-				order by CMEFrontMatter.provider, CMECredit.displayorder',
+				order by CMEFrontMatter.id, CMECredit.displayorder',
 				$this->db->quote(true, 'boolean'),
 				$this->db->quote($this->id, 'integer')
 			);
@@ -174,6 +219,61 @@ abstract class CMEAccount extends StoreAccount
 
 		$available_credits->setDatabase($this->db);
 		return $available_credits;
+	}
+
+	// }}}
+	// {{{ public function getCMEProgress()
+
+	public function getCMEProgress(RapCredit $credit)
+	{
+		require_once 'CME/dataobjects/CMEAccountCMEProgressWrapper.php';
+
+		$this->checkDB();
+
+		$sql = sprintf(
+			'select AccountCMEProgress.*
+			from AccountCMEProgress
+			where AccountCMEProgress.account = %s
+			and AccountCMEProgress.id in (
+				select progress from AccountCMEProgressCreditBinding
+				where AccountCMEProgressCreditBinding.credit = %s
+			)',
+			$this->db->quote($this->id, 'integer'),
+			$this->db->quote($credit->id, 'integer')
+		);
+
+		return SwatDB::query(
+			$this->db,
+			$sql,
+			SwatDBClassMap::get('CMEAccountCMEProgressWrapper')
+		)->getFirst();
+	}
+
+	// }}}
+	// {{{ public function hasSameCMEProgress()
+
+	public function hasSameCMEProgress(RapCredit $credit1, RapCredit $credit2)
+	{
+		$progress1 = $this->getCMEProgress($credit1);
+		$progress2 = $this->getCMEProgress($credit2);
+
+		// combine credits if they have the same progress
+		if ($progress1 instanceof CMEAccountCMEProgress &&
+			$progress2 instanceof CMEAccountCMEProgress &&
+			$progress1->id === $progress2->id) {
+
+			$combine = true;
+
+		// combine credits if they both haven't been started
+		} elseif (!$progress1 instanceof CMEAccountCMEProgress &&
+			!$progress2 instanceof CMEAccountCMEProgress) {
+
+			$combine = true;
+		} else {
+			$combine = false;
+		}
+
+		return $combine;
 	}
 
 	// }}}
@@ -196,7 +296,7 @@ abstract class CMEAccount extends StoreAccount
 				inner join CMEFrontMatter
 					on CMECredit.front_matter = CMEFrontMatter.id
 			where account = %s
-			order by CMEFrontMatter.provider, CMECredit.displayorder',
+			order by CMEFrontMatter.id, CMECredit.displayorder',
 			$this->db->quote($this->id, 'integer')
 		);
 
@@ -225,12 +325,7 @@ abstract class CMEAccount extends StoreAccount
 				SwatDBClassMap::get('CMEFrontMatterWrapper')
 			);
 
-			$providers = $front_matters->loadAllSubDataObjects(
-				'provider',
-				$this->db,
-				'select * from CMEProvider where id in(%s)',
-				SwatDBClassMap::get('CMEProviderWrapper')
-			);
+			$front_matters->loadProviders();
 		}
 
 		return $earned_credits;
@@ -254,7 +349,7 @@ abstract class CMEAccount extends StoreAccount
 						AccountAttestedCMEFrontMatter.front_matter and
 						account = %s
 			where CMECredit.hours > 0
-			order by CMEFrontMatter.provider, CMECredit.displayorder',
+			order by CMEFrontMatter.id, CMECredit.displayorder',
 			$this->db->quote($this->id, 'integer')
 		);
 

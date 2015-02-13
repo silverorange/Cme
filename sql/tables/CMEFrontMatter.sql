@@ -1,7 +1,6 @@
 create table CMEFrontMatter (
 	id serial,
 
-	provider integer not null references CMEProvider(id) on delete cascade,
 	evaluation integer references Inquisition(id) on delete set null,
 
 	enabled boolean not null default true,
@@ -12,7 +11,10 @@ create table CMEFrontMatter (
 	support_staff_with_disclosures text,
 	review_date timestamp,
 
+	passing_grade decimal(5, 2),
+	email_content_pass text,
+	email_content_fail text,
+	resettable boolean not null default true,
+
 	primary key(id)
 );
-
-create index CMEFrontMatter_provider_index on CMEFrontMatter(provider);
