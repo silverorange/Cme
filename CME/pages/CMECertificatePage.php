@@ -19,6 +19,14 @@ abstract class CMECertificatePage extends SiteUiPage
 
 	/**
 	 * @var array
+	 *
+	 * Formatted:
+	 * array(
+	 * 		$front_matter_id => array(
+	 *	 		'front_matter' => CMEFrontMatter,
+	 *			'credits' => CMEAccountEarnedCMECreditWrapper,
+	 *		)
+	 *	) …
 	 */
 	protected $credits_by_front_matter;
 
