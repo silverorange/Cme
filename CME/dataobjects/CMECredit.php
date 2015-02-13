@@ -59,7 +59,7 @@ abstract class CMECredit extends SwatDBDataObject
 
 	public function getFormattedHours()
 	{
-		return self::formatCreditHours($this->hours);
+		return static::formatCreditHours($this->hours);
 	}
 
 	// }}}
