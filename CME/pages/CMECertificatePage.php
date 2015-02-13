@@ -253,12 +253,12 @@ abstract class CMECertificatePage extends SiteUiPage
 
 	protected function processInternal()
 	{
-		$list = $this->ui->getWidget('front_matters')->values;
+		$front_matter_ids = $this->ui->getWidget('front_matters')->values;
 
 		$wrapper = SwatDBClassMap::get('CMEAccountEarnedCMECreditWrapper');
 
 		$form = $this->ui->getWidget('certificate_form');
-		if ($form->isProcessed() && count($list) === 0) {
+		if ($form->isProcessed() && count($front_matter_ids) === 0) {
 			$this->ui->getWidget('message_display')->add(
 				new SwatMessage(
 					CME::_('No credits were selected to print.')
