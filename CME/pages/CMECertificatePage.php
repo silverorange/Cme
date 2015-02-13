@@ -178,7 +178,9 @@ abstract class CMECertificatePage extends SiteUiPage
 
 		$titles = array();
 		foreach ($front_matter->providers as $provider) {
-			$titles[] = '<em>'.$provider->$field.'</em>';
+			$em_tag = new SwatHtmlTag('em');
+			$em_tag->setContent($provider->$field);
+			$titles[] = $em_tag->__toString();
 		}
 		$formatted_provider_credit_title = SwatString::toList($titles);
 
