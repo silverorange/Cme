@@ -25,7 +25,7 @@ abstract class CMECertificatePage extends SiteUiPage
 	/**
 	 * @var array
 	 */
-	protected $credits_by_provider;
+	protected $credits_by_front_matter;
 
 	/**
 	 * @var CMEAccountEarnedCMECreditWrapper
@@ -35,7 +35,7 @@ abstract class CMECertificatePage extends SiteUiPage
 	/**
 	 * @var array
 	 */
-	protected $selected_credits_by_provider;
+	protected $selected_credits_by_front_matter;
 
 	/**
 	 * @var boolean
@@ -51,12 +51,12 @@ abstract class CMECertificatePage extends SiteUiPage
 	}
 
 	// }}}
-	// {{{ protected function getCreditsByProvider()
+	// {{{ protected function getCreditsByFrontMatter()
 
-	protected function getCreditsByProvider($shortname)
+	protected function getCreditsByFrontMatter($id)
 	{
-		if (isset($this->credits_by_provider[$shortname])) {
-			$credits = $this->credits_by_provider[$shortname];
+		if (isset($this->credits_by_front_matter[$id])) {
+			$credits = $this->credits_by_front_matter[$id];
 		} else {
 			$wrapper = SwatDBClassMap::get('CMEAccountEarnedCMECreditWrapper');
 			$credits = new $wrapper();
@@ -67,12 +67,12 @@ abstract class CMECertificatePage extends SiteUiPage
 	}
 
 	// }}}
-	// {{{ protected function getSelectedCreditsByProvider()
+	// {{{ protected function getSelectedCreditsByFrontMatter()
 
-	protected function getSelectedCreditsByProvider($shortname)
+	protected function getSelectedCreditsByFrontMatter($id)
 	{
-		if (isset($this->selected_credits_by_provider[$shortname])) {
-			$credits = $this->selected_credits_by_provider[$shortname];
+		if (isset($this->selected_credits_by_front_matter[$id])) {
+			$credits = $this->selected_credits_by_front_matter[$id];
 		} else {
 			$wrapper = SwatDBClassMap::get('CMEAccountEarnedCMECreditWrapper');
 			$credits = new $wrapper();
@@ -135,19 +135,19 @@ abstract class CMECertificatePage extends SiteUiPage
 	{
 		$account = $this->app->session->account;
 		$this->credits = $account->earned_cme_credits;
-		$this->credits_by_provider = array();
+		$this->credits_by_front_matter = array();
 
 		$wrapper = SwatDBClassMap::get('CMEAccountEarnedCMECreditWrapper');
 
 		foreach ($this->credits as $credit) {
-			$provider = $credit->credit->front_matter->provider->shortname;
-			if (!isset($this->credits_by_provider[$provider])) {
-				$this->credits_by_provider[$provider] = new $wrapper();
-				$this->credits_by_provider[$provider]->setDatabase(
+			$front_matter = $credit->credit->front_matter->id;
+			if (!isset($this->credits_by_front_matter[$front_matter])) {
+				$this->credits_by_front_matter[$front_matter] = new $wrapper();
+				$this->credits_by_front_matter[$front_matter]->setDatabase(
 					$this->app->db
 				);
 			}
-			$this->credits_by_provider[$provider]->add($credit);
+			$this->credits_by_front_matter[$front_matter]->add($credit);
 		}
 	}
 
@@ -199,6 +199,8 @@ abstract class CMECertificatePage extends SiteUiPage
 
 	protected function getListOptionTitle(CMEAccountEarnedCMECredit $credit)
 	{
+		$hours = $credit->credit->hours;
+
 		ob_start();
 
 		$locale = SwatI18NLocale::get();
@@ -208,27 +210,26 @@ abstract class CMECertificatePage extends SiteUiPage
 		$title_span->setContent($this->getCreditTitle($credit));
 		$title_span->display();
 
-		$provider = $credit->credit->front_matter->provider;
-		$formatted_provider_credit_title = sprintf(
-			'<em>%s</em>',
-			// not using ngettext because hours is a float
-			SwatString::minimizeEntities(
-				($credit->credit->hours == 1)
-					? $provider->credit_title
-					: $provider->credit_title_plural
-			)
-		);
+		$field = (abs($hours - 1.0) < 0.01)
+			? 'credit_title'
+			: 'credit_title_plural';
+
+		$titles = array();
+		foreach ($credit->credit->front_matter->providers as $provider) {
+			$titles[] = '<em>'.$provider->$field.'</em>';
+		}
+		$formatted_provider_credit_title = SwatString::toList($titles);
 
 		$hours_span = new SwatHtmlTag('span');
 		$hours_span->class = 'hours';
 		$hours_span->setContent(
 			sprintf(
 				CME::_('%s %s from %s'),
-				SwatString::minimizeEntities(
-					$locale->formatNumber($credit->credit->hours)
-				),
+				SwatString::minimizeEntities($locale->formatNumber($hours)),
 				$formatted_provider_credit_title,
-				SwatString::minimizeEntities($provider->title)
+				SwatString::minimizeEntities(
+					$credit->credit->front_matter->getProviderTitleList()
+				)
 			),
 			'text/xml'
 		);
@@ -276,7 +277,7 @@ abstract class CMECertificatePage extends SiteUiPage
 	{
 		$list = $this->ui->getWidget('credits')->values;
 
-		$this->selected_credits_by_provider = array();
+		$this->selected_credits_by_front_matter = array();
 
 		$wrapper = SwatDBClassMap::get('CMEAccountEarnedCMECreditWrapper');
 
@@ -285,20 +286,21 @@ abstract class CMECertificatePage extends SiteUiPage
 
 		$has_credit = false;
 
+		$by_front_matter = $this->selected_credits_by_front_matter;
+
 		foreach ($this->credits as $credit) {
 			if (in_array($credit->id, $list)) {
 				$has_credit = true;
 				$this->selected_credits->add($credit);
-				$provider = $credit->credit->front_matter->provider->shortname;
-				if (!isset($this->selected_credits_by_provider[$provider])) {
-					$this->selected_credits_by_provider[$provider] =
-						new $wrapper();
+				$front_matter = $credit->credit->front_matter->id;
+				if (!isset($selected_credits[$front_matter])) {
+					$by_front_matter[$front_matter] = new $wrapper();
 
-					$this->selected_credits_by_provider[$provider]->setDatabase(
+					$by_front_matter[$front_matter]->setDatabase(
 						$this->app->db
 					);
 				}
-				$this->selected_credits_by_provider[$provider]->add($credit);
+				$by_front_matter[$front_matter]->add($credit);
 			}
 		}
 
