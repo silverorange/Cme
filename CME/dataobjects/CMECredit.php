@@ -30,9 +30,9 @@ abstract class CMECredit extends SwatDBDataObject
 	public $is_free;
 
 	// }}}
-	// {{{ protected function getFormattedHours()
+	// {{{ public static function formatCreditHours()
 
-	public function getFormattedHours()
+	public static function formatCreditHours($hours)
 	{
 		$locale  = SwatI18NLocale::get();
 
@@ -45,13 +45,21 @@ abstract class CMECredit extends SwatDBDataObject
 		// 4.50 -> 4.5
 		// 4.25 -> 4.25
 		$decimal_places = (
-			strlen(substr(strrchr($this->hours, "."), 1)) === 2 &&
-			substr($this->hours, -1) !== '0'
+			strlen(substr(strrchr($hours, "."), 1)) === 2 &&
+			substr($hours, -1) !== '0'
 			)
 			? 2
 			: 1;
 
-		return $locale->formatNumber($this->hours, $decimal_places);
+		return $locale->formatNumber($hours, $decimal_places);
+	}
+
+	// }}}
+	// {{{ public function getFormattedHours()
+
+	public function getFormattedHours()
+	{
+		return static::formatCreditHours($this->hours);
 	}
 
 	// }}}

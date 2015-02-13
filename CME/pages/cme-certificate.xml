@@ -8,8 +8,8 @@
 				<property name="content_type">text/xml</property>
 			</widget>
 		</widget>
-		<widget class="SwatFormField" id="credits_field">
-			<widget class="SwatCheckboxList" id="credits" />
+		<widget class="SwatFormField" id="front_matters_field">
+			<widget class="SwatCheckboxList" id="front_matters" />
 		</widget>
 		<widget class="SwatFooterFormField" id="submit_field">
 			<widget class="SwatButton" id="submit_button">
