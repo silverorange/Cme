@@ -321,20 +321,68 @@ abstract class CMEEvaluationPage extends SiteDBEditPage
 
 	protected function generateEvaluationQuestions(CMEEvaluation $evaluation)
 	{
-		$sql = sprintf(
-			'insert into InquisitionInquisitionQuestionBinding
-			(inquisition, question, displayorder)
-			select %s, question, displayorder
-			from InquisitionInquisitionQuestionBinding
-			where inquisition = %s',
-			$this->app->db->quote($evaluation->id, 'integer'),
-			$this->app->db->quote(
-				$this->front_matter->evaluation->id,
-				'integer'
+		$question_bindings = SwatDB::query(
+			$this->app->db,
+			sprintf(
+				'select * from InquisitionInquisitionQuestionBinding '.
+				'where inquisition = %s',
+				$this->app->db->quote(
+					$this->front_matter->evaluation->id,
+					'integer'
+				)
 			)
 		);
 
-		SwatDB::exec($this->app->db, $sql);
+		$class_name = SwatDBClassMap::get(
+			'InquisitionInquisitionQuestionBinding'
+		);
+
+		$id_map = array();
+		foreach ($question_bindings as $binding) {
+			$binding_obj = new $class_name();
+			$binding_obj->setDatabase($this->app->db);
+			$binding_obj->inquisition = $evaluation->id;
+			$binding_obj->question = $binding->question;
+			$binding_obj->displayorder = $binding->displayorder;
+			$binding_obj->save();
+
+			$id_map[$binding->id] = $binding_obj->id;
+		}
+
+		$dependencies = SwatDB::query(
+			$this->app->db,
+			sprintf(
+				'select * from InquisitionQuestionDependency '.
+				'where question_binding in (%s)',
+				$this->app->db->datatype->implodeArray(
+					array_keys($id_map),
+					'integer'
+				)
+			)
+		);
+
+		$class_name = SwatDBClassMap::get(
+			'InquisitionInquisitionQuestionDependency'
+		);
+
+		foreach ($dependencies as $dependency) {
+			$sql = sprintf(
+				'insert into InquisitionQuestionDependency
+				(question_binding, dependent_question_binding, option)
+				values (%s, %s, %s)',
+				$this->app->db->quote(
+					$id_map[$dependency->question_binding],
+					'integer'
+				),
+				$this->app->db->quote(
+					$id_map[$dependency->dependent_question_binding],
+					'integer'
+				),
+				$this->app->db->quote($dependency->option, 'integer')
+			);
+
+			SwatDB::exec($this->app->db, $sql);
+		}
 	}
 
 	// }}}
