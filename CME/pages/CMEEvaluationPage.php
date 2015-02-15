@@ -337,7 +337,9 @@ abstract class CMEEvaluationPage extends SiteDBEditPage
 			'InquisitionInquisitionQuestionBinding'
 		);
 
+		// map ids for bindings to use when copying dependencies
 		$id_map = array();
+
 		foreach ($question_bindings as $binding) {
 			$binding_obj = new $class_name();
 			$binding_obj->setDatabase($this->app->db);
@@ -359,10 +361,6 @@ abstract class CMEEvaluationPage extends SiteDBEditPage
 					'integer'
 				)
 			)
-		);
-
-		$class_name = SwatDBClassMap::get(
-			'InquisitionInquisitionQuestionDependency'
 		);
 
 		foreach ($dependencies as $dependency) {
