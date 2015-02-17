@@ -13,10 +13,10 @@
   <email>mike@silverorange.com</email>
   <active>yes</active>
  </lead>
- <date>2015-01-21</date>
- <time>15:23:55</time>
+ <date>2015-02-17</date>
+ <time>16:25:34</time>
  <version>
-  <release>0.1.9</release>
+  <release>0.1.10</release>
   <api>0.1.0</api>
  </version>
  <stability>
@@ -95,6 +95,8 @@ beta release
     </dir> <!-- /CME/certificates -->
     <dir name="dataobjects">
      <file name="CMEAccount.php" role="php" />
+     <file name="CMEAccountCMEProgress.php" role="php" />
+     <file name="CMEAccountCMEProgressWrapper.php" role="php" />
      <file name="CMEAccountEarnedCMECredit.php" role="php" />
      <file name="CMEAccountEarnedCMECreditWrapper.php" role="php" />
      <file name="CMECredit.php" role="php" />
@@ -128,9 +130,9 @@ beta release
     </dir> <!-- /CME/pages -->
     <file name="CME.php" role="php" />
     <file name="CMECertificateFactory.php" role="php" />
-    <file name="CMECreditCompleteMailMessage.php" role="php" />
     <file name="CMEEvaluationReportGenerator.php" role="php" />
     <file name="CMEEvaluationReportUpdater.php" role="php" />
+    <file name="CMEFrontMatterCompleteMailMessage.php" role="php" />
     <file name="CMEFrontMatterDisplay.php" role="php" />
     <file name="CMEQuizReportGenerator.php" role="php" />
     <file name="CMEQuizReportUpdater.php" role="php" />
@@ -142,9 +144,12 @@ beta release
    <dir name="sql">
     <dir name="tables">
      <file name="AccountAttestedCMEFrontMatter.sql" role="data" />
+     <file name="AccountCMEProgress.sql" role="data" />
+     <file name="AccountCMEProgressCreditBinding.sql" role="data" />
      <file name="AccountEarnedCMECredit.sql" role="data" />
      <file name="CMECredit.sql" role="data" />
      <file name="CMEFrontMatter.sql" role="data" />
+     <file name="CMEFrontMatterProviderBinding.sql" role="data" />
      <file name="CMEProvider.sql" role="data" />
      <file name="EvaluationReport.sql" role="data" />
      <file name="InquisitionResponse.sql" role="data" />
@@ -154,7 +159,7 @@ beta release
    <dir name="www">
     <dir name="admin">
      <dir name="styles">
-      <file name="cme-credit-edit.css" role="data" />
+      <file name="cme-front-matter-edit.css" role="data" />
      </dir> <!-- /www/admin/styles -->
      <file name="inquisition-edit.css" role="data" />
     </dir> <!-- /www/admin -->
@@ -210,14 +215,14 @@ beta release
  <changelog>
   <release>
    <version>
-    <release>0.1.9</release>
+    <release>0.1.10</release>
     <api>0.1.0</api>
    </version>
    <stability>
     <release>beta</release>
     <api>beta</api>
    </stability>
-   <date>2015-01-21</date>
+   <date>2015-02-17</date>
    <license uri="http://www.opensource.org/licenses/mit-license.html">MIT License</license>
    <notes>
 beta release
