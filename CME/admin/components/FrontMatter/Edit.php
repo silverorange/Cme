@@ -133,10 +133,30 @@ abstract class CMEFrontMatterEdit extends AdminObjectEdit
 	protected function setDefaultValues()
 	{
 		$this->ui->getWidget('enabled')->value = true;
-		$this->ui->getWidget('objectives')->value = <<<HTML
+		$this->ui->getWidget('passing_grade')->value =
+			$this->getDefaultPassingGrade();
+
+		$this->ui->getWidget('objectives')->value =
+			$this->getDefaultObjectives();
+	}
+
+	// }}}
+	// {{{ protected function getDefaultPassingGrade()
+
+	protected function getDefaultPassingGrade()
+	{
+		return 0.70;
+	}
+
+	// }}}
+	// {{{ protected function getDefaultObjectives()
+
+	protected function getDefaultObjectives()
+	{
+		return <<<HTML
 <ul>
-<li>objective1</li>
-<li>objective2</li>
+	<li>objective1</li>
+	<li>objective2</li>
 </ul>
 HTML;
 	}
