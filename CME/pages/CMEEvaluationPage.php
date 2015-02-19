@@ -6,6 +6,7 @@ require_once 'Site/pages/SiteDBEditPage.php';
 require_once 'Inquisition/dataobjects/InquisitionQuestionWrapper.php';
 require_once 'Inquisition/dataobjects/InquisitionQuestionOptionWrapper.php';
 require_once 'CME/CME.php';
+require_once 'CME/CMEFrontMatterCompleteMailMessage.php';
 require_once 'CME/dataobjects/CMEEvaluationWrapper.php';
 require_once 'CME/dataobjects/CMECreditWrapper.php';
 require_once 'CME/dataobjects/CMEFrontMatterWrapper.php';
@@ -617,6 +618,7 @@ abstract class CMEEvaluationPage extends SiteDBEditPage
 		// save responses
 		$this->inquisition_response->save();
 		$this->saveEarnedCredits();
+		$this->sendCompletionEmail();
 
 		// clear CME hours cache for this account
 		$key = 'cme-hours-'.$this->app->session->account->id;
@@ -695,6 +697,37 @@ abstract class CMEEvaluationPage extends SiteDBEditPage
 	{
 		return null;
 	}
+
+	// }}}
+	// {{{ protected function sendCompletionEmail()
+
+	protected function sendCompletionEmail()
+	{
+		// only send email if quiz is complete
+		$account = $this->app->session->account;
+		if (!$this->credits->getFirst()->isEarned($account) ||
+			!$this->progress->quiz instanceof CMEQuiz) {
+			return;
+		}
+
+		try {
+			$class_name = $this->getCompletionEmailClass();
+			$message = new $class_name(
+				$this->app,
+				$account,
+				$this->front_matter,
+				$this->progress->quiz->getResponseByAccount($account)
+			);
+			$message->send();
+		} catch (SiteMailException $e) {
+			$e->processAndContinue();
+		}
+	}
+
+	// }}}
+	// {{{ abstract protected function getCompletionEmailClass()
+
+	abstract protected function getCompletionEmailClass();
 
 	// }}}
 	// {{{ abstract protected function relocateForCompletedEvaluation()

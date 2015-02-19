@@ -118,15 +118,14 @@ abstract class CMEQuizPage extends SiteDBEditPage
 		$this->initFrontMatter();
 		$this->initProgress();
 		$this->initQuiz();
+		$this->initResponse();
 
 		// if there is no quiz, go to evaluation page
 		if (!$this->quiz instanceof CMEQuiz) {
-			if (!$response->complete_date instanceof SwatDate) {
+			if (!$this->response->complete_date instanceof SwatDate) {
 				$this->relocateToEvaluation();
 			}
 		}
-
-		$this->initResponse();
 
 		if ($this->isComplete()) {
 			// If earned credit was accidentally deleted but quiz is already
@@ -530,6 +529,7 @@ abstract class CMEQuizPage extends SiteDBEditPage
 		$this->response->values->save();
 		$this->saveEarnedCredit();
 		$this->sendCompletionEmail();
+		$this->addCompletionMessage();
 
 		// clear CME hours cache for this account
 		$key = 'cme-hours-'.$this->app->session->account->id;
@@ -606,17 +606,49 @@ abstract class CMEQuizPage extends SiteDBEditPage
 
 	protected function sendCompletionEmail()
 	{
+		// only send email if credits are earned
+		$account = $this->app->session->account;
+		if (!$this->credits->getFirst()->isEarned($account)) {
+			return;
+		}
+
 		try {
 			$class_name = $this->getCompletionEmailClass();
 			$message = new $class_name(
 				$this->app,
-				$this->app->session->account,
+				$account,
 				$this->front_matter,
 				$this->response
 			);
 			$message->send();
 		} catch (SiteMailException $e) {
 			$e->processAndContinue();
+		}
+	}
+
+	// }}}
+	// {{{ protected function addCompletionMessage()
+
+	protected function addCompletionMessage()
+	{
+		if ($this->response->isPassed()) {
+			$message = new SwatMessage(
+				sprintf(
+					CME::_('Congratulations on passing the %s quiz'),
+					$this->getQuizTitle()
+				)
+			);
+
+			$account = $this->app->session->account;
+			if ($this->front_matter->evaluation instanceof CMEEvaluation &&
+				!$account->isEvaluationComplete($this->credits->getFirst())) {
+				$message->secondary_content = CME::_(
+					'Take a moment to complete this evaluation, and then '.
+					'you’ll be able to print your certificate.'
+				);
+			}
+
+			$this->app->messages->add($message);
 		}
 	}
 
@@ -640,6 +672,11 @@ abstract class CMEQuizPage extends SiteDBEditPage
 	// {{{ abstract protected function getCompletionEmailClass()
 
 	abstract protected function getCompletionEmailClass();
+
+	// }}}
+	// {{{ abstract protected function getQuizTitle()
+
+	abstract protected function getQuizTitle();
 
 	// }}}
 
