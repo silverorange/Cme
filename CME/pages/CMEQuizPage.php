@@ -634,7 +634,7 @@ abstract class CMEQuizPage extends SiteDBEditPage
 		if ($this->response->isPassed()) {
 			$message = new SwatMessage(
 				sprintf(
-					CME::_('Congratulations on passing the %s quiz!'),
+					CME::_('Congratulations on passing the %s quiz'),
 					$this->getQuizTitle()
 				)
 			);
