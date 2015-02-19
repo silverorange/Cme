@@ -725,6 +725,11 @@ abstract class CMEEvaluationPage extends SiteDBEditPage
 	}
 
 	// }}}
+	// {{{ abstract protected function getCompletionEmailClass()
+
+	abstract protected function getCompletionEmailClass();
+
+	// }}}
 	// {{{ abstract protected function relocateForCompletedEvaluation()
 
 	abstract protected function relocateForCompletedEvaluation();
