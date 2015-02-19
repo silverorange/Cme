@@ -640,7 +640,8 @@ abstract class CMEQuizPage extends SiteDBEditPage
 			);
 
 			$account = $this->app->session->account;
-			if (!$account->isEvaluationComplete($this->credits->getFirst())) {
+			if ($this->front_matter->evaluation instanceof CMEEvaluation &&
+				!$account->isEvaluationComplete($this->credits->getFirst())) {
 				$message->secondary_content = CME::_(
 					'Take a moment to complete this evaluation, and then '.
 					'you’ll be able to print your certificate.'
