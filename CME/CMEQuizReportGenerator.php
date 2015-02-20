@@ -87,7 +87,11 @@ class CMEQuizReportGenerator
 					on AccountEarnedCMECredit.credit = CMECredit.id
 				inner join CMEFrontMatter
 					on CMECredit.front_matter = CMEFrontMatter.id
-			where CMEFrontMatter.provider = %s
+			where CMEFrontMatter.id in (
+					select CMEFrontMatterProviderBinding.front_matter
+					from CMEFrontMatterProviderBinding
+					where CMEFrontMatterProviderBinding.provider = %s
+				)
 				and convertTZ(earned_date, %s) >= %s
 				and convertTZ(earned_date, %s) < %s
 				and Account.delete_date is null',

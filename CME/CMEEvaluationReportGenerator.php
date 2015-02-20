@@ -77,7 +77,11 @@ class CMEEvaluationReportGenerator
 						InquisitionResponse.account
 					and CMEFrontMatter.evaluation =
 						InquisitionResponse.inquisition
-			where CMEFrontMatter.provider = %s
+			where CMEFrontMatter.id in (
+					select CMEFrontMatterProviderBinding.front_matter
+					from CMEFrontMatterProviderBinding
+					where CMEFrontMatterProviderBinding.provider = %s
+				)
 				and convertTZ(earned_date, %s) >= %s
 				and convertTZ(earned_date, %s) < %s
 				and Account.delete_date is null',
