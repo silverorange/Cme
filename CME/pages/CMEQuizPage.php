@@ -633,18 +633,15 @@ abstract class CMEQuizPage extends SiteDBEditPage
 	{
 		if ($this->response->isPassed()) {
 			$message = new SwatMessage(
-				sprintf(
-					CME::_('Congratulations on passing the %s quiz'),
-					$this->getQuizTitle()
-				)
+				CME::_('Congratulations on passing the quiz')
 			);
 
 			$account = $this->app->session->account;
 			if ($this->front_matter->evaluation instanceof CMEEvaluation &&
 				!$account->isEvaluationComplete($this->credits->getFirst())) {
 				$message->secondary_content = CME::_(
-					'Take a moment to complete this evaluation, and then '.
-					'you’ll be able to print your certificate.'
+					'After completing this evaluation you’ll be able to '.
+					'print your certificate.'
 				);
 			}
 
@@ -672,11 +669,6 @@ abstract class CMEQuizPage extends SiteDBEditPage
 	// {{{ abstract protected function getCompletionEmailClass()
 
 	abstract protected function getCompletionEmailClass();
-
-	// }}}
-	// {{{ abstract protected function getQuizTitle()
-
-	abstract protected function getQuizTitle();
 
 	// }}}
 
