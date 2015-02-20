@@ -64,33 +64,44 @@ class CMEEvaluationReportGenerator
 
 	protected function getResponses()
 	{
-		$sql = sprintf(
-			'select InquisitionResponse.* from AccountEarnedCMECredit
-				inner join Account
-					on AccountEarnedCMECredit.account = Account.id
-				inner join CMECredit
-					on AccountEarnedCMECredit.credit = CMECredit.id
-				inner join CMEFrontMatter
-					on CMECredit.front_matter = CMEFrontMatter.id
-				inner join InquisitionResponse
-					on AccountEarnedCMECredit.account =
-						InquisitionResponse.account
-					and CMEFrontMatter.evaluation =
-						InquisitionResponse.inquisition
-			where CMEFrontMatter.id in (
+		// Get all rows from AccountCMEProgress where the credit was earned in
+		// the past quarter. This uses a join between AccountCMEProgress and
+		// AccountEarnedCMECredit through AccountCMEProgressCreditBinding.
+		// All of this is necessary because we clone the Inquisition for each
+		// account and so we can't just look up CMEFrontMatter.evaluation.
+		$progress_ids_sql = sprintf(
+			'select progress
+			from AccountCMEProgressCreditBinding
+			inner join AccountCMEProgress on
+				AccountCMEProgressCreditBinding.progress = AccountCMEProgress.id
+			inner join AccountEarnedCMECredit on
+				AccountEarnedCMECredit.account = AccountCMEProgress.account
+				and AccountCMEProgressCreditBinding.credit =
+					AccountEarnedCMECredit.credit
+			inner join CMECredit on
+				CMECredit.id = AccountEarnedCMECredit.credit
+			inner join Account on AccountCMEProgress.account = Account.id
+			where CMECredit.front_matter in (
 					select CMEFrontMatterProviderBinding.front_matter
 					from CMEFrontMatterProviderBinding
 					where CMEFrontMatterProviderBinding.provider = %s
 				)
-				and convertTZ(earned_date, %s) >= %s
-				and convertTZ(earned_date, %s) < %s
-				and Account.delete_date is null',
+			and convertTZ(earned_date, %s) >= %s
+			and convertTZ(earned_date, %s) < %s
+			and Account.delete_date is null',
 			$this->app->db->quote($this->provider->id, 'integer'),
 			$this->app->db->quote($this->app->config->date->time_zone, 'text'),
 			$this->app->db->quote($this->start_date->getDate(), 'date'),
 			$this->app->db->quote($this->app->config->date->time_zone, 'text'),
 			$this->app->db->quote($this->end_date->getDate(), 'date')
 		);
+
+		$sql = 'select InquisitionResponse.*
+			from InquisitionResponse
+			inner join AccountCMEProgress on
+				AccountCMEProgress.evaluation = InquisitionResponse.inquisition
+				and AccountCMEProgress.account = InquisitionResponse.account
+			where AccountCMEProgress.id in ('.$progress_ids_sql.')';
 
 		$responses = SwatDB::query(
 			$this->app->db,
