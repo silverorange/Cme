@@ -514,6 +514,9 @@ abstract class CMEQuizPage extends SiteDBEditPage
 		$wrapper = SwatDBClassMap::get('InquisitionResponseValueWrapper');
 		$response_values = new $wrapper();
 
+		$total_questions_with_answers = 0;
+		$correct_answers = 0;
+
 		foreach ($this->quiz->question_bindings as $question_binding) {
 			$view = $this->question_views[$question_binding->id];
 
@@ -521,9 +524,31 @@ abstract class CMEQuizPage extends SiteDBEditPage
 			$response_value->response = $this->response->id;
 
 			$response_values[] = $response_value;
+
+			$question = $question_binding->question;
+			$correct_option = $question->getInternalValue('correct_option');
+
+			$response_option = $response_value->getInternalValue(
+				'question_option'
+			);
+
+			if ($correct_option !== null) {
+				$total_questions_with_answers++;
+				if ($correct_option == $response_option) {
+					$correct_answers++;
+				}
+			}
 		}
 
 		$this->response->values = $response_values;
+
+		// save grade
+		if ($total_questions_with_answers > 0) {
+			$this->response->grade = $correct_answers /
+				$total_questions_with_answers;
+
+			$this->response->save();
+		}
 
 		// save response values
 		$this->response->values->save();
