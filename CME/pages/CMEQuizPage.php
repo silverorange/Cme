@@ -534,7 +534,7 @@ abstract class CMEQuizPage extends SiteDBEditPage
 
 			if ($correct_option !== null) {
 				$total_questions_with_answers++;
-				if ($correct_option == $response_option) {
+				if ($correct_option === $response_option) {
 					$correct_answers++;
 				}
 			}
