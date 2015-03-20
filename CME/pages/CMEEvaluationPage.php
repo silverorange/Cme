@@ -538,10 +538,7 @@ abstract class CMEEvaluationPage extends SiteDBEditPage
 		// If the question view is dependent on other options, check to make
 		// sure all dependent options are available and selected.
 		if (count($question_binding->getDependentOptions()) > 0) {
-
 			foreach ($question_binding->getDependentOptions() as $option) {
-				$question_view_visible = false;
-
 				// Check to make sure the dependent view exists. If
 				// InquisitionQuestion.enabled has been set to false, it will
 				// not exist in the available question views.
@@ -554,17 +551,26 @@ abstract class CMEEvaluationPage extends SiteDBEditPage
 						$values = array($values);
 					}
 
+					// If no dependent option is selected then this will
+					// remain false and the question will not be shown.
+					$option_selected = false;
+
 					foreach ($values as $value) {
 						$selected = $value->getInternalValue('question_option');
-
 						foreach ($option['options'] as $dependent) {
-							// If the option this question depends on has been
-							// selected than this question's widget is required.
-							if ($selected === $dependent) {
-								$question_view_visible = true;
-							}
+							// Only one option per question must be selected
+							// for the dependecy to be fulfilled.
+							$option_selected = (
+								$selected === $dependent || $option_selected
+							);
 						}
 					}
+
+					// Each question this question depends on must have one
+					// of its dependent options selected.
+					$question_view_visible = (
+						$question_view_visible && $option_selected
+					);
 				}
 			}
 		}
