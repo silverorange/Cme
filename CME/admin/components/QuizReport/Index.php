@@ -68,7 +68,7 @@ class CMEQuizReportIndex extends AdminIndex
 			'select min(complete_date) from InquisitionResponse
 			where complete_date is not null
 				and reset_date is null
-				and inquisition in (select quiz from CMECredit)'
+				and inquisition in (select quiz from AccountCMEProgress)'
 		);
 
 		$this->start_date = new SwatDate($oldest_date_string);
