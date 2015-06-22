@@ -1,5 +1,6 @@
 <?php
 
+require_once 'CME/CME.php';
 require_once 'SwatDB/SwatDBDataObject.php';
 
 /**
@@ -64,6 +65,27 @@ class CMEProvider extends SwatDBDataObject
 		$this->generatePropertyHashes();
 
 		return true;
+	}
+
+	// }}}
+	// {{{ public function getCreditTitle()
+
+	public function getCreditTitle($hours, $credit_count = 1, $is_free = false)
+	{
+		$locale = SwatI18NLocale::get();
+		return sprintf(
+			SwatString::minimizeEntities(
+				CME::_('%s%s %s%s%s certified by %s')
+			),
+			SwatString::minimizeEntities($locale->formatNumber($hours)),
+			$is_free ? ' '.CME::_('Free') : '',
+			'<em>',
+			(abs($hours - 1.0) < 0.01)
+				? SwatString::minimizeEntities($this->credit_title)
+				: SwatString::minimizeEntities($this->credit_title_plural),
+			'</em>',
+			SwatString::minimizeEntities($this->title)
+		);
 	}
 
 	// }}}
