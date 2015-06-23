@@ -65,7 +65,7 @@ class CMEFrontMatterWrapper extends SwatDBRecordsetWrapper
 
 		$providers = SwatDB::query(
 			$this->db,
-			'select * from CMEProvider',
+			'select * from CMEProvider order by id',
 			$providers_wrapper
 		);
 
@@ -73,7 +73,7 @@ class CMEFrontMatterWrapper extends SwatDBRecordsetWrapper
 			'select front_matter, provider
 			from CMEFrontMatterProviderBinding
 			where front_matter in (%s)
-			order by front_matter',
+			order by front_matter, provider',
 			$this->db->implodeArray(
 				$this->getIndexes(),
 				'integer'
