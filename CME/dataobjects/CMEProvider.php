@@ -76,8 +76,8 @@ class CMEProvider extends SwatDBDataObject
 		return sprintf(
 			SwatString::minimizeEntities(
 				($is_free)
-					? CME::_('%s %s%s%s certified by %s')
-					: CME::_('%s Free %s%s%s certified by %s')
+					? CME::_('%s Free %s%s%s certified by %s')
+					: CME::_('%s %s%s%s certified by %s')
 			),
 			SwatString::minimizeEntities($locale->formatNumber($hours)),
 			'<em>',
