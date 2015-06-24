@@ -37,6 +37,11 @@ class CMEProvider extends SwatDBDataObject
 	 */
 	public $credit_title_plural;
 
+	/**
+	 * @var integer
+	 */
+	public $displayorder;
+
 	// }}}
 	// {{{ public function loadByShortname()
 

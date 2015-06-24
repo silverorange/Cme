@@ -144,7 +144,7 @@ abstract class CMEFrontMatter extends SwatDBDataObject
 			inner join CMEFrontMatterProviderBinding on
 				CMEFrontMatterProviderBinding.provider = CMEProvider.id
 			where CMEFrontMatterProviderBinding.front_matter = %s
-			order by CMEProvider.id',
+			order by CMEProvider.displayorder, CMEProvider.id',
 			$this->db->quote($this->id, 'integer')
 		);
 
