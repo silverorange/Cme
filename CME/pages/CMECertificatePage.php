@@ -175,10 +175,7 @@ abstract class CMECertificatePage extends SiteUiPage
 
 		ob_start();
 
-		$title_span = new SwatHtmlTag('span');
-		$title_span->class = 'title';
-		$title_span->setContent($this->getFrontMatterTitle($front_matter));
-		$title_span->display();
+		$this->displayTitle($front_matter);
 
 		$field = (abs($hours - 1.0) < 0.01)
 			? 'credit_title'
@@ -216,6 +213,17 @@ abstract class CMECertificatePage extends SiteUiPage
 		}
 
 		return ob_get_clean();
+	}
+
+	// }}}
+	// {{{ protected function displayTitle()
+
+	protected function displayTitle(CMEFrontMatter $front_matter)
+	{
+		$title_span = new SwatHtmlTag('span');
+		$title_span->class = 'title';
+		$title_span->setContent($this->getFrontMatterTitle($front_matter));
+		$title_span->display();
 	}
 
 	// }}}
