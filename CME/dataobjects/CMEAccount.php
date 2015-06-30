@@ -1,7 +1,7 @@
 <?php
 
 require_once 'Store/dataobjects/StoreAccount.php';
-require_once 'CME/dataobjects/CMECredit.php';
+require_once 'CME/dataobjects/CMECreditWrapper.php';
 require_once 'CME/dataobjects/CMEEvaluation.php';
 require_once 'CME/dataobjects/CMEEvaluationResponse.php';
 require_once 'CME/dataobjects/CMEFrontMatter.php';
