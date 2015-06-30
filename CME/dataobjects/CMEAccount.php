@@ -1,7 +1,7 @@
 <?php
 
 require_once 'Store/dataobjects/StoreAccount.php';
-require_once 'CME/dataobjects/CMECredit.php';
+require_once 'CME/dataobjects/CMECreditWrapper.php';
 require_once 'CME/dataobjects/CMEEvaluation.php';
 require_once 'CME/dataobjects/CMEEvaluationResponse.php';
 require_once 'CME/dataobjects/CMEFrontMatter.php';
@@ -129,18 +129,32 @@ abstract class CMEAccount extends StoreAccount
 	}
 
 	// }}}
-	// {{{ public function getEarnedCMECreditHoursByProvider()
+	// {{{ public function getEarnedCMECreditsByProvider()
 
-	public function getEarnedCMECreditHoursByProvider(CMEProvider $provider)
+	public function getEarnedCMECreditsByProvider(CMEProvider $provider)
 	{
-		$hours = 0;
+		$class_name = SwatDBClassMap::get('CMECreditWrapper');
+		$credits = new $class_name();
 
 		foreach ($this->earned_cme_credits as $earned_credit) {
 			$cme_providers = $earned_credit->credit->front_matter->providers;
 			$cme_provider = $cme_providers->getByIndex($provider->id);
 			if ($cme_provider instanceof CMEProvider) {
-				$hours += $earned_credit->credit->hours;
+				$credits->add($earned_credit->credit);
 			}
+		}
+
+		return $credits;
+	}
+
+	// }}}
+	// {{{ public function getEarnedCMECreditHoursByProvider()
+
+	public function getEarnedCMECreditHoursByProvider(CMEProvider $provider)
+	{
+		$hours = 0;
+		foreach ($this->getEarnedCMECreditsByProvider($provider) as $credit) {
+			$hours += $credit->hours;
 		}
 
 		return $hours;

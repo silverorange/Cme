@@ -70,10 +70,14 @@ class CMEFrontMatterWrapper extends SwatDBRecordsetWrapper
 		);
 
 		$sql = sprintf(
-			'select front_matter, provider
+			'select CMEFrontMatterProviderBinding.front_matter,
+				CMEFrontMatterProviderBinding.provider
 			from CMEFrontMatterProviderBinding
-			where front_matter in (%s)
-			order by front_matter',
+			inner join CMEProvider on
+				CMEProvider.id = CMEFrontMatterProviderBinding.provider
+			where CMEFrontMatterProviderBinding.front_matter in (%s)
+			order by CMEFrontMatterProviderBinding.front_matter,
+				CMEProvider.displayorder, CMEProvider.id',
 			$this->db->implodeArray(
 				$this->getIndexes(),
 				'integer'
