@@ -313,7 +313,7 @@ abstract class CMEAccount extends StoreAccount
 	// }}}
 	// {{{ public function getResponseByCMEQuiz()
 
-	public function getResponseByCMEQuiz($quiz)
+	public function getResponseByCMEQuiz($quiz_id)
 	{
 		require_once 'CME/dataobjects/CMEQuizResponseWrapper.php';
 
@@ -341,15 +341,15 @@ abstract class CMEAccount extends StoreAccount
 			}
 		}
 
-		return (isset($this->response_by_cme_quiz[$quiz]))
-			? $this->response_by_cme_quiz[$quiz]
+		return (isset($this->response_by_cme_quiz[$quiz_id]))
+			? $this->response_by_cme_quiz[$quiz_id]
 			: null;
 	}
 
 	// }}}
 	// {{{ public function getResponseByCMEEvaluation()
 
-	public function getResponseByCMEEvaluation($evaluation)
+	public function getResponseByCMEEvaluation($evaluation_id)
 	{
 		require_once 'CME/dataobjects/CMEEvaluationResponseWrapper.php';
 
@@ -359,8 +359,7 @@ abstract class CMEAccount extends StoreAccount
 			$this->response_by_cme_eval[] = array();
 
 			$sql = sprintf(
-				'select * from InquisitionResponse
-				where account = %s and reset_date is null',
+				'select * from InquisitionResponse where account = %s',
 				$this->db->quote($this->id, 'integer')
 			);
 
@@ -377,8 +376,8 @@ abstract class CMEAccount extends StoreAccount
 			}
 		}
 
-		return (isset($this->response_by_cme_eval[$evaluation]))
-			? $this->response_by_cme_eval[$evaluation]
+		return (isset($this->response_by_cme_eval[$evaluation_id]))
+			? $this->response_by_cme_eval[$evaluation_id]
 			: null;
 	}
 
