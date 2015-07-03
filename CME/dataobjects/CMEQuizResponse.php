@@ -89,6 +89,7 @@ class CMEQuizResponse extends InquisitionResponse
 		$this->checkDB();
 
 		$inquisition_id = $this->getInternalValue('inquisition');
+		$account_id = $this->getInternalValue('account');
 
 		$sql = sprintf(
 			'select CMECredit.* from CMECredit
@@ -97,8 +98,10 @@ class CMEQuizResponse extends InquisitionResponse
 				inner join AccountCMEProgress on
 					AccountCMEProgress.id =
 					AccountCMEProgressCreditBinding.progress
-			where AccountCMEProgress.quiz = %s',
-			$this->db->quote($inquisition_id, 'integer')
+			where AccountCMEProgress.quiz = %s
+				and AccountCMEProgress.account = %s',
+			$this->db->quote($inquisition_id, 'integer'),
+			$this->db->quote($account_id, 'integer')
 		);
 
 		return SwatDB::query(
