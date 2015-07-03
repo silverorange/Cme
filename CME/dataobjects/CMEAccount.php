@@ -67,7 +67,7 @@ abstract class CMEAccount extends StoreAccount
 		$progress = $this->getCMEProgress($credit);
 
 		if ($progress instanceof CMEAccountCMEProgress &&
-			$progress->hasInternalValue('evaluation')) {;
+			$progress->hasInternalValue('evaluation')) {
 
 			$response = $this->getResponseByCMEEvaluation(
 				$progress->getInternalValue('evaluation')
@@ -92,7 +92,7 @@ abstract class CMEAccount extends StoreAccount
 		$progress = $this->getCMEProgress($credit);
 
 		if ($progress instanceof CMEAccountCMEProgress &&
-			$progress->hasInternalValue('quiz')) {;
+			$progress->hasInternalValue('quiz')) {
 
 			$quiz_response = $this->getResponseByCMEQuiz(
 				$progress->getInternalValue('quiz')
@@ -118,7 +118,7 @@ abstract class CMEAccount extends StoreAccount
 			$progress = $this->getCMEProgress($credit);
 
 			if ($progress instanceof CMEAccountCMEProgress &&
-				$progress->hasInternalValue('quiz')) {;
+				$progress->hasInternalValue('quiz')) {
 
 				$quiz_response = $this->getResponseByCMEQuiz(
 					$progress->getInternalValue('quiz')
