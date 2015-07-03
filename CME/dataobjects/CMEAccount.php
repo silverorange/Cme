@@ -328,8 +328,11 @@ abstract class CMEAccount extends StoreAccount
 				$this->db->quote($this->id, 'integer')
 			);
 
-			$responses = SwatDB::query($this->db, $sql,
-				SwatDBClassMap::get('CMEQuizResponseWrapper'));
+			$responses = SwatDB::query(
+				$this->db,
+				$sql,
+				SwatDBClassMap::get('CMEQuizResponseWrapper')
+			);
 
 			foreach ($responses as $response) {
 				$id = $response->getInternalValue('inquisition');
@@ -361,8 +364,11 @@ abstract class CMEAccount extends StoreAccount
 				$this->db->quote($this->id, 'integer')
 			);
 
-			$responses = SwatDB::query($this->db, $sql,
-				SwatDBClassMap::get('CMEEvaluationResponseWrapper'));
+			$responses = SwatDB::query(
+				$this->db,
+				$sql,
+				SwatDBClassMap::get('CMEEvaluationResponseWrapper')
+			);
 
 			foreach ($responses as $response) {
 				$id = $response->getInternalValue('inquisition');
