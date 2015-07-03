@@ -44,13 +44,7 @@ class CMEQuizResponse extends InquisitionResponse
 
 	public function getGrade()
 	{
-		$question_count = count($this->inquisition->question_bindings);
-
-		if ($question_count === 0) {
-			return 0;
-		}
-
-		return $this->getCorrectCount() / $question_count;
+		return $this->grade;
 	}
 
 	// }}}
@@ -60,7 +54,7 @@ class CMEQuizResponse extends InquisitionResponse
 	{
 		return (
 			$this->getGrade() >=
-			$this->getCredits()->getFirst()->front_matter->passing_grade
+			$this->credits->getFirst()->front_matter->passing_grade
 		);
 	}
 
@@ -69,28 +63,7 @@ class CMEQuizResponse extends InquisitionResponse
 
 	public function getCredits()
 	{
-		require_once 'CME/dataobjects/CMECreditWrapper.php';
-
-		$this->checkDB();
-
-		$inquisition_id = $this->getInternalValue('inquisition');
-
-		$sql = sprintf(
-			'select CMECredit.* from CMECredit
-				inner join AccountCMEProgressCreditBinding on
-					AccountCMEProgressCreditBinding.credit = CMECredit.id
-				inner join AccountCMEProgress on
-					AccountCMEProgress.id =
-					AccountCMEProgressCreditBinding.progress
-			where AccountCMEProgress.quiz = %s',
-			$this->db->quote($inquisition_id, 'integer')
-		);
-
-		return SwatDB::query(
-			$this->db,
-			$sql,
-			SwatDBClassMap::get('CMECreditWrapper')
-		);
+		return $this->credits;
 	}
 
 	// }}}
@@ -103,6 +76,38 @@ class CMEQuizResponse extends InquisitionResponse
 		$this->registerInternalProperty(
 			'account',
 			SwatDBClassMap::get('CMEAccount')
+		);
+	}
+
+	// }}}
+	// {{{ public function loadCredits()
+
+	public function loadCredits()
+	{
+		require_once 'CME/dataobjects/CMECreditWrapper.php';
+
+		$this->checkDB();
+
+		$inquisition_id = $this->getInternalValue('inquisition');
+		$account_id = $this->getInternalValue('account');
+
+		$sql = sprintf(
+			'select CMECredit.* from CMECredit
+				inner join AccountCMEProgressCreditBinding on
+					AccountCMEProgressCreditBinding.credit = CMECredit.id
+				inner join AccountCMEProgress on
+					AccountCMEProgress.id =
+					AccountCMEProgressCreditBinding.progress
+			where AccountCMEProgress.quiz = %s
+				and AccountCMEProgress.account = %s',
+			$this->db->quote($inquisition_id, 'integer'),
+			$this->db->quote($account_id, 'integer')
+		);
+
+		return SwatDB::query(
+			$this->db,
+			$sql,
+			SwatDBClassMap::get('CMECreditWrapper')
 		);
 	}
 
