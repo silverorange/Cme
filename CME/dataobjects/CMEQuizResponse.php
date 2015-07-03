@@ -44,13 +44,7 @@ class CMEQuizResponse extends InquisitionResponse
 
 	public function getGrade()
 	{
-		$question_count = count($this->inquisition->question_bindings);
-
-		if ($question_count === 0) {
-			return 0;
-		}
-
-		return $this->getCorrectCount() / $question_count;
+		return $this->grade;
 	}
 
 	// }}}
@@ -60,7 +54,7 @@ class CMEQuizResponse extends InquisitionResponse
 	{
 		return (
 			$this->getGrade() >=
-			$this->getCredits()->getFirst()->front_matter->passing_grade
+			$this->credits->getFirst()->front_matter->passing_grade
 		);
 	}
 
@@ -68,6 +62,27 @@ class CMEQuizResponse extends InquisitionResponse
 	// {{{ public function getCredits()
 
 	public function getCredits()
+	{
+		return $this->credits;
+	}
+
+	// }}}
+	// {{{ protected function init()
+
+	protected function init()
+	{
+		parent::init();
+		$this->registerDateProperty('reset_date');
+		$this->registerInternalProperty(
+			'account',
+			SwatDBClassMap::get('CMEAccount')
+		);
+	}
+
+	// }}}
+	// {{{ public function loadCredits()
+
+	public function loadCredits()
 	{
 		require_once 'CME/dataobjects/CMECreditWrapper.php';
 
@@ -90,19 +105,6 @@ class CMEQuizResponse extends InquisitionResponse
 			$this->db,
 			$sql,
 			SwatDBClassMap::get('CMECreditWrapper')
-		);
-	}
-
-	// }}}
-	// {{{ protected function init()
-
-	protected function init()
-	{
-		parent::init();
-		$this->registerDateProperty('reset_date');
-		$this->registerInternalProperty(
-			'account',
-			SwatDBClassMap::get('CMEAccount')
 		);
 	}
 

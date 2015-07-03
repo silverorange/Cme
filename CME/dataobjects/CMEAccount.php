@@ -18,6 +18,24 @@ require_once 'CME/dataobjects/CMEAccountCMEProgress.php';
  */
 abstract class CMEAccount extends StoreAccount
 {
+	// {{{ protected properties
+
+	/**
+	 * @var array
+	 */
+	protected $cme_progress_by_credit;
+
+	/**
+	 * @var array
+	 */
+	protected $response_by_cme_quiz;
+
+	/**
+	 * @var array
+	 */
+	protected $response_by_cme_eval;
+
+	// }}}
 	// {{{ abstract public function hasCMEAccess()
 
 	abstract public function hasCMEAccess();
@@ -49,9 +67,12 @@ abstract class CMEAccount extends StoreAccount
 		$progress = $this->getCMEProgress($credit);
 
 		if ($progress instanceof CMEAccountCMEProgress &&
-			$progress->evaluation instanceof CMEEvaluation) {
+			$progress->hasInternalValue('evaluation')) {;
 
-			$response = $progress->evaluation->getResponseByAccount($this);
+			$response = $this->getResponseByCMEEvaluation(
+				$progress->getInternalValue('evaluation')
+			);
+
 			$complete = (
 				$response instanceof CMEEvaluationResponse &&
 				$response->complete_date instanceof SwatDate
@@ -71,11 +92,16 @@ abstract class CMEAccount extends StoreAccount
 		$progress = $this->getCMEProgress($credit);
 
 		if ($progress instanceof CMEAccountCMEProgress &&
-			$progress->quiz instanceof CMEQuiz) {
+			$progress->hasInternalValue('quiz')) {;
 
-			$quiz_response = $progress->quiz->getResponseByAccount($this);
-			$complete = ($quiz_response instanceof CMEQuizResponse &&
-				$quiz_response->complete_date instanceof SwatDate);
+			$quiz_response = $this->getResponseByCMEQuiz(
+				$progress->getInternalValue('quiz')
+			);
+
+			$complete = (
+				$quiz_response instanceof CMEQuizResponse &&
+				$quiz_response->complete_date instanceof SwatDate
+			);
 		}
 
 		return $complete;
@@ -90,8 +116,19 @@ abstract class CMEAccount extends StoreAccount
 
 		if ($this->isQuizComplete($credit)) {
 			$progress = $this->getCMEProgress($credit);
-			$quiz_response = $progress->quiz->getResponseByAccount($this);
-			$passed = $quiz_response->isPassed();
+
+			if ($progress instanceof CMEAccountCMEProgress &&
+				$progress->hasInternalValue('quiz')) {;
+
+				$quiz_response = $this->getResponseByCMEQuiz(
+					$progress->getInternalValue('quiz')
+				);
+
+				$passed = (
+					$quiz_response instanceof CMEQuizResponse &&
+					$quiz_response->isPassed()
+				);
+			}
 		}
 
 		return $passed;
@@ -244,23 +281,99 @@ abstract class CMEAccount extends StoreAccount
 
 		$this->checkDB();
 
-		$sql = sprintf(
-			'select AccountCMEProgress.*
-			from AccountCMEProgress
-			where AccountCMEProgress.account = %s
-			and AccountCMEProgress.id in (
-				select progress from AccountCMEProgressCreditBinding
-				where AccountCMEProgressCreditBinding.credit = %s
-			)',
-			$this->db->quote($this->id, 'integer'),
-			$this->db->quote($credit->id, 'integer')
-		);
+		if ($this->cme_progress_by_credit === null) {
+			$sql = sprintf(
+				'select AccountCMEProgress.*,
+					AccountCMEProgressCreditBinding.credit
+				from AccountCMEProgress
+				inner join AccountCMEProgressCreditBinding on
+					AccountCMEProgressCreditBinding.progress =
+						AccountCMEProgress.id
+				where AccountCMEProgress.account = %s',
+				$this->db->quote($this->id, 'integer'),
+				$this->db->quote($credit->id, 'integer')
+			);
 
-		return SwatDB::query(
-			$this->db,
-			$sql,
-			SwatDBClassMap::get('CMEAccountCMEProgressWrapper')
-		)->getFirst();
+			$rows = SwatDB::query($this->db, $sql);
+
+			$this->cme_progress_by_credit = array();
+			$class_name = SwatDBClassMap::get('CMEAccountCMEProgress');
+			foreach ($rows as $row) {
+				$progress = new $class_name($row);
+				$progress->setDatabase($this->db);
+				$this->cme_progress_by_credit[$row->credit] = $progress;
+			}
+		}
+
+		return (isset($this->cme_progress_by_credit[$credit->id]))
+			? $this->cme_progress_by_credit[$credit->id]
+			: null;
+	}
+
+	// }}}
+	// {{{ public function getResponseByCMEQuiz()
+
+	public function getResponseByCMEQuiz($quiz)
+	{
+		require_once 'CME/dataobjects/CMEQuizResponseWrapper.php';
+
+		$this->checkDB();
+
+		if ($this->response_by_cme_quiz === null) {
+			$this->response_by_cme_quiz[] = array();
+
+			$sql = sprintf(
+				'select * from InquisitionResponse
+				where account = %s and reset_date is null',
+				$this->db->quote($this->id, 'integer')
+			);
+
+			$responses = SwatDB::query($this->db, $sql,
+				SwatDBClassMap::get('CMEQuizResponseWrapper'));
+
+			foreach ($responses as $response) {
+				$id = $response->getInternalValue('inquisition');
+
+				$this->response_by_cme_quiz[$id] = $response;
+			}
+		}
+
+		return (isset($this->response_by_cme_quiz[$quiz]))
+			? $this->response_by_cme_quiz[$quiz]
+			: null;
+	}
+
+	// }}}
+	// {{{ public function getResponseByCMEEvaluation()
+
+	public function getResponseByCMEEvaluation($evaluation)
+	{
+		require_once 'CME/dataobjects/CMEEvaluationResponseWrapper.php';
+
+		$this->checkDB();
+
+		if ($this->response_by_cme_eval === null) {
+			$this->response_by_cme_eval[] = array();
+
+			$sql = sprintf(
+				'select * from InquisitionResponse
+				where account = %s and reset_date is null',
+				$this->db->quote($this->id, 'integer')
+			);
+
+			$responses = SwatDB::query($this->db, $sql,
+				SwatDBClassMap::get('CMEEvaluationResponseWrapper'));
+
+			foreach ($responses as $response) {
+				$id = $response->getInternalValue('inquisition');
+
+				$this->response_by_cme_eval[$id] = $response;
+			}
+		}
+
+		return (isset($this->response_by_cme_eval[$evaluation]))
+			? $this->response_by_cme_eval[$evaluation]
+			: null;
 	}
 
 	// }}}
@@ -335,7 +448,7 @@ abstract class CMEAccount extends StoreAccount
 			$front_matters = $credits->loadAllSubDataObjects(
 				'front_matter',
 				$this->db,
-				'select * from CMEFrontMatter where id in(%s)',
+				'select * from CMEFrontMatter where id in (%s)',
 				SwatDBClassMap::get('CMEFrontMatterWrapper')
 			);
 
