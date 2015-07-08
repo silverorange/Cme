@@ -253,21 +253,25 @@ abstract class CMEReportUpdater extends SiteCommandLineApplication
 		$end_date->addMonths(3);
 
 		$sql = sprintf(
-			'select count(1) from AccountEarnedCMECredit
-				inner join Account
-					on AccountEarnedCMECredit.account = Account.id
-				inner join CMECredit
-					on AccountEarnedCMECredit.credit = CMECredit.id
-				inner join CMEFrontMatter
-					on CMECredit.front_matter = CMEFrontMatter.id
-			where CMEFrontMatter.id in (
+			'select count(1)
+			from AccountCMEProgressCreditBinding
+			inner join AccountCMEProgress on
+				AccountCMEProgressCreditBinding.progress = AccountCMEProgress.id
+			inner join AccountEarnedCMECredit on
+				AccountEarnedCMECredit.account = AccountCMEProgress.account
+				and AccountCMEProgressCreditBinding.credit =
+					AccountEarnedCMECredit.credit
+			inner join CMECredit on
+				CMECredit.id = AccountEarnedCMECredit.credit
+			inner join Account on AccountCMEProgress.account = Account.id
+			where CMECredit.front_matter in (
 					select CMEFrontMatterProviderBinding.front_matter
 					from CMEFrontMatterProviderBinding
 					where CMEFrontMatterProviderBinding.provider = %s
 				)
-				and Account.delete_date is null
-				and convertTZ(earned_date, %s) >= %s
-				and convertTZ(earned_date, %s) < %s',
+			and convertTZ(earned_date, %s) >= %s
+			and convertTZ(earned_date, %s) < %s
+			and Account.delete_date is null',
 			$this->db->quote($provider->id, 'integer'),
 			$this->db->quote($this->config->date->time_zone, 'text'),
 			$this->db->quote($start_date->getDate(), 'date'),
