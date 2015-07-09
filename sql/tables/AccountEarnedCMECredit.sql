@@ -11,3 +11,9 @@ create index AccountEarnedCMECredit_account_index
 
 create index AccountEarnedCMECredit_credit_index
 	on AccountEarnedCMECredit(credit);
+
+create index AccountEarnedCMECredit_earned_date_index
+	on AccountEarnedCMECredit(earned_date);
+
+create index AccountEarnedCMECredit_earned_date_los_angeles_index
+	on AccountEarnedCMECredit(convertTZ(earned_date, 'America/Los_Angeles'));
