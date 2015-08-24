@@ -233,46 +233,6 @@ abstract class CMEAccount extends StoreAccount
 	}
 
 	// }}}
-	// {{{ public function getAvailableCMECredits()
-
-	public function getAvailableCMECredits()
-	{
-		require_once 'CME/dataobjects/CMECreditWrapper.php';
-
-		$this->checkDB();
-
-		if ($this->hasCMEAccess()) {
-			$sql = sprintf(
-				'select CMECredit.*
-				from CMECredit
-					inner join CMEFrontMatter
-						on CMECredit.front_matter = CMEFrontMatter.id
-				where CMECredit.hours > 0
-					and CMEFrontMatter.enabled = %s
-					and CMECredit.id not in (
-						select credit from AccountEarnedCMECredit
-						where account = %s
-					)
-				order by CMEFrontMatter.id, CMECredit.displayorder',
-				$this->db->quote(true, 'boolean'),
-				$this->db->quote($this->id, 'integer')
-			);
-
-			$available_credits = SwatDB::query(
-				$this->db,
-				$sql,
-				SwatDBClassMap::get('CMECreditWrapper')
-			);
-		} else {
-			$wrapper = SwatDBClassMap::get('CMECreditWrapper');
-			$available_credits = new $wrapper();
-		}
-
-		$available_credits->setDatabase($this->db);
-		return $available_credits;
-	}
-
-	// }}}
 	// {{{ public function getCMEProgress()
 
 	public function getCMEProgress(RapCredit $credit)
