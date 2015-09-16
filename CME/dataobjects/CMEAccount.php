@@ -471,30 +471,6 @@ abstract class CMEAccount extends StoreAccount
 	}
 
 	// }}}
-	// {{{ protected function loadCMEFrontMatters()
-
-	protected function loadCMEFrontMatters()
-	{
-		require_once 'CME/dataobjects/CMEFrontMatterWrapper.php';
-
-		$wrapper = SwatDBClassMap::get('CMEFrontMatterWrapper');
-		$front_matters = new $wrapper();
-		$wrapper->setDatabase($this->db);
-
-		foreach ($this->cme_credits as $credit) {
-			$front_matter = $credit->front_matter;
-
-			// remove duplicate front matters from recordset
-			$wrapper_front_matter = $wrapper->getByIndex($front_matter->id);
-			if (!$wrapper_front_matter instanceof CMEFrontMatter) {
-				$wrapper->add($front_matter);
-			}
-		}
-
-		return $wrapper;
-	}
-
-	// }}}
 }
 
 ?>
