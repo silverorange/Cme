@@ -159,48 +159,53 @@ class CMEEvaluationReportGenerator
 		);
 
 		// efficiently load evaluation question bindings
-		$question_binding_sql = sprintf(
-			'select * from InquisitionInquisitionQuestionBinding
-			where inquisition in (%s)
-			order by inquisition, displayorder',
-			$this->app->db->implodeArray($evaluations->getIndexes(), 'integer')
-		);
-
-		$question_bindings = SwatDB::query(
-			$this->app->db,
-			$question_binding_sql,
-			$question_binding_wrapper
-		);
-
-		$evaluations->attachSubRecordset(
-			'question_bindings',
-			$question_binding_wrapper,
-			'inquisition',
-			$question_bindings
-		);
-
-		// efficiently load evaluations questions
-		if ($question_bindings instanceof $question_binding_wrapper) {
-			$question_sql = 'select * from InquisitionQuestion
-				where id in (%s)';
-
-			$questions = $question_bindings->loadAllSubDataObjects(
-				'question',
-				$this->app->db,
-				$question_sql,
-				$question_wrapper
+		if ($evaluations instanceof CMEEvaluationWrapper) {
+			$question_binding_sql = sprintf(
+				'select * from InquisitionInquisitionQuestionBinding
+				where inquisition in (%s)
+				order by inquisition, displayorder',
+				$this->app->db->implodeArray(
+					$evaluations->getIndexes(),
+					'integer'
+				)
 			);
 
-			// efficiently load evaluation question options
-			if ($questions instanceof $question_wrapper) {
-				$options = $questions->loadAllSubRecordsets(
-					'options',
-					SwatDBClassMap::get('InquisitionQuestionOptionWrapper'),
-					'InquisitionQuestionOption',
+			$question_bindings = SwatDB::query(
+				$this->app->db,
+				$question_binding_sql,
+				$question_binding_wrapper
+			);
+
+			$evaluations->attachSubRecordset(
+				'question_bindings',
+				$question_binding_wrapper,
+				'inquisition',
+				$question_bindings
+			);
+
+			// efficiently load evaluations questions
+			if ($question_bindings instanceof $question_binding_wrapper) {
+				$question_sql = 'select * from InquisitionQuestion
+					where id in (%s)';
+
+				$questions = $question_bindings->loadAllSubDataObjects(
 					'question',
-					'',
-					'displayorder'
+					$this->app->db,
+					$question_sql,
+					$question_wrapper
 				);
+
+				// efficiently load evaluation question options
+				if ($questions instanceof $question_wrapper) {
+					$options = $questions->loadAllSubRecordsets(
+						'options',
+						SwatDBClassMap::get('InquisitionQuestionOptionWrapper'),
+						'InquisitionQuestionOption',
+						'question',
+						'',
+						'displayorder'
+					);
+				}
 			}
 		}
 
