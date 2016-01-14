@@ -1,0 +1,41 @@
+{
+	"name": "silverorange/cme",
+	"description": "Continuing Medical Education certification framework.",
+	"type": "library",
+	"keywords": [ "cme", "medical", "education" ],
+	"homepage": "https://github.com/silverorange/cme",
+	"license": "MIT",
+	"authors": [
+		{
+			"name": "Charles Waddell",
+			"email": "charles@silverorange.com"
+		},
+		{
+			"name": "Isaac Grant",
+			"email": "isaac@silverorange.com"
+		},
+		{
+			"name": "Michael Gauthier",
+			"email": "mike@silverorange.com"
+		},
+		{
+			"name": "Nick Burka",
+			"email": "nick@silverorange.com"
+		}
+	],
+	"require": {
+		"php": ">=5.2.1",
+		"dompdf/dompdf": "^0.6.0",
+		"silverorange/admin": "^2.0.23",
+		"silverorange/inquisition": ">=0.0.41",
+		"silverorange/site": "^2.1.45",
+		"silverorange/swat": "^2.2.10",
+		"silverorange/silverorange_autoloader": "*"
+	},
+	"autoload": {
+		"files": [ "autoload.php" ]
+	},
+	"include-path": [
+		"./"
+	]
+}
