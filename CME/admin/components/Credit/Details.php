@@ -4,7 +4,7 @@ require_once 'Inquisition/admin/components/Inquisition/Details.php';
 
 /**
  * @package   CME
- * @copyright 2014-2015 silverorange
+ * @copyright 2014-2016 silverorange
  */
 class CMECreditDetails extends InquisitionInquisitionDetails
 {

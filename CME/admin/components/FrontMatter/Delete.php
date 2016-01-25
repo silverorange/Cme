@@ -8,7 +8,7 @@ require_once 'CME/dataobjects/CMEFrontMatter.php';
 
 /**
  * @package   CME
- * @copyright 2013-2015 silverorange
+ * @copyright 2013-2016 silverorange
  * @license   http://www.opensource.org/licenses/mit-license.html MIT License
  */
 class CMEFrontMatterDelete extends AdminDBDelete
