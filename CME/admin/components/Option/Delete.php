@@ -5,7 +5,7 @@ require_once 'CME/admin/components/Option/include/CMEOptionHelper.php';
 
 /**
  * @package   CME
- * @copyright 2014-2015 silverorange
+ * @copyright 2014-2016 silverorange
  * @license   http://www.opensource.org/licenses/mit-license.html MIT License
  */
 class CMEOptionDelete extends InquisitionOptionDelete
