@@ -46,6 +46,11 @@ abstract class CMEFrontMatter extends SwatDBDataObject
 	/**
 	 * @var SwatDate
 	 */
+	public $release_date;
+
+	/**
+	 * @var SwatDate
+	 */
 	public $review_date;
 
 	/**
@@ -108,6 +113,7 @@ abstract class CMEFrontMatter extends SwatDBDataObject
 			SwatDBClassMap::get('CMEEvaluation')
 		);
 
+		$this->registerDateProperty('release_date');
 		$this->registerDateProperty('review_date');
 	}
 
