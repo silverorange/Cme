@@ -9,6 +9,7 @@ create table CMEFrontMatter (
 	planning_committee_with_disclosures text,
 	support_staff_no_disclosures text,
 	support_staff_with_disclosures text,
+	release_date timestamp,
 	review_date timestamp,
 
 	passing_grade decimal(5, 2),

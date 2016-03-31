@@ -39,6 +39,7 @@ abstract class CMEFrontMatterEdit extends AdminObjectEdit
 	{
 		return array(
 			'objectives',
+			'release_date',
 			'review_date',
 			'enabled',
 			'passing_grade',

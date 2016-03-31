@@ -17,6 +17,11 @@
 					<property name="rows" type="integer">32</property>
 				</widget>
 			</widget>
+			<widget class="SwatFormField" id="release_date_field">
+				<property name="title" translatable="yes">CME Content Release Date</property>
+				<property name="note" translatable="yes">The front matter’s displayed release date will default its published date if this is not set.</property>
+				<widget class="SwatDateEntry" id="release_date" />
+			</widget>
 			<widget class="SwatFormField" id="review_date_field">
 				<property name="title" translatable="yes">Date of Latest Review by CME Provider</property>
 				<widget class="SwatDateEntry" id="review_date">
