@@ -29,11 +29,10 @@
 		"silverorange/admin": "^2.0.23",
 		"silverorange/inquisition": ">=0.0.41",
 		"silverorange/site": "^2.1.45",
-		"silverorange/swat": "^2.2.10",
-		"silverorange/silverorange_autoloader": "*"
+		"silverorange/swat": "^2.2.10"
 	},
 	"autoload": {
-		"files": [ "autoload.php" ]
+		"classmap": [ "CME/" ]
 	},
 	"include-path": [
 		"./"
