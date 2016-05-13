@@ -13,10 +13,10 @@
   <email>mike@silverorange.com</email>
   <active>yes</active>
  </lead>
- <date>2016-04-06</date>
- <time>11:33:49</time>
+ <date>2016-05-13</date>
+ <time>12:16:05</time>
  <version>
-  <release>0.1.23</release>
+  <release>0.1.24</release>
   <api>0.1.0</api>
  </version>
  <stability>
@@ -170,7 +170,6 @@ beta release
      <file name="cme-quiz-page.js" role="data" />
     </dir> <!-- /www/javascript -->
    </dir> <!-- /www -->
-   <file name="autoload.php" role="php" />
    <file name="composer.json" role="data" />
    <file name="LICENSE" role="doc" />
    <file name="README.md" role="doc" />
@@ -217,14 +216,14 @@ beta release
  <changelog>
   <release>
    <version>
-    <release>0.1.23</release>
+    <release>0.1.24</release>
     <api>0.1.0</api>
    </version>
    <stability>
     <release>beta</release>
     <api>beta</api>
    </stability>
-   <date>2016-04-06</date>
+   <date>2016-05-13</date>
    <license uri="http://www.opensource.org/licenses/mit-license.html">MIT License</license>
    <notes>
 beta release
