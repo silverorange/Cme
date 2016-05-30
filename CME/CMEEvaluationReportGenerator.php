@@ -1,5 +1,7 @@
 <?php
 
+use Dompdf\Dompdf;
+
 require_once 'Swat/SwatDate.php';
 require_once 'SwatDB/SwatDB.php';
 require_once 'Site/SiteApplication.php';
@@ -231,28 +233,15 @@ class CMEEvaluationReportGenerator
 			mkdir(dirname($filename), 0770, true);
 		}
 
-		$this->initDOMPDF();
-
 		ob_start();
 		$this->display();
 		$xhtml = ob_get_clean();
 
-		$dompdf = new DOMPDF();
-		$dompdf->load_html($xhtml);
+		$dompdf = new Dompdf();
+		$dompdf->loadHtml($xhtml);
 		$dompdf->render();
 
 		file_put_contents($filename, $dompdf->output());
-	}
-
-	// }}}
-	// {{{ protected function initDOMPDF()
-
-	protected function initDOMPDF()
-	{
-		if (!class_exists('DOMPDF')) {
-			define('DOMPDF_ENABLE_PHP', true);
-			include_once 'dompdf/dompdf_config.inc.php';
-		}
 	}
 
 	// }}}
