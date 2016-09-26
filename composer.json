@@ -28,7 +28,7 @@
 		"dompdf/dompdf": "^0.7.0",
 		"silverorange/admin": "^2.1.5",
 		"silverorange/inquisition": ">=0.0.44",
-		"silverorange/site": "^3.0.0",
+		"silverorange/site": "^4.0.0",
 		"silverorange/swat": "^2.2.10"
 	},
 	"autoload": {
