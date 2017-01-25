@@ -29,7 +29,7 @@
 		"silverorange/admin": "^2.1.5",
 		"silverorange/inquisition": ">=0.0.44",
 		"silverorange/site": "^4.0.0",
-		"silverorange/swat": "^2.2.10"
+		"silverorange/swat": "^2.5.0"
 	},
 	"autoload": {
 		"classmap": [ "CME/" ]
