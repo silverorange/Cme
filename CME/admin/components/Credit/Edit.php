@@ -300,7 +300,7 @@ abstract class CMECreditEdit extends InquisitionInquisitionEdit
 	{
 		parent::loadDBData();
 
-		$this->ui->setValues(get_object_vars($this->credit));
+		$this->ui->setValues($this->credit->getAttributes());
 	}
 
 	// }}}
