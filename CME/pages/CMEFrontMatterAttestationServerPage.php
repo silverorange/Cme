@@ -163,8 +163,8 @@ class CMEFrontMatterAttestationServerPage extends SiteArticlePage
 		$wrapper = SwatDBClassMap::get('CMEAccountEarnedCMECreditWrapper');
 		$class_name = SwatDBClassMap::get('CMEAccountEarnedCMECredit');
 		$earned_credits = new $wrapper();
-		$earned_date = new SwatDate();
-		$earned_date->toUTC();
+		$now = new SwatDate();
+		$now->toUTC();
 		foreach ($front_matter->credits as $credit) {
 			if ($credit->isEarned($account)) {
 				// check for existing earned credit before saving
