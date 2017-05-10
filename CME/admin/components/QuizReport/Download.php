@@ -1,7 +1,5 @@
 <?php
 
-require_once 'Admin/pages/AdminPage.php';
-require_once 'CME/dataobjects/CMEQuizReportWrapper.php';
 
 /**
  * @package   CME

@@ -1,7 +1,5 @@
 <?php
 
-require_once 'SwatDB/SwatDBRecordsetWrapper.php';
-require_once 'CME/dataobjects/CMEFrontMatter.php';
 
 /**
  * A recordset wrapper class for CMEFrontMatter objects

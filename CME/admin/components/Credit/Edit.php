@@ -1,15 +1,5 @@
 <?php
 
-require_once 'SwatDB/SwatDB.php';
-require_once 'Swat/SwatMessage.php';
-require_once 'Admin/exceptions/AdminNotFoundException.php';
-require_once 'Inquisition/InquisitionFileParser.php';
-require_once 'Inquisition/InquisitionImporter.php';
-require_once 'Inquisition/admin/components/Inquisition/Edit.php';
-require_once 'CME/CME.php';
-require_once 'CME/dataobjects/CMECredit.php';
-require_once 'CME/dataobjects/CMEQuiz.php';
-require_once 'CME/dataobjects/CMEFrontMatter.php';
 
 /**
  * @package   CME

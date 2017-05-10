@@ -1,7 +1,5 @@
 <?php
 
-require_once 'Inquisition/dataobjects/InquisitionInquisition.php';
-require_once 'CME/dataobjects/CMEEvaluationResponseWrapper.php';
 
 /**
  * An evaluation

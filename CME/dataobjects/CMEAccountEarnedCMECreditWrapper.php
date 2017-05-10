@@ -1,7 +1,5 @@
 <?php
 
-require_once 'SwatDB/SwatDBRecordsetWrapper.php';
-require_once 'CME/dataobjects/CMEAccountEarnedCMECredit.php';
 
 /**
  * @package   CME

@@ -1,7 +1,5 @@
 <?php
 
-require_once 'Inquisition/admin/components/Question/CorrectOption.php';
-require_once 'CME/admin/components/Question/include/CMEQuestionHelper.php';
 
 /**
  * Edit page for a selecting the correct option to a question

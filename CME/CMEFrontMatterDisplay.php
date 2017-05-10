@@ -1,8 +1,5 @@
 <?php
 
-require_once 'Swat/SwatControl.php';
-require_once 'Swat/SwatYUI.php';
-require_once 'CME/CME.php';
 
 /**
  * @package   CME

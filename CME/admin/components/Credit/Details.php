@@ -1,6 +1,5 @@
 <?php
 
-require_once 'Inquisition/admin/components/Inquisition/Details.php';
 
 /**
  * @package   CME

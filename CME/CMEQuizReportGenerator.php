@@ -1,15 +1,5 @@
 <?php
 
-require_once 'Swat/SwatDate.php';
-require_once 'SwatDB/SwatDB.php';
-require_once 'Site/SiteApplication.php';
-require_once 'Site/dataobjects/SiteAccountWrapper.php';
-require_once 'Store/dataobjects/StoreAccountAddressWrapper.php';
-require_once 'Store/dataobjects/StoreProvStateWrapper.php';
-require_once 'Store/dataobjects/StoreCountryWrapper.php';
-require_once 'CME/dataobjects/CMECreditWrapper.php';
-require_once 'CME/dataobjects/CMEProvider.php';
-require_once 'CME/dataobjects/CMEAccountEarnedCMECreditWrapper.php';
 
 /**
  * @package   CME

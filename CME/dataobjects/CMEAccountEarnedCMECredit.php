@@ -1,7 +1,5 @@
 <?php
 
-require_once 'CME/dataobjects/CMEAccount.php';
-require_once 'CME/dataobjects/CMECredit.php';
 
 /**
  * CME specific Account object

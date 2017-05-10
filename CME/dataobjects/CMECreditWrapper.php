@@ -1,7 +1,5 @@
 <?php
 
-require_once 'SwatDB/SwatDBRecordsetWrapper.php';
-require_once 'CME/dataobjects/CMECredit.php';
 
 /**
  * A recordset wrapper class for CMECredit objects

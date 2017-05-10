@@ -1,10 +1,5 @@
 <?php
 
-require_once 'SwatDB/SwatDBClassMap.php';
-require_once 'Admin/exceptions/AdminNotFoundException.php';
-require_once 'Inquisition/dataobjects/InquisitionInquisition.php';
-require_once 'CME/dataobjects/CMECreditWrapper.php';
-require_once 'CME/dataobjects/CMEFrontMatterWrapper.php';
 
 /**
  * @package   CME

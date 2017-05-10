@@ -1,18 +1,5 @@
 <?php
 
-require_once 'Swat/SwatYUI.php';
-require_once 'SwatI18N/SwatI18NLocale.php';
-require_once 'Swat/SwatDisplayableContainer.php';
-require_once 'Swat/SwatContentBlock.php';
-require_once 'Swat/SwatMessageDisplay.php';
-require_once 'Site/pages/SiteDBEditPage.php';
-require_once 'Inquisition/dataobjects/InquisitionInquisitionWrapper.php';
-require_once 'Inquisition/dataobjects/InquisitionQuestionWrapper.php';
-require_once 'Inquisition/dataobjects/InquisitionQuestionOptionWrapper.php';
-require_once 'CME/CMEFrontMatterCompleteMailMessage.php';
-require_once 'CME/dataobjects/CMEQuiz.php';
-require_once 'CME/dataobjects/CMECreditWrapper.php';
-require_once 'CME/dataobjects/CMEAccountEarnedCMECredit.php';
 
 /**
  * @package   CME

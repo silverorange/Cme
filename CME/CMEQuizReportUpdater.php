@@ -1,9 +1,5 @@
 <?php
 
-require_once 'CME/CMEReportUpdater.php';
-require_once 'CME/dataobjects/CMEQuizReport.php';
-require_once 'CME/dataobjects/CMEQuizReportWrapper.php';
-require_once 'CME/CMEQuizReportGenerator.php';
 
 /**
  * @package   CME

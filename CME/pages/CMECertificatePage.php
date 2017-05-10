@@ -1,10 +1,5 @@
 <?php
 
-require_once 'Site/pages/SiteUiPage.php';
-require_once 'Swat/SwatDetailsStore.php';
-require_once 'CME/CME.php';
-require_once 'CME/dataobjects/CMEAccountEarnedCMECreditWrapper.php';
-require_once 'CME/dataobjects/CMEProviderWrapper.php';
 
 /**
  * Page for generating and viewing certificates

@@ -1,7 +1,5 @@
 <?php
 
-require_once 'Inquisition/admin/components/Question/HintOrder.php';
-require_once 'CME/admin/components/Question/include/CMEQuestionHelper.php';
 
 /**
  * Question hint order page for inquisitions

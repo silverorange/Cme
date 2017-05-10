@@ -1,14 +1,5 @@
 <?php
 
-require_once 'Site/pages/SiteArticlePage.php';
-require_once 'Inquisition/dataobjects/InquisitionQuestionWrapper.php';
-require_once 'Inquisition/dataobjects/InquisitionResponse.php';
-require_once 'Inquisition/dataobjects/InquisitionResponseWrapper.php';
-require_once 'Inquisition/dataobjects/InquisitionInquisitionWrapper.php';
-require_once 'Inquisition/dataobjects/InquisitionInquisition.php';
-require_once 'CME/dataobjects/CMEQuiz.php';
-require_once 'CME/dataobjects/CMEQuizResponse.php';
-require_once 'CME/dataobjects/CMECreditWrapper.php';
 
 /**
  * @package   CME

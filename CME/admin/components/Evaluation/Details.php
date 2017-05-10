@@ -1,7 +1,5 @@
 <?php
 
-require_once 'Inquisition/admin/components/Inquisition/Details.php';
-require_once 'CME/dataobjects/CMEFrontMatterWrapper.php';
 
 /**
  * @package   CME

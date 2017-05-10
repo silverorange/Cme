@@ -1,7 +1,5 @@
 <?php
 
-require_once 'Inquisition/admin/components/Option/Order.php';
-require_once 'CME/admin/components/Option/include/CMEOptionHelper.php';
 
 /**
  * @package   CME
