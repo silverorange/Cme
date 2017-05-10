@@ -1,6 +1,5 @@
 <?php
 
-
 /**
  * Edit page for a selecting the correct option to a question
  *

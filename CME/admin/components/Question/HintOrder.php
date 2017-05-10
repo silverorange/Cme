@@ -1,6 +1,5 @@
 <?php
 
-
 /**
  * Question hint order page for inquisitions
  *

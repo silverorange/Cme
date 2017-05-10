@@ -1,6 +1,5 @@
 <?php
 
-
 /**
  * Special wrapper needed because {@link SwatDBClassMap} is not used for
  * quizzes

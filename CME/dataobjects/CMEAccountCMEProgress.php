@@ -1,6 +1,5 @@
 <?php
 
-
 /**
  * CME progress for an account
  *

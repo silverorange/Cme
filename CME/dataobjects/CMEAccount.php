@@ -1,6 +1,5 @@
 <?php
 
-
 /**
  * CME specific Account object
  *

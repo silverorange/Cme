@@ -1,6 +1,5 @@
 <?php
 
-
 /**
  * An evaluation response
  *

@@ -1,6 +1,5 @@
 <?php
 
-
 /**
  * Question hint edit page for inquisitions
  *

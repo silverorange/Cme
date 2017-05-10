@@ -1,6 +1,5 @@
 <?php
 
-
 /**
  * @package   CME
  * @copyright 2014-2016 silverorange

@@ -1,6 +1,5 @@
 <?php
 
-
 /**
  * Page for generating and viewing certificates
  *
