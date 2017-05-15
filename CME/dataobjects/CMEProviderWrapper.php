@@ -1,8 +1,5 @@
 <?php
 
-require_once 'SwatDB/SwatDBRecordsetWrapper.php';
-require_once 'CME/dataobjects/CMEProvider.php';
-
 /**
  * A recordset wrapper class for CMEProvider objects
  *

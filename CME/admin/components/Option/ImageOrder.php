@@ -1,8 +1,5 @@
 <?php
 
-require_once 'Inquisition/admin/components/Option/ImageOrder.php';
-require_once 'CME/admin/components/Option/include/CMEOptionHelper.php';
-
 /**
  * @package   CME
  * @copyright 2014-2016 silverorange

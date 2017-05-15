@@ -1,8 +1,5 @@
 <?php
 
-require_once 'CME/CME.php';
-require_once 'Admin/AdminListDependency.php';
-
 /**
  * @package   CME
  * @copyright 2012-2016 silverorange

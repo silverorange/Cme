@@ -1,8 +1,5 @@
 <?php
 
-require_once 'Inquisition/admin/components/Question/HintEdit.php';
-require_once 'CME/admin/components/Question/include/CMEQuestionHelper.php';
-
 /**
  * Question hint edit page for inquisitions
  *

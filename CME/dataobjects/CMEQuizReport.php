@@ -1,8 +1,5 @@
 <?php
 
-require_once 'SwatDB/SwatDBDataObject.php';
-require_once 'CME/dataobjects/CMEProvider.php';
-
 /**
  * @package   CME
  * @copyright 2011-2016 silverorange

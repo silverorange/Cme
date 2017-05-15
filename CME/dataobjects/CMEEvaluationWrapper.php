@@ -1,9 +1,5 @@
 <?php
 
-require_once 'SwatDB/SwatDBRecordsetWrapper.php';
-require_once 'Inquisition/dataobjects/InquisitionInquisitionWrapper.php';
-require_once 'CME/dataobjects/CMEEvaluation.php';
-
 /**
  * A recordset wrapper class for CMEEEvaluation objects
  *

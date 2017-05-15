@@ -1,10 +1,5 @@
 <?php
 
-require_once 'CME/dataobjects/CMEAccount.php';
-require_once 'CME/dataobjects/CMECredit.php';
-require_once 'CME/dataobjects/CMEQuiz.php';
-require_once 'CME/dataobjects/CMEEvaluation.php';
-
 /**
  * CME progress for an account
  *

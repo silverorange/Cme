@@ -1,7 +1,5 @@
 <?php
 
-require_once 'Inquisition/admin/components/Inquisition/Details.php';
-
 /**
  * @package   CME
  * @copyright 2014-2016 silverorange

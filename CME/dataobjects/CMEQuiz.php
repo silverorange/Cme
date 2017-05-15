@@ -1,9 +1,5 @@
 <?php
 
-require_once 'Inquisition/dataobjects/InquisitionInquisition.php';
-require_once 'CME/dataobjects/CMEAccount.php';
-require_once 'CME/dataobjects/CMEQuizResponseWrapper.php';
-
 /**
  * @package   CME
  * @copyright 2011-2016 silverorange

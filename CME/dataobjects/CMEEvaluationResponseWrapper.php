@@ -1,8 +1,5 @@
 <?php
 
-require_once 'Inquisition/dataobjects/InquisitionResponseWrapper.php';
-require_once 'CME/dataobjects/CMEEvaluationResponse.php';
-
 /**
  * Special wrapper needed because {@link SwatDBClassMap} is not used for
  * evaluations

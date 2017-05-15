@@ -1,8 +1,5 @@
 <?php
 
-require_once 'Inquisition/admin/components/Question/ImageDelete.php';
-require_once 'CME/admin/components/Question/include/CMEQuestionHelper.php';
-
 /**
  * Delete confirmation page for question images
  *

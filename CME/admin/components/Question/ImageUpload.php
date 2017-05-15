@@ -1,8 +1,5 @@
 <?php
 
-require_once 'Inquisition/admin/components/Question/ImageUpload.php';
-require_once 'CME/admin/components/Question/include/CMEQuestionHelper.php';
-
 /**
  * Upload page for inquisition question images
  *

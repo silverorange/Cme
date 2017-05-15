@@ -1,8 +1,5 @@
 <?php
 
-require_once 'Inquisition/dataobjects/InquisitionQuestion.php';
-require_once 'CME/admin/components/Question/include/CMEQuestionHelper.php';
-
 /**
  * @package   CME
  * @copyright 2014-2016 silverorange

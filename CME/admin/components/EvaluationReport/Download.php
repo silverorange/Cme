@@ -1,8 +1,5 @@
 <?php
 
-require_once 'Admin/pages/AdminPage.php';
-require_once 'CME/dataobjects/CMEEvaluationReportWrapper.php';
-
 /**
  * @package   CME
  * @copyright 2011-2016 silverorange

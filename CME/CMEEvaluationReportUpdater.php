@@ -1,10 +1,5 @@
 <?php
 
-require_once 'CME/CMEReportUpdater.php';
-require_once 'CME/dataobjects/CMEEvaluationReport.php';
-require_once 'CME/dataobjects/CMEEvaluationReportWrapper.php';
-require_once 'CME/CMEEvaluationReportGenerator.php';
-
 /**
  * @package   CME
  * @copyright 2011-2016 silverorange

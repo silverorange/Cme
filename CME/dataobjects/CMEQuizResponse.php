@@ -1,9 +1,5 @@
 <?php
 
-require_once 'Inquisition/dataobjects/InquisitionResponse.php';
-require_once 'CME/dataobjects/CMEAccount.php';
-require_once 'CME/dataobjects/CMEQuiz.php';
-
 /**
  * A quiz response
  *

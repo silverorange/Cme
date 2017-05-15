@@ -1,9 +1,5 @@
 <?php
 
-require_once 'Swat/SwatControl.php';
-require_once 'CME/dataobjects/CMEAccount.php';
-require_once 'CME/dataobjects/CMEAccountEarnedCMECreditWrapper.php';
-
 /**
  * @package   CME
  * @coypright 2014 silverorange

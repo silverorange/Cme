@@ -1,12 +1,5 @@
 <?php
 
-require_once 'Site/pages/SiteArticlePage.php';
-require_once 'CME/dataobjects/CMEAccount.php';
-require_once 'CME/dataobjects/CMEFrontMatter.php';
-require_once 'CME/dataobjects/CMEFrontMatterWrapper.php';
-require_once 'CME/dataobjects/CMEAccountEarnedCMECredit.php';
-require_once 'CME/dataobjects/CMEAccountEarnedCMECreditWrapper.php';
-
 /**
  * @package   CME
  * @copyright 2011-2016 silverorange

@@ -1,15 +1,5 @@
 <?php
 
-require_once 'SwatDB/SwatDB.php';
-require_once 'Swat/SwatMessage.php';
-require_once 'Admin/pages/AdminObjectEdit.php';
-require_once 'Admin/exceptions/AdminNotFoundException.php';
-require_once 'CME/CME.php';
-require_once 'CME/dataobjects/CMEFrontMatter.php';
-require_once 'CME/dataobjects/CMEProvider.php';
-require_once 'CME/dataobjects/CMEProviderWrapper.php';
-require_once 'CME/dataobjects/CMEEvaluation.php';
-
 /**
  * @package   CME
  * @copyright 2013-2016 silverorange

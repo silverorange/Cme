@@ -1,14 +1,5 @@
 <?php
 
-require_once 'Store/dataobjects/StoreAccount.php';
-require_once 'CME/dataobjects/CMECreditWrapper.php';
-require_once 'CME/dataobjects/CMEEvaluation.php';
-require_once 'CME/dataobjects/CMEEvaluationResponse.php';
-require_once 'CME/dataobjects/CMEFrontMatter.php';
-require_once 'CME/dataobjects/CMEQuiz.php';
-require_once 'CME/dataobjects/CMEQuizResponse.php';
-require_once 'CME/dataobjects/CMEAccountCMEProgress.php';
-
 /**
  * CME specific Account object
  *

@@ -1,15 +1,5 @@
 <?php
 
-require_once 'Swat/SwatDate.php';
-require_once 'SwatDB/SwatDB.php';
-require_once 'SwatDB/SwatDBClassMap.php';
-require_once 'Site/SiteCommandLineApplication.php';
-require_once 'Site/SiteCommandLineArgument.php';
-require_once 'Site/SiteCommandLineConfigModule.php';
-require_once 'Site/SiteDatabaseModule.php';
-require_once 'CME.php';
-require_once 'CME/dataobjects/CMEProviderWrapper.php';
-
 /**
  * @package   CME
  * @copyright 2011-2016 silverorange

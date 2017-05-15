@@ -1,8 +1,5 @@
 <?php
 
-require_once 'SwatDB/SwatDBRecordsetWrapper.php';
-require_once 'CME/dataobjects/CMEAccountCMEProgress.php';
-
 /**
  * @package   CME
  * @copyright 2015-2016 silverorange
