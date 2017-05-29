@@ -6,7 +6,7 @@
  * Container for package wide static methods
  *
  * @package   CME
- * @copyright 2014-2016 silverorange
+ * @copyright 2014-2017 silverorange
  * @license   http://www.opensource.org/licenses/mit-license.html MIT License
  */
 class CME
@@ -21,12 +21,22 @@ class CME
 	const GETTEXT_DOMAIN = 'cme';
 
 	// }}}
+	// {{{ private properties
+
+	/**
+	 * Whether or not this package is initialized
+	 *
+	 * @var boolean
+	 */
+	private static $is_initialized = false;
+
+	// }}}
 	// {{{ public static function _()
 
 	/**
 	 * Translates a phrase
 	 *
-	 * This is an alias for {@link CME::gettext()}.
+	 * This is an alias for {@link self::gettext()}.
 	 *
 	 * @param string $message the phrase to be translated.
 	 *
@@ -34,7 +44,7 @@ class CME
 	 */
 	public static function _($message)
 	{
-		return CME::gettext($message);
+		return self::gettext($message);
 	}
 
 	// }}}
@@ -52,7 +62,7 @@ class CME
 	 */
 	public static function gettext($message)
 	{
-		return dgettext(CME::GETTEXT_DOMAIN, $message);
+		return dgettext(self::GETTEXT_DOMAIN, $message);
 	}
 
 	// }}}
@@ -81,7 +91,7 @@ class CME
 	public static function ngettext($singular_message, $plural_message, $number)
 	{
 		return dngettext(
-			CME::GETTEXT_DOMAIN,
+			self::GETTEXT_DOMAIN,
 			$singular_message,
 			$plural_message,
 			$number
@@ -98,8 +108,27 @@ class CME
 			$path = __DIR__.'/../locale';
 		}
 
-		bindtextdomain(CME::GETTEXT_DOMAIN, $path);
-		bind_textdomain_codeset(CME::GETTEXT_DOMAIN, 'UTF-8');
+		bindtextdomain(self::GETTEXT_DOMAIN, $path);
+		bind_textdomain_codeset(self::GETTEXT_DOMAIN, 'UTF-8');
+	}
+
+	// }}}
+	// {{{ public static function init()
+
+	public static function init()
+	{
+		if (self::$is_initialized) {
+			return;
+		}
+
+		Swat::init();
+		Site::init();
+		Admin::init();
+		Inquisition::init();
+
+		self::setupGettext();
+
+		self::$is_initialized = true;
 	}
 
 	// }}}
@@ -116,7 +145,5 @@ class CME
 
 	// }}}
 }
-
-CME::setupGettext();
 
 ?>
