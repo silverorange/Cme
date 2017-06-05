@@ -19,5 +19,3 @@ CME:
     packages/cme/javascript/cme-front-matter-display.js:
     packages/cme/javascript/cme-quiz-page.js:
     packages/cme/javascript/cme-certificate-page.js:
-
-# vim: set expandtab tabstop=2 shiftwidth=2 softtabstop=2:
