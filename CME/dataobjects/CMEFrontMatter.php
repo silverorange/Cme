@@ -118,8 +118,6 @@ abstract class CMEFrontMatter extends SwatDBDataObject
 
 	protected function loadCredits()
 	{
-		require_once 'CME/dataobjects/CMECreditWrapper.php';
-
 		$sql = sprintf(
 			'select * from CMECredit where front_matter = %s
 			order by displayorder asc, hours desc',
@@ -138,8 +136,6 @@ abstract class CMEFrontMatter extends SwatDBDataObject
 
 	protected function loadProviders()
 	{
-		require_once 'CME/dataobjects/CMEProviderWrapper.php';
-
 		$sql = sprintf(
 			'select CMEProvider.*
 			from CMEProvider

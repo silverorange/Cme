@@ -229,8 +229,6 @@ abstract class CMEAccount extends StoreAccount
 
 	public function getCMEProgress(RapCredit $credit)
 	{
-		require_once 'CME/dataobjects/CMEAccountCMEProgressWrapper.php';
-
 		$this->checkDB();
 
 		if ($this->cme_progress_by_credit === null) {
@@ -267,8 +265,6 @@ abstract class CMEAccount extends StoreAccount
 
 	public function getResponseByCMEQuiz($quiz_id)
 	{
-		require_once 'CME/dataobjects/CMEQuizResponseWrapper.php';
-
 		$this->checkDB();
 
 		if ($this->response_by_cme_quiz === null) {
@@ -303,8 +299,6 @@ abstract class CMEAccount extends StoreAccount
 
 	public function getResponseByCMEEvaluation($evaluation_id)
 	{
-		require_once 'CME/dataobjects/CMEEvaluationResponseWrapper.php';
-
 		$this->checkDB();
 
 		if ($this->response_by_cme_eval === null) {
@@ -367,11 +361,6 @@ abstract class CMEAccount extends StoreAccount
 
 	protected function loadEarnedCMECredits()
 	{
-		require_once 'CME/dataobjects/CMEAccountEarnedCMECreditWrapper.php';
-		require_once 'CME/dataobjects/CMECreditWrapper.php';
-		require_once 'CME/dataobjects/CMEFrontMatterWrapper.php';
-		require_once 'CME/dataobjects/CMEProviderWrapper.php';
-
 		$sql = sprintf(
 			'select AccountEarnedCMECredit.*
 			from AccountEarnedCMECredit
@@ -420,10 +409,6 @@ abstract class CMEAccount extends StoreAccount
 
 	protected function loadAttestedCMECredits()
 	{
-		require_once 'CME/dataobjects/CMECreditWrapper.php';
-		require_once 'CME/dataobjects/CMEFrontMatterWrapper.php';
-		require_once 'CME/dataobjects/CMEProviderWrapper.php';
-
 		$sql = sprintf(
 			'select CMECredit.* from CMECredit
 				inner join CMEFrontMatter
