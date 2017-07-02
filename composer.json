@@ -55,8 +55,5 @@
 	},
 	"autoload": {
 		"classmap": [ "CME/" ]
-	},
-	"include-path": [
-		"./"
-	]
+	}
 }
