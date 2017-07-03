@@ -13,7 +13,7 @@ class CMEQuiz extends InquisitionInquisition
 	 * Excludes quiz responses that were reset. We save the old quiz response
 	 * but don't use it for display or for credit calculations.
 	 */
-	public function getResponseByAccount(CMEAccount $account)
+	public function getResponseByAccount(SiteAccount $account)
 	{
 		$this->checkDB();
 
