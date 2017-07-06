@@ -11,7 +11,7 @@ abstract class CMEFrontMatterEdit extends AdminObjectEdit
 
 	protected function getUiXml()
 	{
-		return 'CME/admin/components/FrontMatter/edit.xml';
+		return __DIR__.'/edit.xml';
 	}
 
 	// }}}

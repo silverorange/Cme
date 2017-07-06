@@ -24,7 +24,7 @@ abstract class CMECreditEdit extends InquisitionInquisitionEdit
 
 	protected function getUiXml()
 	{
-		return 'CME/admin/components/Credit/edit.xml';
+		return __DIR__.'/edit.xml';
 	}
 
 	// }}}

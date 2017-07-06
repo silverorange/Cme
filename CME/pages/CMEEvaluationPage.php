@@ -55,7 +55,7 @@ abstract class CMEEvaluationPage extends SiteDBEditPage
 
 	protected function getUiXml()
 	{
-		return 'CME/pages/cme-evaluation.xml';
+		return __DIR__.'/cme-evaluation.xml';
 	}
 
 	// }}}
