@@ -663,18 +663,18 @@ abstract class CMEQuizPage extends SiteDBEditPage
 	// }}}
 	// {{{  protected function relocateToCertificate()
 
-	 protected function relocateToCertificate()
-	 {
-		 $this->app->relocate($this->getCertificateURI());
-	 }
+	protected function relocateToCertificate()
+	{
+		$this->app->relocate($this->getCertificateURI());
+	}
 
 	// }}}
 	// {{{  protected function relocateToEvaluation()
 
-	 protected function relocateToEvaluation()
-	 {
-		 $this->app->relocate($this->getEvaluationURI());
-	 }
+	protected function relocateToEvaluation()
+	{
+		$this->app->relocate($this->getEvaluationURI());
+	}
 
 	// }}}
 	// {{{ abstract protected function getCompletionEmailClass()

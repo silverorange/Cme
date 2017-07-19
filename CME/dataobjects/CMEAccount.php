@@ -347,7 +347,7 @@ abstract class CMEAccount extends StoreAccount
 
 			$combine = true;
 
-		// combine credits if they both haven't been started
+			// combine credits if they both haven't been started
 		} elseif (!$progress1 instanceof CMEAccountCMEProgress &&
 			!$progress2 instanceof CMEAccountCMEProgress) {
 
