@@ -9,7 +9,5 @@
 
 	<file>./CME</file>
 
-	<exclude-pattern>*/layout/xhtml/*</exclude-pattern>
-
 	<rule ref="SilverorangeLegacy" />
 </ruleset>
