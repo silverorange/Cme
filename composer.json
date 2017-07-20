@@ -49,6 +49,7 @@
 		"silverorange/coding-standard": "^0.3.0"
 	},
 	"scripts": {
+		"lint": "./vendor/bin/phpcs",
 		"post-install-cmd": "./vendor/bin/phpcs --config-set installed_paths vendor/silverorange/coding-standard/src",
 		"post-update-cmd": "./vendor/bin/phpcs --config-set installed_paths vendor/silverorange/coding-standard/src"
 	},
