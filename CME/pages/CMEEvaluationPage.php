@@ -384,8 +384,9 @@ abstract class CMEEvaluationPage extends SiteDBEditPage
 	// {{{ protected function addQuestionToUi()
 
 	protected function addQuestionToUi(
-		InquisitionInquisitionQuestionBinding $question_binding, $count)
-	{
+		InquisitionInquisitionQuestionBinding $question_binding,
+		$count
+	) {
 		$container = new SwatDisplayableContainer();
 		$container->classes[] = 'question';
 		$container->classes[] = 'question'.$count;
@@ -422,8 +423,8 @@ abstract class CMEEvaluationPage extends SiteDBEditPage
 	// {{{ protected function getResponseValue()
 
 	protected function getResponseValue(
-		InquisitionInquisitionQuestionBinding $question_binding)
-	{
+		InquisitionInquisitionQuestionBinding $question_binding
+	) {
 		$value = null;
 
 		// get response value if it exists
@@ -517,8 +518,8 @@ abstract class CMEEvaluationPage extends SiteDBEditPage
 	// {{{ protected function questionViewIsVisible()
 
 	protected function questionViewIsVisible(
-		InquisitionInquisitionQuestionBinding $question_binding)
-	{
+		InquisitionInquisitionQuestionBinding $question_binding
+	) {
 		$question_view_visible = true;
 
 		// If the question view is dependent on other options, check to make

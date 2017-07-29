@@ -192,8 +192,8 @@ abstract class CMEAccount extends StoreAccount
 	// {{{ public function getEarnedCMECreditHoursByFrontMatter()
 
 	public function getEarnedCMECreditHoursByFrontMatter(
-		CMEFrontMatter $front_matter)
-	{
+		CMEFrontMatter $front_matter
+	) {
 		$hours = 0;
 
 		foreach ($this->earned_cme_credits as $earned_credit) {
@@ -209,9 +209,10 @@ abstract class CMEAccount extends StoreAccount
 	// }}}
 	// {{{ public function getEnabledEarnedCMECreditHours()
 
-	public function getEnabledEarnedCMECreditHours(SwatDate $start_date = null,
-		SwatDate $end_date = null)
-	{
+	public function getEnabledEarnedCMECreditHours(
+		SwatDate $start_date = null,
+		SwatDate $end_date = null
+	) {
 		$hours = 0;
 
 		foreach ($this->earned_cme_credits as $earned_credit) {

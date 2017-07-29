@@ -247,9 +247,10 @@ class CMEQuizResponseServer extends SiteArticlePage
 	// }}}
 	// {{{ protected function getQuestionBinding()
 
-	protected function getQuestionBinding(InquisitionInquisition $quiz,
-		$binding_id)
-	{
+	protected function getQuestionBinding(
+		InquisitionInquisition $quiz,
+		$binding_id
+	) {
 		$sql = sprintf(
 			'select * from InquisitionInquisitionQuestionBinding
 			where inquisition = %s and id = %s',
@@ -296,11 +297,12 @@ class CMEQuizResponseServer extends SiteArticlePage
 	// }}}
 	// {{{ protected function getResponseValue()
 
-	protected function getResponseValue(CMEQuiz $quiz,
+	protected function getResponseValue(
+		CMEQuiz $quiz,
 		CMEQuizResponse $response,
 		InquisitionInquisitionQuestionBinding $question_binding,
-		$option_id)
-	{
+		$option_id
+	) {
 		$response_value = null;
 
 		$question_id = $question_binding->getInternalValue('question');
@@ -349,9 +351,10 @@ class CMEQuizResponseServer extends SiteArticlePage
 	// }}}
 	// {{{ protected function saveResponseValue()
 
-	protected function saveResponseValue(CMEQuizResponse $response,
-		InquisitionResponseValue $response_value)
-	{
+	protected function saveResponseValue(
+		CMEQuizResponse $response,
+		InquisitionResponseValue $response_value
+	) {
 		// save new response object if it wasn't already saved
 		$response->save();
 

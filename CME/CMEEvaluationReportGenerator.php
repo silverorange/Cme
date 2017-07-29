@@ -34,9 +34,12 @@ class CMEEvaluationReportGenerator
 	// }}}
 	// {{{ public function __construct()
 
-	public function __construct(SiteApplication $app,
-		CMEProvider $provider, $year, $quarter)
-	{
+	public function __construct(
+		SiteApplication $app,
+		CMEProvider $provider,
+		$year,
+		$quarter
+	) {
 		$this->app = $app;
 		$this->provider = $provider;
 
@@ -521,9 +524,11 @@ STYLESHEET;
 	// }}}
 	// {{{ protected function displayQuestion()
 
-	protected function displayQuestion(InquisitionQuestion $question, $index,
-		array $response_values)
-	{
+	protected function displayQuestion(
+		InquisitionQuestion $question,
+		$index,
+		array $response_values
+	) {
 		$classes = 'question';
 		switch ($question->question_type) {
 		case InquisitionQuestion::TYPE_CHECKBOX_ENTRY:
@@ -578,8 +583,9 @@ STYLESHEET;
 	// {{{ protected function displayRadioEntryQuestion()
 
 	protected function displayRadioEntryQuestion(
-		InquisitionQuestion $question, array $response_values)
-	{
+		InquisitionQuestion $question,
+		array $response_values
+	) {
 		$locale = SwatI18NLocale::get();
 
 		echo $this->convertText($question->bodytext);
@@ -654,8 +660,9 @@ STYLESHEET;
 	// {{{ protected function displayCheckboxEntryQuestion()
 
 	protected function displayCheckboxEntryQuestion(
-		InquisitionQuestion $question, array $response_values)
-	{
+		InquisitionQuestion $question,
+		array $response_values
+	) {
 		$this->displayRadioEntryQuestion($question, $response_values);
 	}
 
@@ -663,8 +670,9 @@ STYLESHEET;
 	// {{{ protected function displayCheckboxListQuestion()
 
 	protected function displayCheckboxListQuestion(
-		InquisitionQuestion $question, array $response_values)
-	{
+		InquisitionQuestion $question,
+		array $response_values
+	) {
 		$this->displayRadioEntryQuestion($question, $response_values);
 	}
 
@@ -672,8 +680,9 @@ STYLESHEET;
 	// {{{ protected function displayRadioListQuestion()
 
 	protected function displayRadioListQuestion(
-		InquisitionQuestion $question, array $response_values)
-	{
+		InquisitionQuestion $question,
+		array $response_values
+	) {
 		$this->displayRadioEntryQuestion($question, $response_values);
 	}
 
@@ -681,8 +690,9 @@ STYLESHEET;
 	// {{{ protected function displayFlydownQuestion()
 
 	protected function displayFlydownQuestion(
-		InquisitionQuestion $question, array $response_values)
-	{
+		InquisitionQuestion $question,
+		array $response_values
+	) {
 		$this->displayRadioListQuestion($question, $response_values);
 	}
 
@@ -690,8 +700,9 @@ STYLESHEET;
 	// {{{ protected function displayTextQuestion()
 
 	protected function displayTextQuestion(
-		InquisitionQuestion $question, array $response_values)
-	{
+		InquisitionQuestion $question,
+		array $response_values
+	) {
 		echo $this->convertText($question->bodytext);
 
 		if (count($response_values) > 0) {

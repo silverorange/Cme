@@ -104,8 +104,11 @@ abstract class CMEReportUpdater extends SiteCommandLineApplication
 	// }}}
 	// {{{ abstract protected function getReportGenerator()
 
-	abstract protected function getReportGenerator(CMEProvider $provider,
-		$year, $quarter);
+	abstract protected function getReportGenerator(
+		CMEProvider $provider,
+		$year,
+		$quarter
+	);
 
 	// }}}
 	// {{{ abstract protected function getFileBase()
@@ -229,9 +232,11 @@ abstract class CMEReportUpdater extends SiteCommandLineApplication
 	// }}}
 	// {{{ protected function getQuarterEarnedCredits()
 
-	protected function getQuarterEarnedCredits(CMEProvider $provider, $year,
-		$quarter)
-	{
+	protected function getQuarterEarnedCredits(
+		CMEProvider $provider,
+		$year,
+		$quarter
+	) {
 		$start_month = (($quarter - 1) * 3) + 1;
 
 		$start_date = new SwatDate();
@@ -275,9 +280,11 @@ abstract class CMEReportUpdater extends SiteCommandLineApplication
 	// }}}
 	// {{{ protected function getDataObject()
 
-	protected function getDataObject(SwatDate $quarter,
-		CMEProvider $provider, $filename)
-	{
+	protected function getDataObject(
+		SwatDate $quarter,
+		CMEProvider $provider,
+		$filename
+	) {
 		$class_name = $this->getReportClassName();
 		$report = new $class_name();
 		$report->setDatabase($this->db);
@@ -298,9 +305,11 @@ abstract class CMEReportUpdater extends SiteCommandLineApplication
 	// }}}
 	// {{{ protected function saveReport()
 
-	protected function saveReport(SwatDate $quarter, CMEProvider $provider,
-		$filepath)
-	{
+	protected function saveReport(
+		SwatDate $quarter,
+		CMEProvider $provider,
+		$filepath
+	) {
 		$year    = $quarter->getYear();
 		$quarter = intval($quarter->formatLikeIntl('qq'));
 
@@ -316,9 +325,10 @@ abstract class CMEReportUpdater extends SiteCommandLineApplication
 	// }}}
 	// {{{ protected function getFilename()
 
-	protected function getFilename(SwatDate $quarter,
-		CMEProvider $provider)
-	{
+	protected function getFilename(
+		SwatDate $quarter,
+		CMEProvider $provider
+	) {
 		// replace spaces with dashes
 		$title = str_replace(' ', '-', $provider->title);
 

@@ -32,9 +32,12 @@ class CMEQuizReportGenerator
 	// }}}
 	// {{{ public function __construct()
 
-	public function __construct(SiteApplication $app,
-		CMEProvider $provider, $year, $quarter)
-	{
+	public function __construct(
+		SiteApplication $app,
+		CMEProvider $provider,
+		$year,
+		$quarter
+	) {
 		$this->app = $app;
 		$this->provider = $provider;
 
@@ -124,8 +127,8 @@ class CMEQuizReportGenerator
 	 * @return SiteAccountWrapper
 	 */
 	protected function loadAccounts(
-		CMEAccountEarnedCMECreditWrapper $earned_credits)
-	{
+		CMEAccountEarnedCMECreditWrapper $earned_credits
+	) {
 		$accounts = $earned_credits->loadAllSubDataObjects(
 			'account',
 			$this->app->db,
@@ -147,8 +150,8 @@ class CMEQuizReportGenerator
 	 * @return CMECreditWrapper
 	 */
 	protected function loadCredits(
-		CMEAccountEarnedCMECreditWrapper $earned_credits)
-	{
+		CMEAccountEarnedCMECreditWrapper $earned_credits
+	) {
 		$credit_sql = 'select id, hours from CMECredit where id in (%s)';
 
 		$credits = $earned_credits->loadAllSubDataObjects(
@@ -198,8 +201,8 @@ class CMEQuizReportGenerator
 
 	protected function compareEarnedCredit(
 		CMEAccountEarnedCMECredit $a,
-		CMEAccountEarnedCMECredit $b)
-	{
+		CMEAccountEarnedCMECredit $b
+	) {
 		return 0;
 	}
 
@@ -246,8 +249,8 @@ class CMEQuizReportGenerator
 	// {{{ protected function getEarnedCreditRow()
 
 	protected function getEarnedCreditRow(
-		CMEAccountEarnedCMECredit $earned_credit)
-	{
+		CMEAccountEarnedCMECredit $earned_credit
+	) {
 		$account = $earned_credit->account;
 		$credit = $earned_credit->credit;
 
@@ -322,9 +325,10 @@ class CMEQuizReportGenerator
 	// }}}
 	// {{{ protected function displayEarnedCredit()
 
-	protected function displayEarnedCredit($file,
-		CMEAccountEarnedCMECredit $earned_credit)
-	{
+	protected function displayEarnedCredit(
+		$file,
+		CMEAccountEarnedCMECredit $earned_credit
+	) {
 		fputcsv($file, $this->getEarnedCreditRow($earned_credit));
 	}
 

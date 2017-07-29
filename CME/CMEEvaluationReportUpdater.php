@@ -37,9 +37,11 @@ abstract class CMEEvaluationReportUpdater extends CMEReportUpdater
 	// }}}
 	// {{{ protected function getReportGenerator()
 
-	protected function getReportGenerator(CMEProvider $provider,
-		$year, $quarter)
-	{
+	protected function getReportGenerator(
+		CMEProvider $provider,
+		$year,
+		$quarter
+	) {
 		$generator_class_name = $this->getReportGeneratorClassName();
 
 		return new $generator_class_name(

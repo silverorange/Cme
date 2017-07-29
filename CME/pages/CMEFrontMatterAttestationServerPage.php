@@ -118,9 +118,10 @@ class CMEFrontMatterAttestationServerPage extends SiteArticlePage
 	// }}}
 	// {{{ protected function saveAccountAttestedCMEFrontMatter()
 
-	protected function saveAccountAttestedCMEFrontMatter(CMEAccount $account,
-		CMEFrontMatter $front_matter)
-	{
+	protected function saveAccountAttestedCMEFrontMatter(
+		CMEAccount $account,
+		CMEFrontMatter $front_matter
+	) {
 		$sql = sprintf(
 			'delete from AccountAttestedCMEFrontMatter
 			where account = %s and front_matter = %s',
@@ -150,9 +151,10 @@ class CMEFrontMatterAttestationServerPage extends SiteArticlePage
 	// }}}
 	// {{{ protected function saveEarnedCredits()
 
-	protected function saveEarnedCredits(CMEAccount $account,
-		CMEFrontMatter $front_matter)
-	{
+	protected function saveEarnedCredits(
+		CMEAccount $account,
+		CMEFrontMatter $front_matter
+	) {
 		$wrapper = SwatDBClassMap::get('CMEAccountEarnedCMECreditWrapper');
 		$class_name = SwatDBClassMap::get('CMEAccountEarnedCMECredit');
 		$earned_credits = new $wrapper();

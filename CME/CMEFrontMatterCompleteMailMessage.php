@@ -36,9 +36,12 @@ SiteReplacementMarkerMailMessage
 	 * @param CMEFrontMatter $front_matter
 	 * @param InquisitionResponse $response
 	 */
-	public function __construct(SiteApplication $app, SiteAccount $account,
-		CMEFrontMatter $front_matter, InquisitionResponse $response)
-	{
+	public function __construct(
+		SiteApplication $app,
+		SiteAccount $account,
+		CMEFrontMatter $front_matter,
+		InquisitionResponse $response
+	) {
 		$this->account      = $account;
 		$this->front_matter = $front_matter;
 		$this->response     = $response;
