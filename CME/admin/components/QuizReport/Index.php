@@ -29,7 +29,7 @@ class CMEQuizReportIndex extends AdminIndex
 
 	protected function getUiXml()
 	{
-		return 'CME/admin/components/QuizReport/index.xml';
+		return __DIR__.'/index.xml';
 	}
 
 	// }}}

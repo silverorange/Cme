@@ -60,7 +60,7 @@ abstract class CMEQuizPage extends SiteDBEditPage
 
 	protected function getUiXml()
 	{
-		return 'CME/pages/cme-quiz.xml';
+		return __DIR__.'/cme-quiz.xml';
 	}
 
 	// }}}

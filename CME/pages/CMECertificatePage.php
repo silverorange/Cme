@@ -34,7 +34,7 @@ abstract class CMECertificatePage extends SiteUiPage
 
 	protected function getUiXml()
 	{
-		return 'CME/pages/cme-certificate.xml';
+		return __DIR__.'/cme-certificate.xml';
 	}
 
 	// }}}

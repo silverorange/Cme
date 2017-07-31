@@ -80,8 +80,6 @@ class CMEQuizResponse extends InquisitionResponse
 
 	public function loadCredits()
 	{
-		require_once 'CME/dataobjects/CMECreditWrapper.php';
-
 		$this->checkDB();
 
 		$inquisition_id = $this->getInternalValue('inquisition');

@@ -15,7 +15,7 @@ class CMEQuizResponseServer extends SiteArticlePage
 		$this->setLayout(
 			new SiteLayout(
 				$this->app,
-				'Site/layouts/xhtml/json.php'
+				SiteJSONTemplate::class
 			)
 		);
 	}

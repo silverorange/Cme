@@ -18,7 +18,7 @@ class CMECreditDetails extends InquisitionInquisitionDetails
 
 	protected function getCreditDetailsViewXml()
 	{
-		return 'CME/admin/components/Credit/details-credit-fields.xml';
+		return __DIR__.'/details-credit-fields.xml';
 	}
 
 	// }}}

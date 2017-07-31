@@ -13,8 +13,6 @@ class CMEEvaluationResponse extends InquisitionResponse
 
 	public function getFrontMatter()
 	{
-		require_once 'CME/dataobjects/CMEFrontMatterWrapper.php';
-
 		$this->checkDB();
 
 		$inquisition_id = $this->getInternalValue('inquisition');
