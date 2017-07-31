@@ -224,7 +224,8 @@ abstract class CMECertificatePage extends SiteUiPage
 	// {{{ abstract protected function getFrontMatterTitle()
 
 	abstract protected function getFrontMatterTitle(
-		CMEFrontMatter $credit);
+		CMEFrontMatter $credit
+	);
 
 	// }}}
 	// {{{ protected function getFrontMatterDetails()

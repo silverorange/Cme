@@ -395,8 +395,8 @@ abstract class CMEQuizPage extends SiteDBEditPage
 	// {{{ protected function addQuestionToUi()
 
 	protected function addQuestionToUi(
-		InquisitionInquisitionQuestionBinding $question_binding)
-	{
+		InquisitionInquisitionQuestionBinding $question_binding
+	) {
 		$container = new SwatDisplayableContainer();
 		$container->classes[] = 'question';
 
@@ -428,8 +428,8 @@ abstract class CMEQuizPage extends SiteDBEditPage
 	// {{{ protected function getResponseValue()
 
 	protected function getResponseValue(
-		InquisitionInquisitionQuestionBinding $question_binding)
-	{
+		InquisitionInquisitionQuestionBinding $question_binding
+	) {
 		$value = null;
 
 		// get response value if it exists

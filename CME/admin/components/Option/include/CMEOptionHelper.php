@@ -27,10 +27,11 @@ class CMEOptionHelper
 	// }}}
 	// {{{ public function __construct()
 
-	public function __construct(SiteApplication $app,
+	public function __construct(
+		SiteApplication $app,
 		CMEQuestionHelper $question_helper,
-		InquisitionQuestion $question)
-	{
+		InquisitionQuestion $question
+	) {
 		$this->app = $app;
 		$this->question = $question;
 		$this->question_helper = $question_helper;

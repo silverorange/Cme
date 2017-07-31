@@ -37,9 +37,11 @@ abstract class CMEQuizReportUpdater extends CMEReportUpdater
 	// }}}
 	// {{{ protected function getReportGenerator()
 
-	protected function getReportGenerator(CMEProvider $provider,
-		$year, $quarter)
-	{
+	protected function getReportGenerator(
+		CMEProvider $provider,
+		$year,
+		$quarter
+	) {
 		return new CMEQuizReportGenerator(
 			$this,
 			$provider,
