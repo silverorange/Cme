@@ -354,9 +354,12 @@ abstract class CMEReportUpdater extends SiteCommandLineApplication
 	 */
 	protected function getDefaultModuleList()
 	{
-		return array(
-			'config'   => 'SiteCommandLineConfigModule',
-			'database' => 'SiteDatabaseModule',
+		return array_merge(
+			parent::getDefaultModuleList(),
+			[
+				'config' => SiteCommandLineConfigModule::class,
+				'database' => SiteDatabaseModule::class,
+			]
 		);
 	}
 
