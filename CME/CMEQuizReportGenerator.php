@@ -343,7 +343,7 @@ class CMEQuizReportGenerator
 			switch ($address->country->id) {
 			case 'CA':
 				$postal_code = str_replace(array(' ', '-'), '', $postal_code);
-				$postal_code = strtoupper($postal_code);
+				$postal_code = mb_strtoupper($postal_code);
 				break;
 
 			case 'US':
