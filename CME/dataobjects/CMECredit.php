@@ -42,7 +42,7 @@ abstract class CMECredit extends SwatDBDataObject
 		$fractional_digits = mb_substr(mb_strrchr($hours, '.'), 1);
 		$decimal_places = (
 				mb_strlen($fractional_digits) === 2 &&
-				mb_substr($fractional_digits, -1) !== '0'
+				mb_substr($hours, -1) !== '0'
 			)
 			? 2
 			: 1;
