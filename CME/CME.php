@@ -101,12 +101,7 @@ class CME
 
 	public static function setupGettext()
 	{
-		$path = '@DATA-DIR@/CME/locale';
-		if (substr($path, 0, 1) === '@') {
-			$path = __DIR__.'/../locale';
-		}
-
-		bindtextdomain(self::GETTEXT_DOMAIN, $path);
+		bindtextdomain(self::GETTEXT_DOMAIN, __DIR__.'/../locale');
 		bind_textdomain_codeset(self::GETTEXT_DOMAIN, 'UTF-8');
 	}
 
