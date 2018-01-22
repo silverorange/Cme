@@ -19,7 +19,7 @@ class CMEOptionDelete extends InquisitionOptionDelete
 	// init phase
 	// {{{ public function setInquisition()
 
-	public function setInquisition(InquisitionInquisition $inquisition)
+	public function setInquisition(InquisitionInquisition $inquisition = null)
 	{
 		parent::setInquisition($inquisition);
 
