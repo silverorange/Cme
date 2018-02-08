@@ -41,9 +41,9 @@
 		"php": ">=5.2.1",
 		"ext-mbstring": "*",
 		"dompdf/dompdf": "^0.7.0",
-		"silverorange/admin": "^3.2.0",
-		"silverorange/inquisition": "^1.0.0",
-		"silverorange/site": "^5.9.0",
+		"silverorange/admin": "^4.0.0",
+		"silverorange/inquisition": "^2.0.0",
+		"silverorange/site": "^6.0.0",
 		"silverorange/swat": "^3.0.0"
 	},
 	"require-dev": {
