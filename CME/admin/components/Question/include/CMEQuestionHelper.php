@@ -213,7 +213,7 @@ class CMEQuestionHelper
 	{
 		return sprintf(
 			CME::_('%s Credit'),
-			$this->credit->front_matter->provider->title
+			$this->credit->front_matter->getProviderTitleList()
 		);
 	}
 
@@ -224,7 +224,7 @@ class CMEQuestionHelper
 	{
 		return sprintf(
 			CME::_('%s Evaluation'),
-			$this->front_matter->provider->title
+			$this->front_matter->getProviderTitleList()
 		);
 	}
 
