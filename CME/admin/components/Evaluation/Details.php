@@ -20,7 +20,7 @@ class CMEEvaluationDetails extends InquisitionInquisitionDetails
 	{
 		return sprintf(
 			CME::_('%s Evaluation'),
-			$this->front_matter->provider->title
+			$this->front_matter->getProviderTitleList()
 		);
 	}
 
