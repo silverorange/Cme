@@ -38,7 +38,7 @@
 		"dompdf/dompdf": "^0.8.2",
 		"silverorange/admin": "^5.0.0",
 		"silverorange/inquisition": "^3.0.0",
-		"silverorange/site": "^7.0.0",
+		"silverorange/site": "^8.0.0",
 		"silverorange/swat": "^4.0.0"
 	},
 	"require-dev": {
