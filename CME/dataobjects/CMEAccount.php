@@ -227,7 +227,7 @@ abstract class CMEAccount extends StoreAccount
 	// }}}
 	// {{{ public function getCMEProgress()
 
-	public function getCMEProgress(RapCredit $credit)
+	public function getCMEProgress(CMECredit $credit)
 	{
 		$this->checkDB();
 
@@ -330,7 +330,7 @@ abstract class CMEAccount extends StoreAccount
 	// }}}
 	// {{{ public function hasSameCMEProgress()
 
-	public function hasSameCMEProgress(RapCredit $credit1, RapCredit $credit2)
+	public function hasSameCMEProgress(CMECredit $credit1, CMECredit $credit2)
 	{
 		$progress1 = $this->getCMEProgress($credit1);
 		$progress2 = $this->getCMEProgress($credit2);
