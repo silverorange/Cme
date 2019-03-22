@@ -22,6 +22,12 @@
 					<property name="required" type="boolean">true</property>
 				</widget>
 			</widget>
+			<widget class="SwatFormField" id="expiry_date_field">
+				<property name="title" translatable="yes">Expiry Date</property>
+				<widget class="SwatDateEntry" id="expiry_date">
+					<property name="required" type="boolean">true</property>
+				</widget>
+			</widget>
 			<widget class="SwatFooterFormField">
 				<widget class="SwatButton" id="submit_button" />
 			</widget>

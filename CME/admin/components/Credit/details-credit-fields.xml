@@ -8,5 +8,12 @@
 				<property name="value" type="data">hours</property>
 			</object>
 		</object>
+		<object class="SwatDetailsViewField" id="expiry_date">
+			<property name="title" translatable="yes">Expiry Date</property>
+			<object class="SwatDateCellRenderer">
+				<property name="format" type="constant">SwatDate::DF_DATE</property>
+				<property name="date" type="data">expiry_date</property>
+			</object>
+		</object>
 	</widget>
 </swatml>
