@@ -160,6 +160,7 @@ class CMECreditDetails extends InquisitionInquisitionDetails
 	{
 		$ds = parent::getDetailsStore($inquisition);
 		$ds->hours = $this->credit->hours;
+		$ds->expiry_date = $this->credit->expiry_date;
 		return $ds;
 	}
 

@@ -119,11 +119,21 @@ abstract class CMECreditEdit extends InquisitionInquisitionEdit
 	}
 
 	// }}}
+	// {{{ protected function getDefaultCreditExpiryDate()
+
+	protected function getDefaultCreditExpiryDate()
+	{
+		return new SwatDate('+3 years');
+	}
+
+	// }}}
 	// {{{ protected function setDefaultValues()
 
 	protected function setDefaultValues()
 	{
 		$this->ui->getWidget('hours')->value = $this->getDefaultCreditHours();
+		$this->ui->getWidget('expiry_date')->value =
+			$this->getDefaultCreditExpiryDate();
 	}
 
 	// }}}
@@ -186,10 +196,12 @@ abstract class CMECreditEdit extends InquisitionInquisitionEdit
 		$values = $this->ui->getValues(
 			array(
 				'hours',
+				'expiry_date',
 			)
 		);
 
 		$this->credit->hours = $values['hours'];
+		$this->credit->expiry_date = $values['expiry_date'];
 		$this->credit->quiz = $this->inquisition;
 		$this->credit->front_matter = $this->credit->front_matter->id;
 
