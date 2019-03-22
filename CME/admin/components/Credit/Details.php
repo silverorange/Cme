@@ -122,6 +122,12 @@ class CMECreditDetails extends InquisitionInquisitionDetails
 		$view = $this->ui->getWidget('details_view');
 		$view->getField('title')->visible = false;
 		$view->getField('createdate')->visible = false;
+
+		// set default time zone
+		$expiry_date_field = $view->getField('expiry_date');
+		$expiry_date_renderer = $expiry_date_field->getFirstRenderer();
+		$expiry_date_renderer->display_time_zone =
+			$this->app->default_time_zone;
 	}
 
 	// }}}
