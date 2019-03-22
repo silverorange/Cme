@@ -7,6 +7,7 @@ create table CMECredit (
 	hours numeric(5, 2) not null,
 	displayorder integer not null default 0,
 	is_free boolean not null default false,
+	expiry_date timestamp not null,
 
 	primary key (id)
 );

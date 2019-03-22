@@ -24,6 +24,11 @@ abstract class CMECredit extends SwatDBDataObject
 	 */
 	public $is_free;
 
+	/**
+	 * @var SwatDate
+	 */
+	public $expiry_date;
+
 	// }}}
 	// {{{ public static function formatCreditHours()
 
@@ -76,6 +81,17 @@ abstract class CMECredit extends SwatDBDataObject
 	}
 
 	// }}}
+	// {{{ public function isExpired()
+
+	public function isExpired()
+	{
+		$now = new SwatDate();
+		$now->toUTC();
+
+		return $now->after($this->expiry_date);
+	}
+
+	// }}}
 	// {{{ public function getTitle()
 
 	public function getTitle()
@@ -98,6 +114,7 @@ abstract class CMECredit extends SwatDBDataObject
 	{
 		$this->table = 'CMECredit';
 		$this->id_field = 'integer:id';
+		$this->registerDateProperty('expiry_date');
 
 		$this->registerInternalProperty(
 			'front_matter',
