@@ -132,12 +132,18 @@ abstract class CMEEvaluationPage extends SiteDBEditPage
 			throw new SiteNotFoundException('A CME credit must be provided.');
 		}
 
+		$now = new SwatDate();
+		$now->toUTC();
+
 		$sql = sprintf(
 			'select CMECredit.* from CMECredit
 				inner join CMEFrontMatter
 					on CMECredit.front_matter = CMEFrontMatter.id
-			where CMECredit.id in (%s) and CMEFrontMatter.enabled = %s',
+			where CMECredit.id in (%s)
+				and CMECredit.expiry_date >= %s
+				and CMEFrontMatter.enabled = %s',
 			implode(',', $ids),
+			$this->app->db->quote($now->getDate(), 'date'),
 			$this->app->db->quote(true, 'boolean')
 		);
 
