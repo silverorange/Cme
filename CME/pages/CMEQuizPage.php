@@ -957,7 +957,7 @@ abstract class CMEQuizPage extends SiteDBEditPage
 			$javascript = '';
 		}
 
-		$quiz_uri = $this->app->getBaseHref(true).$this->source;
+		$quiz_uri = $this->app->getBaseHref().$this->source;
 		$response_server = $quiz_uri.'/response';
 
 		// get current question (first unanswered after last answered)
