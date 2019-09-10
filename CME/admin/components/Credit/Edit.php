@@ -82,6 +82,7 @@ abstract class CMECreditEdit extends InquisitionInquisitionEdit
 					)
 				);
 			}
+			$this->credit->expiry_date->convertTZ($this->app->default_time_zone);
 		} else {
 			$this->credit->is_free =
 				($this->app->initVar('credit_type') === 'free');
@@ -202,6 +203,7 @@ abstract class CMECreditEdit extends InquisitionInquisitionEdit
 
 		$this->credit->hours = $values['hours'];
 		$this->credit->expiry_date = $values['expiry_date'];
+		$this->credit->expiry_date->setTZ($this->app->default_time_zone)->toUTC();
 		$this->credit->quiz = $this->inquisition;
 		$this->credit->front_matter = $this->credit->front_matter->id;
 
