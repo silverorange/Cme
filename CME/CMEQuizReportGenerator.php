@@ -232,7 +232,7 @@ class CMEQuizReportGenerator
 		return array(
 			'Last Name',
 			'First Name',
-			'Type',
+			'Suffix',
 			'Email',
 			'Address',
 			'City',
@@ -365,19 +365,9 @@ class CMEQuizReportGenerator
 
 	protected function formatSuffix(SiteAccount $account)
 	{
-		switch ($account->getInternalValue('profession')) {
-		case 1 :
-		case 2 :
-			return 'MD';
-		case 3 :
-			return 'NP';
-		case 4 :
-			return 'PA';
-		case 5 :
-			return 'Nurse';
-		default :
-			return 'Other';
-		}
+		return ($account->hasPublicProperty('suffix'))
+			? $account->suffix
+			: '';
 	}
 
 	// }}}
