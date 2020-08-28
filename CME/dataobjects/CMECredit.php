@@ -64,6 +64,16 @@ abstract class CMECredit extends SwatDBDataObject
 	}
 
 	// }}}
+	// {{{ public function hasQuiz()
+
+	public function hasQuiz()
+	{
+		return $this->getInternalValue('quiz') !== null &&
+			$this->quiz instanceof CMEQuiz &&
+			count($this->quiz->question_bindings) > 0;
+	}
+
+	// }}}
 	// {{{ public function isEarned()
 
 	public function isEarned(CMEAccount $account)
@@ -72,7 +82,7 @@ abstract class CMECredit extends SwatDBDataObject
 		return (
 				$account->hasAttested($this->front_matter)
 			) && (
-				!$this->quiz instanceof CMEQuiz ||
+				!$this->hasQuiz() ||
 				$account->isQuizPassed($this)
 			) && (
 				!$this->front_matter->evaluation instanceof CMEEvaluation ||
