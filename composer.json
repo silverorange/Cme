@@ -33,7 +33,7 @@
 	"require": {
 		"php": ">=5.2.1",
 		"ext-mbstring": "*",
-		"dompdf/dompdf": "^0.8.2",
+		"dompdf/dompdf": "^2.0.0",
 		"silverorange/admin": "^5.4.0",
 		"silverorange/inquisition": "^4.1.0",
 		"silverorange/site": "^9.0.0 || ^10.1.1",
