@@ -29,6 +29,11 @@ abstract class CMECertificatePage extends SiteUiPage
 	 */
 	protected $has_pre_selection = false;
 
+	/**
+	 * @var array
+	 */
+	protected $episode_ids;
+
 	// }}}
 	// {{{ protected function getUiXml()
 
@@ -79,21 +84,9 @@ abstract class CMECertificatePage extends SiteUiPage
 	protected function initInternal()
 	{
 		parent::initInternal();
-		$this->initEpisodes();
 		$this->initCredits();
+		$this->initEpisodeIds();
 		$this->initList();
-	}
-
-	// }}}
-	// {{{
-
-	protected function initEpisodes()
-	{
-		$this->episodes = [];
-		foreach ($this->credits_by_front_matter as $array) {
-			$front_matter = $array['front_matter'];
-			$this->episodes[] = $front_matter->episode;
-		}
 	}
 
 	// }}}
@@ -123,6 +116,18 @@ abstract class CMECertificatePage extends SiteUiPage
 			$this->credits_by_front_matter[$front_matter->id]['credits']->add(
 				$credit
 			);
+		}
+	}
+
+	// }}}
+	// {{{
+
+	protected function initEpisodeIds()
+	{
+		$this->episode_ids = [];
+		foreach ($this->credits_by_front_matter as $array) {
+			$front_matter = $array['front_matter'];
+			$this->episode_ids[] = $front_matter->episode;
 		}
 	}
 
