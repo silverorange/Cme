@@ -79,8 +79,21 @@ abstract class CMECertificatePage extends SiteUiPage
 	protected function initInternal()
 	{
 		parent::initInternal();
+		$this->initEpisodes();
 		$this->initCredits();
 		$this->initList();
+	}
+
+	// }}}
+	// {{{
+
+	protected function initEpisodes()
+	{
+		$this->episodes = [];
+		foreach ($this->credits_by_front_matter as $array) {
+			$front_matter = $array['front_matter'];
+			$this->episodes[] = $front_matter->episode;
+		}
 	}
 
 	// }}}
@@ -333,8 +346,17 @@ abstract class CMECertificatePage extends SiteUiPage
 
 	protected function getInlineJavaScript()
 	{
+		$episode_array = json_encode($this->episodes);
+
 		return <<<JAVASCRIPT
 		YAHOO.util.Event.on(window, 'load', function() {
+
+			if (typeof amplitude !== 'undefined') {
+				amplitude.track('CME_Printed', {
+					episode_id: $episode_array,
+				});
+			}
+
 			var certificates = YAHOO.util.Dom.getElementsByClassName(
 				'cme-certificate',
 				'div'
