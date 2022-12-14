@@ -127,7 +127,7 @@ abstract class CMECertificatePage extends SiteUiPage
 		$this->episode_ids = [];
 		foreach ($this->credits_by_front_matter as $array) {
 			$front_matter = $array['front_matter'];
-			$this->episode_ids[] = $front_matter->episode;
+			$this->episode_ids[] = $front_matter->episode->id;
 		}
 	}
 
