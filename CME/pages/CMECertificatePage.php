@@ -351,7 +351,7 @@ abstract class CMECertificatePage extends SiteUiPage
 
 	protected function getInlineJavaScript()
 	{
-		$episode_array = json_encode($this->episodes);
+		$episode_array = json_encode($this->episode_ids);
 
 		return <<<JAVASCRIPT
 		YAHOO.util.Event.on(window, 'load', function() {
