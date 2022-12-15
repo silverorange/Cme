@@ -359,7 +359,7 @@ abstract class CMECertificatePage extends SiteUiPage
 
 			if (typeof amplitude !== 'undefined') {
 				amplitude.track('CME_Printed', {
-					episode_id: $episode_array,
+					episode_ids: $episode_array,
 				});
 			}
 
