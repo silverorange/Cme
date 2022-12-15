@@ -780,6 +780,11 @@ abstract class CMEEvaluationPage extends SiteDBEditPage
 		}
 
 		$javascript = sprintf(
+			"CMEEvaluationPage.episode_id = %s;\n",
+			$this->front_matter->episode->id
+		);
+
+		$javascript.= sprintf(
 			'new CMEEvaluationPage(%s);',
 			json_encode($questions)
 		);

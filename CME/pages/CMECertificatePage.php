@@ -114,6 +114,25 @@ abstract class CMECertificatePage extends SiteUiPage
 	}
 
 	// }}}
+	// {{{ protected function getEpisodeIds()
+
+	protected function getEpisodeIds()
+	{
+		$episode_ids = [];
+		$selected_front_matter_ids =
+			$this->ui->getWidget('front_matters')->values;
+
+		foreach ($this->credits_by_front_matter as $id => $array) {
+			$front_matter = $array['front_matter'];
+			if (in_array($id, $selected_front_matter_ids)) {
+				$episode_ids[] = $front_matter->episode->id;
+			}
+		}
+
+		return $episode_ids;
+	}
+
+	// }}}
 	// {{{ protected function initList()
 
 	protected function initList()
@@ -333,8 +352,17 @@ abstract class CMECertificatePage extends SiteUiPage
 
 	protected function getInlineJavaScript()
 	{
+		$episode_array = json_encode($this->getEpisodeIds());
+
 		return <<<JAVASCRIPT
 		YAHOO.util.Event.on(window, 'load', function() {
+
+			if (typeof amplitude !== 'undefined') {
+				amplitude.track('CME_Printed', {
+					episode_ids: $episode_array,
+				});
+			}
+
 			var certificates = YAHOO.util.Dom.getElementsByClassName(
 				'cme-certificate',
 				'div'

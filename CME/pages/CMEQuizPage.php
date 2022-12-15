@@ -1029,6 +1029,7 @@ abstract class CMEQuizPage extends SiteDBEditPage
 			'time_hours_text_1'           => CME::_('one hour'),
 			'time_hours_text_many'        => CME::_('%s hours'),
 			'time_minutes_text_many'      => CME::_('%s minutes'),
+			'episode_id'				  => $this->front_matter->episode->id,
 		);
 
 		$javascript = '';

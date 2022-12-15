@@ -1,13 +1,25 @@
-YAHOO.util.Event.onDOMReady(function() {
+YAHOO.util.Event.onDOMReady(function () {
 	var radio_list_els = YAHOO.util.Dom.getElementsByClassName(
-		'swat-radio-list',
-		'ul'
+		"swat-radio-list",
+		"ul"
 	);
+
+	var submit_button = document.getElementById("submit_button");
+
+	submit_button.addEventListener("click", function (e) {
+		if (typeof amplitude !== "undefined") {
+			amplitude.track("CME_Evaluation_Submitted", {
+				episode_id: CMEEvaluationPage.episode_id,
+			});
+		}
+	});
 
 	for (var i = 0; i < radio_list_els.length; i++) {
 		var radio_buttons = YAHOO.util.Dom.getElementsBy(
-			function (el) { return (el.type === 'radio'); },
-			'input',
+			function (el) {
+				return el.type === "radio";
+			},
+			"input",
 			radio_list_els[i]
 		);
 
@@ -16,33 +28,25 @@ YAHOO.util.Event.onDOMReady(function() {
 				(function () {
 					var item = YAHOO.util.Dom.getAncestorByTagName(
 						radio_buttons[j],
-						'li'
+						"li"
 					);
 					var radio = radio_buttons[j];
 
 					var the_radio_buttons = radio_buttons;
-					YAHOO.util.Event.on(
-						radio,
-						'click',
-						function(e) {
-							updateListSelection(the_radio_buttons);
-						}
-					);
+					YAHOO.util.Event.on(radio, "click", function (e) {
+						updateListSelection(the_radio_buttons);
+					});
 
 					// passthrough click on list item to radio button
-					YAHOO.util.Event.on(
-						item,
-						'click',
-						function(e) {
-							var target = YAHOO.util.Event.getTarget(e);
-							if (target === item) {
-								if (!radio.disabled) {
-									radio.checked = true;
-									updateListSelection(the_radio_buttons);
-								}
+					YAHOO.util.Event.on(item, "click", function (e) {
+						var target = YAHOO.util.Event.getTarget(e);
+						if (target === item) {
+							if (!radio.disabled) {
+								radio.checked = true;
+								updateListSelection(the_radio_buttons);
 							}
 						}
-					);
+					});
 				})();
 			}
 
@@ -51,14 +55,16 @@ YAHOO.util.Event.onDOMReady(function() {
 	}
 
 	var checkbox_list_els = YAHOO.util.Dom.getElementsByClassName(
-		'swat-checkbox-list',
-		'div'
+		"swat-checkbox-list",
+		"div"
 	);
 
 	for (var i = 0; i < checkbox_list_els.length; i++) {
 		var checkboxes = YAHOO.util.Dom.getElementsBy(
-			function (el) { return (el.type === 'checkbox'); },
-			'input',
+			function (el) {
+				return el.type === "checkbox";
+			},
+			"input",
 			checkbox_list_els[i]
 		);
 
@@ -67,31 +73,23 @@ YAHOO.util.Event.onDOMReady(function() {
 				(function () {
 					var item = YAHOO.util.Dom.getAncestorByTagName(
 						checkboxes[j],
-						'li'
+						"li"
 					);
 					var checkbox = checkboxes[j];
 
 					var the_checkboxes = checkboxes;
-					YAHOO.util.Event.on(
-						checkbox,
-						'click',
-						function(e) {
-							updateListSelection(the_checkboxes);
-						}
-					);
+					YAHOO.util.Event.on(checkbox, "click", function (e) {
+						updateListSelection(the_checkboxes);
+					});
 
 					// passthrough click on list item to radio button
-					YAHOO.util.Event.on(
-						item,
-						'click',
-						function(e) {
-							var target = YAHOO.util.Event.getTarget(e);
-							if (target === item) {
-								checkbox.checked = !checkbox.checked;
-								updateListSelection(the_checkboxes);
-							}
+					YAHOO.util.Event.on(item, "click", function (e) {
+						var target = YAHOO.util.Event.getTarget(e);
+						if (target === item) {
+							checkbox.checked = !checkbox.checked;
+							updateListSelection(the_checkboxes);
 						}
-					);
+					});
 				})();
 			}
 
@@ -99,37 +97,42 @@ YAHOO.util.Event.onDOMReady(function() {
 		}
 	}
 
-	function updateListSelection(list)
-	{
+	function updateListSelection(list) {
 		for (var i = 0; i < list.length; i++) {
-			var li = YAHOO.util.Dom.getAncestorByTagName(list[i], 'li');
+			var li = YAHOO.util.Dom.getAncestorByTagName(list[i], "li");
 			if (list[i].checked) {
-				YAHOO.util.Dom.addClass(li, 'selected');
+				YAHOO.util.Dom.addClass(li, "selected");
 			} else {
-				YAHOO.util.Dom.removeClass(li, 'selected');
+				YAHOO.util.Dom.removeClass(li, "selected");
 			}
 		}
 	}
 });
 
-function CMEEvaluationPage(questions)
-{
+function CMEEvaluationPage(questions) {
 	this.questions = questions;
 
 	YAHOO.util.Event.onDOMReady(this.init, this, true);
 }
 
+CMEEvaluationPage.episode_id = null;
+
 /* {{{ CMEEvaluationPage.prototype.init() */
 
-CMEEvaluationPage.prototype.init = function()
-{
+CMEEvaluationPage.prototype.init = function () {
 	for (var i = 0; i < this.questions.length; i++) {
 		var question = this.questions[i];
-		var name = 'question' + question.binding + '_' + question.question;
+		var name = "question" + question.binding + "_" + question.question;
 
-		YAHOO.util.Event.on(document.getElementsByName(name), 'click', function(e) {
-			this.updateView();
-		}, this, true);
+		YAHOO.util.Event.on(
+			document.getElementsByName(name),
+			"click",
+			function (e) {
+				this.updateView();
+			},
+			this,
+			true
+		);
 	}
 
 	this.updateView();
@@ -138,16 +141,13 @@ CMEEvaluationPage.prototype.init = function()
 /* }}} */
 /* {{{ CMEEvaluationPage.prototype.updateView() */
 
-CMEEvaluationPage.prototype.updateView = function()
-{
+CMEEvaluationPage.prototype.updateView = function () {
 	for (var i = 0; i < this.questions.length; i++) {
 		var show = true;
 		var question = this.questions[i];
 
 		var element = document.getElementById(
-			'question' +
-			question.binding + '_' + 
-			question.question
+			"question" + question.binding + "_" + question.question
 		);
 
 		for (var j = 0; j < question.dependencies.length; j++) {
@@ -156,10 +156,12 @@ CMEEvaluationPage.prototype.updateView = function()
 
 			for (var k = 0; k < dependency.options.length; k++) {
 				var option = document.getElementById(
-					'question' +
-					dependency.binding + '_' +
-					dependency.question + '_' +
-					dependency.options[k]
+					"question" +
+						dependency.binding +
+						"_" +
+						dependency.question +
+						"_" +
+						dependency.options[k]
 				);
 
 				// Dependant options can be not visible, so if they don't exist
@@ -172,11 +174,11 @@ CMEEvaluationPage.prototype.updateView = function()
 			show = show && selected;
 		}
 
-		var parentEl = YAHOO.util.Dom.getAncestorBy(element, function(el) {
-			return YAHOO.util.Dom.hasClass(el, 'question');
+		var parentEl = YAHOO.util.Dom.getAncestorBy(element, function (el) {
+			return YAHOO.util.Dom.hasClass(el, "question");
 		});
 
-		parentEl.style.display = (show) ? 'block' : 'none';
+		parentEl.style.display = show ? "block" : "none";
 	}
 };
 
