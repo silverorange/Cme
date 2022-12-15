@@ -29,11 +29,6 @@ abstract class CMECertificatePage extends SiteUiPage
 	 */
 	protected $has_pre_selection = false;
 
-	/**
-	 * @var array
-	 */
-	protected $episode_ids;
-
 	// }}}
 	// {{{ protected function getUiXml()
 
@@ -85,7 +80,6 @@ abstract class CMECertificatePage extends SiteUiPage
 	{
 		parent::initInternal();
 		$this->initCredits();
-		$this->initEpisodeIds();
 		$this->initList();
 	}
 
@@ -120,17 +114,22 @@ abstract class CMECertificatePage extends SiteUiPage
 	}
 
 	// }}}
-	// {{{
+	// {{{ protected function getEpisodeIds()
 
-	protected function initEpisodeIds()
+	protected function getEpisodeIds()
 	{
-		$this->episode_ids = [];
-		foreach ($this->credits_by_front_matter as $array) {
+		$episode_ids = [];
+		$selected_front_matter_ids =
+			$this->ui->getWidget('front_matters')->values;
+
+		foreach ($this->credits_by_front_matter as $id => $array) {
 			$front_matter = $array['front_matter'];
-			if ($this->isPreSelected($front_matter)) {
-				$this->episode_ids[] = $front_matter->episode->id;
+			if (in_array($id, $selected_front_matter_ids)) {
+				$episode_ids[] = $front_matter->episode->id;
 			}
 		}
+
+		return $episode_ids;
 	}
 
 	// }}}
@@ -353,7 +352,7 @@ abstract class CMECertificatePage extends SiteUiPage
 
 	protected function getInlineJavaScript()
 	{
-		$episode_array = json_encode($this->episode_ids);
+		$episode_array = json_encode($this->getEpisodeIds());
 
 		return <<<JAVASCRIPT
 		YAHOO.util.Event.on(window, 'load', function() {
