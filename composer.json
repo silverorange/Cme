@@ -37,7 +37,7 @@
 		"silverorange/admin": "^5.4.0 || ^6.0.0",
 		"silverorange/inquisition": "^4.1.0",
 		"silverorange/site": "^9.0.0 || ^10.1.1 || ^11.0.0 || ^12.0.0 || ^13.0.0 || ^14.0.0",
-		"silverorange/swat": "^5.0.0 || ^6.0.0"
+		"silverorange/swat": "^5.0.0 || ^6.0.0 || ^7.0.0"
 	},
 	"require-dev": {
 		"silverorange/coding-standard": "^1.0.0"
