@@ -194,6 +194,7 @@ class CMEEvaluationReportIndex extends AdminIndex
 						$ds->{'is_'.$shortname.'_sensitive'} = $sensitive;
 					}
 
+					// reverse the order so we can display newest to oldest
 					array_unshift($quarters, $ds);
 				}
 
@@ -205,6 +206,7 @@ class CMEEvaluationReportIndex extends AdminIndex
 			$year++;
 		}
 
+		// display the quarters in reversed order
 		$store = new SwatTableStore();
 		foreach($quarters as $ds) {
 			$store->add($ds);
