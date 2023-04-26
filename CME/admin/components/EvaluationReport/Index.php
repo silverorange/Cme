@@ -163,7 +163,7 @@ class CMEEvaluationReportIndex extends AdminIndex
 		$display_end_date = clone $end_date;
 		$display_end_date->subtractMonths(1);
 
-		$store = new SwatTableStore();
+		$quarters = [];
 
 		while ($end_date->before($now)) {
 			for ($i = 1; $i <= 4; $i++) {
@@ -194,7 +194,8 @@ class CMEEvaluationReportIndex extends AdminIndex
 						$ds->{'is_'.$shortname.'_sensitive'} = $sensitive;
 					}
 
-					$store->add($ds);
+					// reverse the order so we can display newest to oldest
+					array_unshift($quarters, $ds);
 				}
 
 				$start_date->addMonths(3);
@@ -203,6 +204,12 @@ class CMEEvaluationReportIndex extends AdminIndex
 			}
 
 			$year++;
+		}
+
+		// display the quarters in reversed order
+		$store = new SwatTableStore();
+		foreach($quarters as $ds) {
+			$store->add($ds);
 		}
 
 		return $store;
