@@ -126,7 +126,7 @@ class CMEQuizResponseServer extends SiteArticlePage
 			$this->saveResponseValue($response, $response_value);
 
 			$transaction->commit();
-		} catch (Exception $e) {
+		} catch (Throwable $e) {
 			$transaction->rollback();
 			throw $e;
 		}
