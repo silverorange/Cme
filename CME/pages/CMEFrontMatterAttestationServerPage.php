@@ -89,7 +89,7 @@ class CMEFrontMatterAttestationServerPage extends SiteArticlePage
 			}
 
 			$transaction->commit();
-		} catch (Exception $e) {
+		} catch (Throwable $e) {
 			$transaction->rollback();
 			throw $e;
 		}
