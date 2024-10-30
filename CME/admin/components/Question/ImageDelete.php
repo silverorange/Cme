@@ -21,7 +21,7 @@ class CMEQuestionImageDelete extends InquisitionQuestionImageDelete
 	// helper methods
 	// {{{ public function setInquisition()
 
-	public function setInquisition(InquisitionInquisition $inquisition)
+	public function setInquisition(?InquisitionInquisition $inquisition = null)
 	{
 		parent::setInquisition($inquisition);
 

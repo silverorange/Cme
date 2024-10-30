@@ -1,0 +1,7 @@
+parameters:
+  phpVersion: 80200
+  level: 0
+  paths:
+    - CME
+  editorUrl: '%%file%%:%%line%%'
+  editorUrlTitle: '%%file%%:%%line%%'

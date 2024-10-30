@@ -25,6 +25,46 @@
 	],
 	"repositories": [
 		{
+			"type": "path",
+			"url": "../inquisition",
+			"only": ["silverorange/inquisition"],
+			"options": {
+				"versions": {
+					"silverorange/inquisition": "4.2.0"
+				}
+			}
+		},
+		{
+			"type": "path",
+			"url": "../site",
+			"only": ["silverorange/site"],
+			"options": {
+				"versions": {
+					"silverorange/site": "15.1.0"
+				}
+			}
+		},
+		{
+			"type": "path",
+			"url": "../admin",
+			"only": ["silverorange/admin"],
+			"options": {
+				"versions": {
+					"silverorange/admin": "7.0.0"
+				}
+			}
+		},
+		{
+			"type": "path",
+			"url": "../store",
+			"only": ["silverorange/store"],
+			"options": {
+				"versions": {
+					"silverorange/store": "10.0.0"
+				}
+			}
+		},
+		{
 			"type": "composer",
 			"url": "https://composer.silverorange.com",
 			"only": ["silverorange/*"]
@@ -34,20 +74,26 @@
 		"php": ">=8.1.0",
 		"ext-mbstring": "*",
 		"dompdf/dompdf": "^2.0.0",
-		"silverorange/admin": "^6.2.0",
+		"silverorange/admin": "^6.2.0 || ^7.0.0",
 		"silverorange/inquisition": "^4.1.0",
-		"silverorange/site": "^14.5.0",
+		"silverorange/site": "^14.5.0 || ^15.0.0",
+		"silverorange/store": "^10.0.0",
 		"silverorange/swat": "^7.1.0"
 	},
 	"require-dev": {
+		"phpstan/phpstan": "^1.12",
 		"silverorange/coding-standard": "^1.0.0"
 	},
 	"scripts": {
 		"lint": "./vendor/bin/phpcs",
+		"phpstan": "./vendor/bin/phpstan analyze",
 		"post-install-cmd": "./vendor/bin/phpcs --config-set installed_paths vendor/silverorange/coding-standard/src",
 		"post-update-cmd": "./vendor/bin/phpcs --config-set installed_paths vendor/silverorange/coding-standard/src"
 	},
 	"autoload": {
 		"classmap": [ "CME/" ]
+	},
+	"config": {
+		"sort-packages": true
 	}
 }
