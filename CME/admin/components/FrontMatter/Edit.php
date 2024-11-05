@@ -162,7 +162,7 @@ HTML;
 	// }}}
 	// {{{ protected function validate()
 
-	protected function validate()
+	protected function validate(): void
 	{
 		parent::validate();
 

@@ -142,7 +142,7 @@ abstract class CMECreditEdit extends InquisitionInquisitionEdit
 	// process phase
 	// {{{ protected function validate()
 
-	protected function validate()
+	protected function validate(): void
 	{
 		parent::validate();
 
@@ -174,7 +174,7 @@ abstract class CMECreditEdit extends InquisitionInquisitionEdit
 	// }}}
 	// {{{ protected function saveDBData()
 
-	protected function saveDBData()
+	protected function saveDBData(): void
 	{
 		$this->updateInquisition();
 		$modified = $this->inquisition->isModified();
