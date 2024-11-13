@@ -145,7 +145,7 @@ class CMEEvaluationReportIndex extends AdminIndex
 	// build phase
 	// {{{ protected function getTableModel()
 
-	protected function getTableModel(SwatView $view): SwatTableStore
+	protected function getTableModel(SwatView $view): ?SwatTableModel
 	{
 		$now = new SwatDate();
 		$now->setTimezone($this->app->default_time_zone);
