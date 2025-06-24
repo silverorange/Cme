@@ -13,7 +13,7 @@ class CMEQuizReportWrapper extends SwatDBRecordsetWrapper
     protected function init()
     {
         parent::init();
-        $this->row_wrapper_class = SwatDBClassMap::get('CMEQuizReport');
+        $this->row_wrapper_class = SwatDBClassMap::get(CMEQuizReport::class);
         $this->index_field = 'id';
     }
 }

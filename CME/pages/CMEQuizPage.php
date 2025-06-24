@@ -134,7 +134,7 @@ abstract class CMEQuizPage extends SiteDBEditPage
         $this->credits = SwatDB::query(
             $this->app->db,
             $sql,
-            SwatDBClassMap::get('CMECreditWrapper')
+            SwatDBClassMap::get(CMECreditWrapper::class)
         );
 
         if (count($this->credits) === 0) {
@@ -156,9 +156,7 @@ abstract class CMEQuizPage extends SiteDBEditPage
         $progress = $this->getProgress();
 
         if (!$progress instanceof CMEAccountCMEProgress) {
-            $class_name = SwatDBClassMap::get('CMEAccountCMEProgress');
-
-            $progress = new $class_name();
+            $progress = SwatDBClassMap::new(CMEAccountCMEProgress::class);
             $progress->setDatabase($this->app->db);
             $progress->account = $account;
             $progress->save();
@@ -239,7 +237,7 @@ abstract class CMEQuizPage extends SiteDBEditPage
                 'question',
                 $this->app->db,
                 'select * from InquisitionQuestion where id in (%s)',
-                SwatDBClassMap::get('InquisitionQuestionWrapper')
+                SwatDBClassMap::get(InquisitionQuestionWrapper::class)
             );
 
             if ($questions instanceof InquisitionQuestionWrapper) {
@@ -248,13 +246,13 @@ abstract class CMEQuizPage extends SiteDBEditPage
                     'correct_option',
                     $this->app->db,
                     'select * from InquisitionQuestionOption where id in (%s)',
-                    SwatDBClassMap::get('InquisitionQuestionOptionWrapper')
+                    SwatDBClassMap::get(InquisitionQuestionOptionWrapper::class)
                 );
 
                 // efficiently load question options
                 $questions->loadAllSubRecordsets(
                     'options',
-                    SwatDBClassMap::get('InquisitionQuestionOptionWrapper'),
+                    SwatDBClassMap::get(InquisitionQuestionOptionWrapper::class),
                     'InquisitionQuestionOption',
                     'question',
                     '',
@@ -270,9 +268,7 @@ abstract class CMEQuizPage extends SiteDBEditPage
 
     protected function generateQuiz()
     {
-        $class_name = SwatDBClassMap::get('CMEQuiz');
-
-        $quiz = new $class_name();
+        $quiz = SwatDBClassMap::new(CMEQuiz::class);
         $quiz->setDatabase($this->app->db);
 
         $quiz->createdate = new SwatDate();
@@ -319,7 +315,7 @@ abstract class CMEQuizPage extends SiteDBEditPage
                 'question_option',
                 $this->app->db,
                 'select * from InquisitionQuestionOption where id in (%s)',
-                SwatDBClassMap::get('InquisitionQuestionOptionWrapper')
+                SwatDBClassMap::get(InquisitionQuestionOptionWrapper::class)
             );
 
             // efficiently load question bindings for response values
@@ -328,9 +324,7 @@ abstract class CMEQuizPage extends SiteDBEditPage
                 $this->app->db,
                 'select * from InquisitionInquisitionQuestionBinding
 					where id in (%s)',
-                SwatDBClassMap::get(
-                    'InquisitionInquisitionQuestionBindingWrapper'
-                )
+                SwatDBClassMap::get(InquisitionInquisitionQuestionBindingWrapper::class)
             );
 
             // efficiently load questions for question bindings
@@ -339,7 +333,7 @@ abstract class CMEQuizPage extends SiteDBEditPage
                     'question',
                     $this->app->db,
                     'select * from InquisitionQuestion where id in (%s)',
-                    SwatDBClassMap::get('InquisitionQuestionWrapper')
+                    SwatDBClassMap::get(InquisitionQuestionWrapper::class)
                 );
             }
 
@@ -422,8 +416,7 @@ abstract class CMEQuizPage extends SiteDBEditPage
     protected function saveQuizData(SwatForm $form)
     {
         if (!$this->response instanceof InquisitionResponse) {
-            $class_name = SwatDBClassMap::get('CMEQuizResponse');
-            $this->response = new $class_name();
+            $this->response = SwatDBClassMap::new(CMEQuizResponse::class);
 
             $this->response->account = $this->app->session->account->id;
             $this->response->inquisition = $this->quiz->id;
@@ -443,8 +436,7 @@ abstract class CMEQuizPage extends SiteDBEditPage
         $this->response->save();
 
         // set new response values
-        $wrapper = SwatDBClassMap::get('InquisitionResponseValueWrapper');
-        $response_values = new $wrapper();
+        $response_values = SwatDBClassMap::new(InquisitionResponseValueWrapper::class);
 
         $total_questions_with_answers = 0;
         $correct_answers = 0;
@@ -512,11 +504,7 @@ abstract class CMEQuizPage extends SiteDBEditPage
                     $earned_date = new SwatDate();
                     $earned_date->toUTC();
 
-                    $class_name = SwatDBClassMap::get(
-                        'CMEAccountEarnedCMECredit'
-                    );
-
-                    $earned_credit = new $class_name();
+                    $earned_credit = SwatDBClassMap::new(CMEAccountEarnedCMECredit::class);
                     $earned_credit->setDatabase($this->app->db);
 
                     $earned_credit->account = $account->id;

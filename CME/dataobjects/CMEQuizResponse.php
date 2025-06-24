@@ -52,7 +52,7 @@ class CMEQuizResponse extends InquisitionResponse
         $this->registerDateProperty('reset_date');
         $this->registerInternalProperty(
             'account',
-            SwatDBClassMap::get('CMEAccount')
+            SwatDBClassMap::get(CMEAccount::class)
         );
     }
 
@@ -79,7 +79,7 @@ class CMEQuizResponse extends InquisitionResponse
         return SwatDB::query(
             $this->db,
             $sql,
-            SwatDBClassMap::get('CMECreditWrapper')
+            SwatDBClassMap::get(CMECreditWrapper::class)
         );
     }
 }

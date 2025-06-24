@@ -16,6 +16,6 @@ class CMEQuizResponseWrapper extends InquisitionResponseWrapper
     protected function init()
     {
         parent::init();
-        $this->row_wrapper_class = SwatDBClassMap::get('CMEQuizResponse');
+        $this->row_wrapper_class = SwatDBClassMap::get(CMEQuizResponse::class);
     }
 }

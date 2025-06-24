@@ -46,16 +46,14 @@ abstract class CMECreditEdit extends InquisitionInquisitionEdit
         if ($this->credit->quiz instanceof CMEQuiz) {
             $this->inquisition = $this->credit->quiz;
         } else {
-            $class_name = SwatDBClassMap::get('CMEQuiz');
-            $this->inquisition = new $class_name();
+            $this->inquisition = SwatDBClassMap::new(CMEQuiz::class);
             $this->inquisition->setDatabase($this->app->db);
         }
     }
 
     protected function initCredit()
     {
-        $class_name = SwatDBClassMap::get('CMECredit');
-        $this->credit = new $class_name();
+        $this->credit = SwatDBClassMap::new(CMECredit::class);
         $this->credit->setDatabase($this->app->db);
 
         if (!$this->isNew()) {
@@ -78,8 +76,7 @@ abstract class CMECreditEdit extends InquisitionInquisitionEdit
     {
         if ($this->isNew()) {
             $front_matter_id = SiteApplication::initVar('front-matter');
-            $class_name = SwatDBClassMap::get('CMEFrontMatter');
-            $this->credit->front_matter = new $class_name();
+            $this->credit->front_matter = SwatDBClassMap::new(CMEFrontMatter::class);
             $this->credit->front_matter->setDatabase($this->app->db);
             if (!$this->credit->front_matter->load($front_matter_id)) {
                 throw new AdminNotFoundException(

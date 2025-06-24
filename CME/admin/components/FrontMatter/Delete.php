@@ -62,10 +62,8 @@ class CMEFrontMatterDelete extends AdminDBDelete
 
         $rs = SwatDB::query($this->app->db, $sql);
 
-        $class_name = SwatDBClassMap::get('CMEFrontMatter');
-
         foreach ($rs as $row) {
-            $front_matter = new $class_name($row);
+            $front_matter =SwatDBClassMap::new(CMEFrontMatter::class, $row);
             $front_matter->setDatabase($this->app->db);
 
             $row->status_level = AdminDependency::DELETE;

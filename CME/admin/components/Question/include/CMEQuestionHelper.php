@@ -74,7 +74,7 @@ class CMEQuestionHelper
             $this->credit = SwatDB::query(
                 $this->app->db,
                 $sql,
-                SwatDBClassMap::get('CMECreditWrapper')
+                SwatDBClassMap::get(CMECreditWrapper::class)
             )->getFirst();
         }
     }
@@ -93,7 +93,7 @@ class CMEQuestionHelper
                 $this->front_matter = SwatDB::query(
                     $this->app->db,
                     $sql,
-                    SwatDBClassMap::get('CMEFrontMatterWrapper')
+                    SwatDBClassMap::get(CMEFrontMatterWrapper::class)
                 )->getFirst();
             }
         }

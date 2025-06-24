@@ -20,17 +20,17 @@ class CMEAccountCMEProgress extends SwatDBDataObject
 
         $this->registerInternalProperty(
             'account',
-            SwatDBClassMap::get('CMEAccount')
+            SwatDBClassMap::get(CMEAccount::class)
         );
 
         $this->registerInternalProperty(
             'quiz',
-            SwatDBClassMap::get('CMEQuiz')
+            SwatDBClassMap::get(CMEQuiz::class)
         );
 
         $this->registerInternalProperty(
             'evaluation',
-            SwatDBClassMap::get('CMEEvaluation')
+            SwatDBClassMap::get(CMEEvaluation::class)
         );
     }
 }

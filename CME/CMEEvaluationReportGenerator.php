@@ -94,23 +94,21 @@ class CMEEvaluationReportGenerator
         $responses = SwatDB::query(
             $this->app->db,
             $sql,
-            SwatDBClassMap::get('InquisitionResponseWrapper')
+            SwatDBClassMap::get(InquisitionResponseWrapper::class)
         );
 
         // efficiently load response values
         $values = $responses->loadAllSubRecordsets(
             'values',
-            SwatDBClassMap::get('InquisitionResponseValueWrapper'),
+            SwatDBClassMap::get(InquisitionResponseValueWrapper::class),
             'InquisitionResponseValue',
             'response'
         );
 
         // wrappers for effecient loading of question bindings and questions on
         // response values and evaluations.
-        $question_wrapper = SwatDBClassMap::get('InquisitionQuestionWrapper');
-        $question_binding_wrapper = SwatDBClassMap::get(
-            'InquisitionInquisitionQuestionBindingWrapper'
-        );
+        $question_wrapper = SwatDBClassMap::get(InquisitionQuestionWrapper::class);
+        $question_binding_wrapper = SwatDBClassMap::get(InquisitionInquisitionQuestionBindingWrapper::class);
 
         // efficiently load response value question bindings
         $question_binding_sql =
@@ -143,7 +141,7 @@ class CMEEvaluationReportGenerator
             'inquisition',
             $this->app->db,
             $evaluation_sql,
-            SwatDBClassMap::get('CMEEvaluationWrapper')
+            SwatDBClassMap::get(CMEEvaluationWrapper::class)
         );
 
         // efficiently load evaluation question bindings
@@ -187,7 +185,7 @@ class CMEEvaluationReportGenerator
                 if ($questions instanceof $question_wrapper) {
                     $options = $questions->loadAllSubRecordsets(
                         'options',
-                        SwatDBClassMap::get('InquisitionQuestionOptionWrapper'),
+                        SwatDBClassMap::get(InquisitionQuestionOptionWrapper::class),
                         'InquisitionQuestionOption',
                         'question',
                         '',

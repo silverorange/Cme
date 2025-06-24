@@ -88,7 +88,7 @@ class CMEQuizReportGenerator
         $earned_credits = SwatDB::query(
             $this->app->db,
             $sql,
-            SwatDBClassMap::get('CMEAccountEarnedCMECreditWrapper')
+            SwatDBClassMap::get(CMEAccountEarnedCMECreditWrapper::class)
         );
 
         // efficiently load accounts
@@ -119,7 +119,7 @@ class CMEQuizReportGenerator
             'account',
             $this->app->db,
             'select * from Account where id in (%s)',
-            SwatDBClassMap::get('SiteAccountWrapper')
+            SwatDBClassMap::get(SiteAccountWrapper::class)
         );
     }
 
@@ -137,7 +137,7 @@ class CMEQuizReportGenerator
             'credit',
             $this->app->db,
             $credit_sql,
-            SwatDBClassMap::get('CMECreditWrapper')
+            SwatDBClassMap::get(CMECreditWrapper::class)
         );
     }
 
@@ -145,7 +145,7 @@ class CMEQuizReportGenerator
     {
         $addresses = $accounts->loadAllSubRecordsets(
             'addresses',
-            SwatDBClassMap::get('StoreAccountAddressWrapper'),
+            SwatDBClassMap::get(StoreAccountAddressWrapper::class),
             'AccountAddress',
             'account'
         );
@@ -155,7 +155,7 @@ class CMEQuizReportGenerator
             'provstate',
             $this->app->db,
             $provstate_sql,
-            SwatDBClassMap::get('StoreProvStateWrapper')
+            SwatDBClassMap::get(StoreProvStateWrapper::class)
         );
 
         $country_sql = 'select * from Country where id in (%s)';
@@ -163,7 +163,7 @@ class CMEQuizReportGenerator
             'country',
             $this->app->db,
             $country_sql,
-            SwatDBClassMap::get('StoreCountryWrapper'),
+            SwatDBClassMap::get(StoreCountryWrapper::class),
             'text'
         );
 
@@ -224,8 +224,7 @@ class CMEQuizReportGenerator
 
         if (!$address instanceof StoreAddress) {
             // If there is no address, set up an empty address
-            $class_name = SwatDBClassMap::get('StoreAccountAddress');
-            $address = new $class_name();
+            $address = SwatDBClassMap::new(StoreAccountAddress::class);
             $address->first_name = $account->first_name;
             $address->last_name = $account->last_name;
         }

@@ -92,7 +92,7 @@ abstract class CMEFrontMatter extends SwatDBDataObject
 
         $this->registerInternalProperty(
             'evaluation',
-            SwatDBClassMap::get('CMEEvaluation')
+            SwatDBClassMap::get(CMEEvaluation::class)
         );
 
         $this->registerDateProperty('release_date');
@@ -110,7 +110,7 @@ abstract class CMEFrontMatter extends SwatDBDataObject
         return SwatDB::query(
             $this->db,
             $sql,
-            SwatDBClassMap::get('CMECreditWrapper')
+            SwatDBClassMap::get(CMECreditWrapper::class)
         );
     }
 
@@ -129,7 +129,7 @@ abstract class CMEFrontMatter extends SwatDBDataObject
         return SwatDB::query(
             $this->db,
             $sql,
-            SwatDBClassMap::get('CMEProviderWrapper')
+            SwatDBClassMap::get(CMEProviderWrapper::class)
         );
     }
 }

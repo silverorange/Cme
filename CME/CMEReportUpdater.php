@@ -115,7 +115,7 @@ abstract class CMEReportUpdater extends SiteCommandLineApplication
         $this->providers = SwatDB::query(
             $this->db,
             'select * from CMEProvider order by title, id',
-            SwatDBClassMap::get('CMEProviderWrapper')
+            SwatDBClassMap::get(CMEProviderWrapper::class)
         );
     }
 

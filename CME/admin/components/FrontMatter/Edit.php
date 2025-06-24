@@ -13,7 +13,7 @@ abstract class CMEFrontMatterEdit extends AdminObjectEdit
 
     protected function getObjectClass()
     {
-        return 'CMEFrontMatter';
+        return CMEFrontMatter::class;
     }
 
     protected function getObjectUiValueNames()
@@ -72,7 +72,7 @@ abstract class CMEFrontMatterEdit extends AdminObjectEdit
         return SwatDB::query(
             $this->app->db,
             'select * from CMEProvider order by id',
-            SwatDBClassMap::get('CMEProviderWrapper')
+            SwatDBClassMap::get(CMEProviderWrapper::class)
         );
     }
 
@@ -130,8 +130,7 @@ abstract class CMEFrontMatterEdit extends AdminObjectEdit
     {
         parent::validate();
 
-        $class_name = SwatDBClassMap::get('CMEProviderWrapper');
-        $providers = new $class_name();
+        $providers = SwatDBClassMap::new(CMEProviderWrapper::class);
         $providers->setDatabase($this->app->db);
         $providers->load($this->ui->getWidget('providers')->values);
 
@@ -215,8 +214,7 @@ abstract class CMEFrontMatterEdit extends AdminObjectEdit
 
     protected function createEvaluation()
     {
-        $class_name = SwatDBClassMap::get('CMEEvaluation');
-        $evaluation = new $class_name();
+        $evaluation = SwatDBClassMap::new(CMEEvaluation::class);
         $evaluation->createdate = new SwatDate();
         $evaluation->createdate->toUTC();
         $evaluation->setDatabase($this->app->db);

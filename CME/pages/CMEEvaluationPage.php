@@ -126,7 +126,7 @@ abstract class CMEEvaluationPage extends SiteDBEditPage
         $this->credits = SwatDB::query(
             $this->app->db,
             $sql,
-            SwatDBClassMap::get('CMECreditWrapper')
+            SwatDBClassMap::get(CMECreditWrapper::class)
         );
 
         if (count($this->credits) === 0) {
@@ -148,9 +148,7 @@ abstract class CMEEvaluationPage extends SiteDBEditPage
         $progress = $this->getProgress();
 
         if (!$progress instanceof CMEAccountCMEProgress) {
-            $class_name = SwatDBClassMap::get('CMEAccountCMEProgress');
-
-            $progress = new $class_name();
+            $progress = SwatDBClassMap::new(CMEAccountCMEProgress::class);
             $progress->setDatabase($this->app->db);
             $progress->account = $account;
             $progress->save();
@@ -233,14 +231,14 @@ abstract class CMEEvaluationPage extends SiteDBEditPage
                 'question',
                 $this->app->db,
                 'select * from InquisitionQuestion where id in (%s)',
-                SwatDBClassMap::get('InquisitionQuestionWrapper')
+                SwatDBClassMap::get(InquisitionQuestionWrapper::class)
             );
 
             // efficiently load question options
             if ($questions instanceof InquisitionQuestionWrapper) {
                 $options = $questions->loadAllSubRecordsets(
                     'options',
-                    SwatDBClassMap::get('InquisitionQuestionOptionWrapper'),
+                    SwatDBClassMap::get(InquisitionQuestionOptionWrapper::class),
                     'InquisitionQuestionOption',
                     'question',
                     '',
@@ -256,9 +254,7 @@ abstract class CMEEvaluationPage extends SiteDBEditPage
 
     protected function generateEvaluation()
     {
-        $class_name = SwatDBClassMap::get('CMEEvaluation');
-
-        $evaluation = new $class_name();
+        $evaluation = SwatDBClassMap::new(CMEEvaluation::class);
         $evaluation->setDatabase($this->app->db);
 
         $evaluation->createdate = new SwatDate();
@@ -285,7 +281,7 @@ abstract class CMEEvaluationPage extends SiteDBEditPage
         );
 
         $class_name = SwatDBClassMap::get(
-            'InquisitionInquisitionQuestionBinding'
+            InquisitionInquisitionQuestionBinding::class
         );
 
         // map ids for bindings to use when copying dependencies
@@ -506,8 +502,7 @@ abstract class CMEEvaluationPage extends SiteDBEditPage
 
     protected function saveData(SwatForm $form)
     {
-        $class = SwatDBClassMap::get('CMEEvaluationResponse');
-        $this->inquisition_response = new $class();
+        $this->inquisition_response = SwatDBClassMap::new(CMEEvaluationResponse::class);
         $this->inquisition_response->setDatabase($this->app->db);
 
         $this->inquisition_response->account =
@@ -520,10 +515,9 @@ abstract class CMEEvaluationPage extends SiteDBEditPage
         $this->inquisition_response->createdate->toUTC();
 
         // set complete date
-        $wrapper = SwatDBClassMap::get('InquisitionResponseValueWrapper');
         $this->inquisition_response->complete_date = new SwatDate();
         $this->inquisition_response->complete_date->toUTC();
-        $this->inquisition_response->values = new $wrapper();
+        $this->inquisition_response->values = SwatDBClassMap::new(InquisitionResponseValueWrapper::class);
 
         $question_bindings = $this->evaluation->visible_question_bindings;
         foreach ($question_bindings as $question_binding) {
@@ -559,9 +553,7 @@ abstract class CMEEvaluationPage extends SiteDBEditPage
     protected function saveEarnedCredits()
     {
         $account = $this->app->session->account;
-        $wrapper = SwatDBClassMap::get('CMEAccountEarnedCMECreditWrapper');
-        $class_name = SwatDBClassMap::get('CMEAccountEarnedCMECredit');
-        $earned_credits = new $wrapper();
+        $earned_credits = SwatDBClassMap::new(CMEAccountEarnedCMECreditWrapper::class);
         $earned_date = new SwatDate();
         $earned_date->toUTC();
         foreach ($this->front_matter->credits as $credit) {
@@ -576,7 +568,7 @@ abstract class CMEEvaluationPage extends SiteDBEditPage
                 );
 
                 if (SwatDB::queryOne($this->app->db, $sql) == 0) {
-                    $earned_credit = new $class_name();
+                    $earned_credit = SwatDBClassMap::new(CMEAccountEarnedCMECredit::class);
                     $earned_credit->account = $account->id;
                     $earned_credit->credit = $credit->id;
                     $earned_credit->earned_date = $earned_date;

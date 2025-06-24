@@ -25,12 +25,12 @@ class CMEAccountEarnedCMECredit extends SwatDBDataObject
 
         $this->registerInternalProperty(
             'account',
-            SwatDBClassMap::get('CMEAccount')
+            SwatDBClassMap::get(CMEAccount::class)
         );
 
         $this->registerInternalProperty(
             'credit',
-            SwatDBClassMap::get('CMECredit')
+            SwatDBClassMap::get(CMECredit::class)
         );
 
         $this->registerDateProperty('earned_date');

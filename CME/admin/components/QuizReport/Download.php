@@ -64,7 +64,7 @@ class CMEQuizReportDownload extends AdminPage
         $this->report = SwatDB::query(
             $this->app->db,
             $sql,
-            SwatDBClassMap::get('CMEQuizReportWrapper')
+            SwatDBClassMap::get(CMEQuizReportWrapper::class)
         )->getFirst();
 
         if (!$this->report instanceof CMEQuizReport) {

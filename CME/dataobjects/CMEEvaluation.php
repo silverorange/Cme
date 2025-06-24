@@ -10,6 +10,6 @@ class CMEEvaluation extends InquisitionInquisition
 {
     protected function getResponseWrapperClass()
     {
-        return 'CMEEvaluationResponseWrapper';
+        return CMEEvaluationResponseWrapper::class;
     }
 }

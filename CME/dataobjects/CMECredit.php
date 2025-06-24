@@ -101,12 +101,12 @@ abstract class CMECredit extends SwatDBDataObject
 
         $this->registerInternalProperty(
             'front_matter',
-            SwatDBClassMap::get('CMEFrontMatter')
+            SwatDBClassMap::get(CMEFrontMatter::class)
         );
 
         $this->registerInternalProperty(
             'quiz',
-            SwatDBClassMap::get('CMEQuiz')
+            SwatDBClassMap::get(CMEQuiz::class)
         );
     }
 }

@@ -22,7 +22,7 @@ class CMEEvaluationResponse extends InquisitionResponse
         return SwatDB::query(
             $this->db,
             $sql,
-            SwatDBClassMap::get('CMEFrontMatterWrapper')
+            SwatDBClassMap::get(CMEFrontMatterWrapper::class)
         )->getFirst();
     }
 
@@ -31,7 +31,7 @@ class CMEEvaluationResponse extends InquisitionResponse
         parent::init();
         $this->registerInternalProperty(
             'account',
-            SwatDBClassMap::get('CMEAccount')
+            SwatDBClassMap::get(CMEAccount::class)
         );
     }
 }

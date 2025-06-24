@@ -131,8 +131,7 @@ abstract class CMEAccount extends StoreAccount
 
     public function getEarnedCMECreditsByProvider(CMEProvider $provider)
     {
-        $class_name = SwatDBClassMap::get('CMECreditWrapper');
-        $credits = new $class_name();
+        $credits = SwatDBClassMap::new(CMECreditWrapper::class);
 
         foreach ($this->earned_cme_credits as $earned_credit) {
             $cme_providers = $earned_credit->credit->front_matter->providers;
@@ -204,9 +203,8 @@ abstract class CMEAccount extends StoreAccount
             $rows = SwatDB::query($this->db, $sql);
 
             $this->cme_progress_by_credit = [];
-            $class_name = SwatDBClassMap::get('CMEAccountCMEProgress');
             foreach ($rows as $row) {
-                $progress = new $class_name($row);
+                $progress = SwatDBClassMap::new(CMEAccountCMEProgress::class, $row);
                 $progress->setDatabase($this->db);
                 $this->cme_progress_by_credit[$row->credit] = $progress;
             }
@@ -233,7 +231,7 @@ abstract class CMEAccount extends StoreAccount
             $responses = SwatDB::query(
                 $this->db,
                 $sql,
-                SwatDBClassMap::get('CMEQuizResponseWrapper')
+                SwatDBClassMap::get(CMEQuizResponseWrapper::class)
             );
 
             foreach ($responses as $response) {
@@ -263,7 +261,7 @@ abstract class CMEAccount extends StoreAccount
             $responses = SwatDB::query(
                 $this->db,
                 $sql,
-                SwatDBClassMap::get('CMEEvaluationResponseWrapper')
+                SwatDBClassMap::get(CMEEvaluationResponseWrapper::class)
             );
 
             foreach ($responses as $response) {
@@ -319,7 +317,7 @@ abstract class CMEAccount extends StoreAccount
         $earned_credits = SwatDB::query(
             $this->db,
             $sql,
-            SwatDBClassMap::get('CMEAccountEarnedCMECreditWrapper')
+            SwatDBClassMap::get(CMEAccountEarnedCMECreditWrapper::class)
         );
 
         foreach ($earned_credits as $earned_credit) {
@@ -330,7 +328,7 @@ abstract class CMEAccount extends StoreAccount
             'credit',
             $this->db,
             'select * from CMECredit where id in (%s)',
-            SwatDBClassMap::get('CMECreditWrapper')
+            SwatDBClassMap::get(CMECreditWrapper::class)
         );
 
         if ($credits instanceof CMECreditWrapper) {
@@ -338,7 +336,7 @@ abstract class CMEAccount extends StoreAccount
                 'front_matter',
                 $this->db,
                 'select * from CMEFrontMatter where id in (%s)',
-                SwatDBClassMap::get('CMEFrontMatterWrapper')
+                SwatDBClassMap::get(CMEFrontMatterWrapper::class)
             );
 
             $front_matters->loadProviders();
@@ -365,7 +363,7 @@ abstract class CMEAccount extends StoreAccount
         $credits = SwatDB::query(
             $this->db,
             $sql,
-            SwatDBClassMap::get('CMECreditWrapper')
+            SwatDBClassMap::get(CMECreditWrapper::class)
         );
 
         if ($credits instanceof CMECreditWrapper) {
@@ -373,14 +371,14 @@ abstract class CMEAccount extends StoreAccount
                 'front_matter',
                 $this->db,
                 'select * from CMEFrontMatter where id in(%s)',
-                SwatDBClassMap::get('CMEFrontMatterWrapper')
+                SwatDBClassMap::get(CMEFrontMatterWrapper::class)
             );
 
             $providers = $front_matters->loadAllSubDataObjects(
                 'provider',
                 $this->db,
                 'select * from CMEProvider where id in(%s)',
-                SwatDBClassMap::get('CMEProviderWrapper')
+                SwatDBClassMap::get(CMEProviderWrapper::class)
             );
         }
 

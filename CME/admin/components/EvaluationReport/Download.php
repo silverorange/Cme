@@ -48,8 +48,7 @@ class CMEEvaluationReportDownload extends AdminPage
             SiteApplication::VAR_GET
         );
 
-        $class_name = SwatDBClassMap::get('CMEProvider');
-        $provider = new $class_name();
+        $provider = SwatDBClassMap::new(CMEProvider::class);
         $provider->setDatabase($this->app->db);
         if (!$provider->loadByShortname($type)) {
             throw new AdminNotFoundException('Invalid CME provider.');
@@ -65,7 +64,7 @@ class CMEEvaluationReportDownload extends AdminPage
         $this->report = SwatDB::query(
             $this->app->db,
             $sql,
-            SwatDBClassMap::get('CMEEvaluationReportWrapper')
+            SwatDBClassMap::get(CMEEvaluationReportWrapper::class)
         )->getFirst();
 
         if (!$this->report instanceof CMEEvaluationReport) {

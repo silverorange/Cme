@@ -60,14 +60,14 @@ class CMECreditDetails extends InquisitionInquisitionDetails
             'question',
             $this->app->db,
             'select * from InquisitionQuestion where id in (%s)',
-            SwatDBClassMap::get('InquisitionQuestionWrapper')
+            SwatDBClassMap::get(InquisitionQuestionWrapper::class)
         );
 
         // efficiently load question options
         if ($questions instanceof InquisitionQuestionWrapper) {
             $questions->loadAllSubRecordsets(
                 'options',
-                SwatDBClassMap::get('InquisitionQuestionOptionWrapper'),
+                SwatDBClassMap::get(InquisitionQuestionOptionWrapper::class),
                 'InquisitionQuestionOption',
                 'question',
                 '',
@@ -78,8 +78,7 @@ class CMECreditDetails extends InquisitionInquisitionDetails
 
     protected function initCredit()
     {
-        $class_name = SwatDBClassMap::get('CMECredit');
-        $this->credit = new $class_name();
+        $this->credit = SwatDBClassMap::new(CMECredit::class);
         $this->credit->setDatabase($this->app->db);
 
         if (!$this->credit->load($this->id)) {

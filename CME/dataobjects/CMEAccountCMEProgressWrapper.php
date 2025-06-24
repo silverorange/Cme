@@ -11,8 +11,6 @@ class CMEAccountCMEProgressWrapper extends SwatDBRecordsetWrapper
     protected function init()
     {
         parent::init();
-        $this->row_wrapper_class = SwatDBClassMap::get(
-            'CMEAccountCMEProgress'
-        );
+        $this->row_wrapper_class = SwatDBClassMap::get(CMEAccountCMEProgress::class);
     }
 }

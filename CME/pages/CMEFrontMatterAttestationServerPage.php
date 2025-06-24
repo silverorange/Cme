@@ -46,7 +46,7 @@ class CMEFrontMatterAttestationServerPage extends SiteArticlePage
         return SwatDB::query(
             $this->app->db,
             $sql,
-            SwatDBClassMap::get('CMEFrontMatterWrapper')
+            SwatDBClassMap::get(CMEFrontMatterWrapper::class)
         )->getFirst();
     }
 
@@ -133,9 +133,7 @@ class CMEFrontMatterAttestationServerPage extends SiteArticlePage
         CMEAccount $account,
         CMEFrontMatter $front_matter
     ) {
-        $wrapper = SwatDBClassMap::get('CMEAccountEarnedCMECreditWrapper');
-        $class_name = SwatDBClassMap::get('CMEAccountEarnedCMECredit');
-        $earned_credits = new $wrapper();
+        $earned_credits = SwatDBClassMap::new(CMEAccountEarnedCMECreditWrapper::class);
         $now = new SwatDate();
         $now->toUTC();
         foreach ($front_matter->credits as $credit) {
@@ -150,7 +148,7 @@ class CMEFrontMatterAttestationServerPage extends SiteArticlePage
                 );
 
                 if (SwatDB::queryOne($this->app->db, $sql) == 0) {
-                    $earned_credit = new $class_name();
+                    $earned_credit = SwatDBClassMap::new(CMEAccountEarnedCMECredit::class);
                     $earned_credit->account = $account->id;
                     $earned_credit->credit = $credit->id;
                     $earned_credit->earned_date = $now;

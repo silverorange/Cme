@@ -33,6 +33,6 @@ class CMEQuiz extends InquisitionInquisition
 
     protected function getResponseWrapperClass()
     {
-        return 'CMEQuizResponseWrapper';
+        return CMEQuizResponseWrapper::class;
     }
 }

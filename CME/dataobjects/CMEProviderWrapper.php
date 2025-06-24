@@ -13,7 +13,7 @@ class CMEProviderWrapper extends SwatDBRecordsetWrapper
     protected function init()
     {
         parent::init();
-        $this->row_wrapper_class = SwatDBClassMap::get('CMEProvider');
+        $this->row_wrapper_class = SwatDBClassMap::get(CMEProvider::class);
         $this->index_field = 'id';
     }
 }

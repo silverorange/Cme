@@ -57,7 +57,7 @@ class CMEQuizReportIndex extends AdminIndex
         $this->providers = SwatDB::query(
             $this->app->db,
             'select * from CMEProvider order by title, id',
-            SwatDBClassMap::get('CMEProviderWrapper')
+            SwatDBClassMap::get(CMEProviderWrapper::class)
         );
     }
 
@@ -67,7 +67,7 @@ class CMEQuizReportIndex extends AdminIndex
         $reports = SwatDB::query(
             $this->app->db,
             $sql,
-            SwatDBClassMap::get('CMEQuizReportWrapper')
+            SwatDBClassMap::get(CMEQuizReportWrapper::class)
         );
 
         $reports->attachSubDataObjects(

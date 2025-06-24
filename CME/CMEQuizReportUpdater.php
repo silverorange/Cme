@@ -16,13 +16,13 @@ abstract class CMEQuizReportUpdater extends CMEReportUpdater
         return SwatDB::query(
             $this->db,
             'select * from QuizReport order by quarter',
-            SwatDBClassMap::get('CMEQuizReportWrapper')
+            SwatDBClassMap::get(CMEQuizReportWrapper::class)
         );
     }
 
     protected function getReportClassName()
     {
-        return SwatDBClassMap::get('CMEQuizReport');
+        return SwatDBClassMap::get(CMEQuizReport::class);
     }
 
     protected function getReportGenerator(

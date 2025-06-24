@@ -16,13 +16,13 @@ abstract class CMEEvaluationReportUpdater extends CMEReportUpdater
         return SwatDB::query(
             $this->db,
             'select * from EvaluationReport order by quarter',
-            SwatDBClassMap::get('CMEEvaluationReportWrapper')
+            SwatDBClassMap::get(CMEEvaluationReportWrapper::class)
         );
     }
 
     protected function getReportClassName()
     {
-        return SwatDBClassMap::get('CMEEvaluationReport');
+        return SwatDBClassMap::get(CMEEvaluationReport::class);
     }
 
     protected function getReportGenerator(
@@ -42,6 +42,6 @@ abstract class CMEEvaluationReportUpdater extends CMEReportUpdater
 
     protected function getReportGeneratorClassName()
     {
-        return 'CMEEvaluationReportGenerator';
+        return CMEEvaluationReportGenerator::class;
     }
 }

@@ -166,7 +166,7 @@ class CMEQuizResponseServer extends SiteArticlePage
         $credits = SwatDB::query(
             $this->app->db,
             $sql,
-            SwatDBClassMap::get('CMECreditWrapper')
+            SwatDBClassMap::get(CMECreditWrapper::class)
         );
 
         if (count($credits) === 0) {
@@ -232,11 +232,11 @@ class CMEQuizResponseServer extends SiteArticlePage
             $this->app->db->quote($binding_id, 'integer')
         );
 
-        $wrapper = SwatDBClassMap::get(
-            'InquisitionInquisitionQuestionBindingWrapper'
-        );
-
-        return SwatDB::query($this->app->db, $sql, $wrapper)->getFirst();
+        return SwatDB::query(
+            $this->app->db,
+            $sql,
+            SwatDBClassMap::get(InquisitionInquisitionQuestionBindingWrapper::class)
+        )->getFirst();
     }
 
     protected function getResponse(InquisitionInquisition $quiz)
@@ -245,19 +245,14 @@ class CMEQuizResponseServer extends SiteArticlePage
 
         // get new response
         if (!$response instanceof CMEQuizResponse) {
-            $class_name = SwatDBClassMap::get('CMEQuizResponse');
-            $response = new $class_name();
+            $response = SwatDBClassMap::new(CMEQuizResponse::class);
 
             $response->account = $this->app->session->account;
             $response->inquisition = $quiz;
             $response->createdate = new SwatDate();
             $response->createdate->toUTC();
 
-            $wrapper = SwatDBClassMap::get(
-                'InquisitionResponseValueWrapper'
-            );
-
-            $response->values = new $wrapper();
+            $response->values = SwatDBClassMap::new(InquisitionResponseValueWrapper::class);
 
             $response->setDatabase($this->app->db);
         }
@@ -293,17 +288,15 @@ class CMEQuizResponseServer extends SiteArticlePage
                 $this->app->db->quote($question_binding->id, 'integer')
             );
 
-            $wrapper = SwatDBClassMap::get('InquisitionResponseValueWrapper');
             $response_value = SwatDB::query(
                 $this->app->db,
                 $sql,
-                $wrapper
+                SwatDBClassMap::get(InquisitionResponseValueWrapper::class)
             )->getFirst();
 
             // if no existing response, make a new one
             if ($response_value === null) {
-                $class_name = SwatDBClassMap::get('InquisitionResponseValue');
-                $response_value = new $class_name();
+                $response_value = SwatDBClassMap::new(InquisitionResponseValue::class);
                 $response_value->setDatabase($this->app->db);
             }
 

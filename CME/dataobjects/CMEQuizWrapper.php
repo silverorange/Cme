@@ -13,7 +13,7 @@ class CMEQuizWrapper extends InquisitionInquisitionWrapper
     protected function init()
     {
         parent::init();
-        $this->row_wrapper_class = SwatDBClassMap::get('CMEQuiz');
+        $this->row_wrapper_class = SwatDBClassMap::get(CMEQuiz::class);
         $this->index_field = 'id';
     }
 }

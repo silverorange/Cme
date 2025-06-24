@@ -57,7 +57,7 @@ class CMECreditDelete extends AdminDBDelete
         $credits = SwatDB::query(
             $this->app->db,
             $sql,
-            SwatDBClassMap::get('CMECreditWrapper')
+            SwatDBClassMap::get(CMECreditWrapper::class)
         );
 
         foreach ($credits as $credit) {

@@ -65,7 +65,7 @@ class CMEEvaluationReport extends SwatDBDataObject
 
         $this->registerInternalProperty(
             'provider',
-            SwatDBClassMap::get('CMEProvider')
+            SwatDBClassMap::get(CMEProvider::class)
         );
 
         $this->registerDateProperty('quarter');

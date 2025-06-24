@@ -16,6 +16,6 @@ class CMEEvaluationResponseWrapper extends InquisitionResponseWrapper
     protected function init()
     {
         parent::init();
-        $this->row_wrapper_class = SwatDBClassMap::get('CMEEvaluationResponse');
+        $this->row_wrapper_class = SwatDBClassMap::get(CMEEvaluationResponse::class);
     }
 }

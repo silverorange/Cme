@@ -12,8 +12,7 @@ class CMEFrontMatterWrapper extends SwatDBRecordsetWrapper
 {
     public function loadCredits($read_only = true)
     {
-        $wrapper_class = SwatDBClassMap::get('CMECreditWrapper');
-        $credits_wrapper = new $wrapper_class();
+        $credits_wrapper = SwatDBClassMap::new(CMECreditWrapper::class);
         $credits_wrapper->setOptions('read_only', $read_only);
 
         $credits = SwatDB::query(
@@ -32,7 +31,7 @@ class CMEFrontMatterWrapper extends SwatDBRecordsetWrapper
 
         $this->attachSubRecordset(
             'credits',
-            SwatDBClassMap::get('CMECreditWrapper'),
+            SwatDBClassMap::get(CMECreditWrapper::class),
             'front_matter',
             $credits
         );
@@ -49,9 +48,7 @@ class CMEFrontMatterWrapper extends SwatDBRecordsetWrapper
 
     public function loadProviders($read_only = true)
     {
-        $providers_wrapper_class = SwatDBClassMap::get(
-            'CMEProviderWrapper'
-        );
+        $providers_wrapper_class = SwatDBClassMap::get(CMEProviderWrapper::class);
         $providers_wrapper = new $providers_wrapper_class();
         $providers_wrapper->setOptions('read_only', $read_only);
 
@@ -98,7 +95,7 @@ class CMEFrontMatterWrapper extends SwatDBRecordsetWrapper
     protected function init()
     {
         parent::init();
-        $this->row_wrapper_class = SwatDBClassMap::get('CMEFrontMatter');
+        $this->row_wrapper_class = SwatDBClassMap::get(CMEFrontMatter::class);
         $this->index_field = 'id';
     }
 }

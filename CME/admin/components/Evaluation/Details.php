@@ -40,7 +40,7 @@ class CMEEvaluationDetails extends InquisitionInquisitionDetails
         $this->front_matter = SwatDB::query(
             $this->app->db,
             $sql,
-            SwatDBClassMap::get('CMEFrontMatterWrapper')
+            SwatDBClassMap::get(CMEFrontMatterWrapper::class)
         )->getFirst();
 
         if (!$this->front_matter instanceof CMEFrontMatter) {

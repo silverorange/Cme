@@ -76,7 +76,7 @@ abstract class CMECertificatePage extends SiteUiPage
         $account = $this->app->session->account;
         $this->credits_by_front_matter = [];
 
-        $wrapper_class = SwatDBClassMap::get('CMEAccountEarnedCMECreditWrapper');
+        $wrapper_class = SwatDBClassMap::get(CMEAccountEarnedCMECreditWrapper::class);
 
         foreach ($account->earned_cme_credits as $credit) {
             $front_matter = $credit->credit->front_matter;
@@ -232,7 +232,7 @@ abstract class CMECertificatePage extends SiteUiPage
     {
         $front_matter_ids = $this->ui->getWidget('front_matters')->values;
 
-        $wrapper = SwatDBClassMap::get('CMEAccountEarnedCMECreditWrapper');
+        $wrapper = SwatDBClassMap::get(CMEAccountEarnedCMECreditWrapper::class);
 
         $form = $this->ui->getWidget('certificate_form');
         if ($form->isProcessed() && count($front_matter_ids) === 0) {
