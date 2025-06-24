@@ -1,0 +1,36 @@
+parameters:
+	ignoreErrors:
+		-
+			message: "#^Access to an undefined property CMEOptionDetails\\:\\:\\$question\\.$#"
+			count: 1
+			path: CME/admin/components/Option/Details.php
+
+		-
+			message: "#^Access to an undefined property CMEOptionImageDelete\\:\\:\\$question\\.$#"
+			count: 1
+			path: CME/admin/components/Option/ImageDelete.php
+
+		-
+			message: "#^Access to an undefined property CMEOptionImageOrder\\:\\:\\$question\\.$#"
+			count: 1
+			path: CME/admin/components/Option/ImageOrder.php
+
+		-
+			message: "#^Access to an undefined property CMEOptionImageUpload\\:\\:\\$question\\.$#"
+			count: 1
+			path: CME/admin/components/Option/ImageUpload.php
+
+		-
+			message: "#^Access to an undefined property CMEOptionHelper\\:\\:\\$credit\\.$#"
+			count: 1
+			path: CME/admin/components/Option/include/CMEOptionHelper.php
+
+		-
+			message: "#^Access to an undefined property CMEOptionHelper\\:\\:\\$inquisition\\.$#"
+			count: 1
+			path: CME/admin/components/Option/include/CMEOptionHelper.php
+
+		-
+			message: "#^Access to an undefined property CMEQuestionImport\\:\\:\\$inquisition\\.$#"
+			count: 1
+			path: CME/admin/components/Question/Import.php
