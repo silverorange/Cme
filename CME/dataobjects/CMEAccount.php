@@ -198,8 +198,7 @@ abstract class CMEAccount extends StoreAccount
 					AccountCMEProgressCreditBinding.progress =
 						AccountCMEProgress.id
 				where AccountCMEProgress.account = %s',
-                $this->db->quote($this->id, 'integer'),
-                $this->db->quote($credit->id, 'integer')
+                $this->db->quote($this->id, 'integer')
             );
 
             $rows = SwatDB::query($this->db, $sql);
