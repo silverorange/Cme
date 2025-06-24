@@ -7,7 +7,7 @@
  */
 class CMEQuizReportGenerator
 {
-	// {{{ protected properties
+
 
 	/**
 	 * @var SwatDate
@@ -29,8 +29,8 @@ class CMEQuizReportGenerator
 	 */
 	protected $app;
 
-	// }}}
-	// {{{ public function __construct()
+
+
 
 	public function __construct(
 		SiteApplication $app,
@@ -52,10 +52,10 @@ class CMEQuizReportGenerator
 		$this->end_date->addMonths(3);
 	}
 
-	// }}}
+
 
 	// data retrieval methods
-	// {{{ protected function getEarnedCredits()
+
 
 	/**
 	 * Gets earned CME credits to include in the quarterly report
@@ -116,8 +116,8 @@ class CMEQuizReportGenerator
 		return $earned_credits_array;
 	}
 
-	// }}}
-	// {{{ protected function loadAccounts()
+
+
 
 	/**
 	 * Efficiently loads accounts for earned CME credits
@@ -139,8 +139,8 @@ class CMEQuizReportGenerator
 		return $accounts;
 	}
 
-	// }}}
-	// {{{ protected function loadCredits()
+
+
 
 	/**
 	 * Efficiently loads CME credits for earned CME credits
@@ -164,8 +164,8 @@ class CMEQuizReportGenerator
 		return $credits;
 	}
 
-	// }}}
-	// {{{ protected function loadAccountAddresses()
+
+
 
 	protected function loadAccountAddresses(SiteAccountWrapper $accounts)
 	{
@@ -196,8 +196,8 @@ class CMEQuizReportGenerator
 		return $addresses;
 	}
 
-	// }}}
-	// {{{ protected function compareEarnedCredit()
+
+
 
 	protected function compareEarnedCredit(
 		CMEAccountEarnedCMECredit $a,
@@ -206,10 +206,10 @@ class CMEQuizReportGenerator
 		return 0;
 	}
 
-	// }}}
+
 
 	// output methods
-	// {{{ public function saveFile()
+
 
 	public function saveFile($filename)
 	{
@@ -222,10 +222,10 @@ class CMEQuizReportGenerator
 		fclose($file);
 	}
 
-	// }}}
+
 
 	// report display methods
-	// {{{ protected function getHeaderRow()
+
 
 	protected function getHeaderRow()
 	{
@@ -245,8 +245,8 @@ class CMEQuizReportGenerator
 		);
 	}
 
-	// }}}
-	// {{{ protected function getEarnedCreditRow()
+
+
 
 	protected function getEarnedCreditRow(
 		CMEAccountEarnedCMECredit $earned_credit
@@ -293,8 +293,8 @@ class CMEQuizReportGenerator
 		);
 	}
 
-	// }}}
-	// {{{ protected function display()
+
+
 
 	protected function display($file)
 	{
@@ -304,16 +304,16 @@ class CMEQuizReportGenerator
 		$this->displayEarnedCredits($file, $earned_credits);
 	}
 
-	// }}}
-	// {{{ protected function displayHeader()
+
+
 
 	protected function displayHeader($file)
 	{
 		fputcsv($file, $this->getHeaderRow());
 	}
 
-	// }}}
-	// {{{ protected function displayEarnedCredits()
+
+
 
 	protected function displayEarnedCredits($file, array $earned_credits)
 	{
@@ -322,8 +322,8 @@ class CMEQuizReportGenerator
 		}
 	}
 
-	// }}}
-	// {{{ protected function displayEarnedCredit()
+
+
 
 	protected function displayEarnedCredit(
 		$file,
@@ -332,8 +332,8 @@ class CMEQuizReportGenerator
 		fputcsv($file, $this->getEarnedCreditRow($earned_credit));
 	}
 
-	// }}}
-	// {{{ protected function formatPostalCode()
+
+
 
 	protected function formatPostalCode(StoreAddress $address)
 	{
@@ -360,8 +360,8 @@ class CMEQuizReportGenerator
 		return $postal_code;
 	}
 
-	// }}}
-	// {{{ protected function formatSuffix()
+
+
 
 	protected function formatSuffix(SiteAccount $account)
 	{
@@ -370,8 +370,8 @@ class CMEQuizReportGenerator
 			: '';
 	}
 
-	// }}}
-	// {{{ protected function formatLines()
+
+
 
 	protected function formatLines(StoreAddress $address)
 	{
@@ -384,8 +384,8 @@ class CMEQuizReportGenerator
 		return $address_lines;
 	}
 
-	// }}}
-	// {{{ protected function formatProvState()
+
+
 
 	protected function formatProvState(StoreAddress $address)
 	{
@@ -398,8 +398,8 @@ class CMEQuizReportGenerator
 		return $provstate;
 	}
 
-	// }}}
-	// {{{ protected function formatCountry()
+
+
 
 	protected function formatCountry(StoreAddress $address)
 	{
@@ -408,7 +408,7 @@ class CMEQuizReportGenerator
 			: '';
 	}
 
-	// }}}
+
 }
 
 ?>

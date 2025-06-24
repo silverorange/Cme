@@ -9,17 +9,17 @@
  */
 class CMEOptionImageDelete extends InquisitionOptionImageDelete
 {
-	// {{{ protected properties
+
 
 	/**
 	 * @var CMEOptionHelper
 	 */
 	protected $helper;
 
-	// }}}
+
 
 	// helper methods
-	// {{{ public function setInquisition()
+
 
 	public function setInquisition(?InquisitionInquisition $inquisition = null)
 	{
@@ -29,8 +29,8 @@ class CMEOptionImageDelete extends InquisitionOptionImageDelete
 		$this->helper->initInternal();
 	}
 
-	// }}}
-	// {{{ protected function getOptionHelper()
+
+
 
 	protected function getOptionHelper()
 	{
@@ -46,10 +46,10 @@ class CMEOptionImageDelete extends InquisitionOptionImageDelete
 		);
 	}
 
-	// }}}
+
 
 	// build phase
-	// {{{ protected function buildNavBar()
+
 
 	protected function buildNavBar()
 	{
@@ -63,7 +63,7 @@ class CMEOptionImageDelete extends InquisitionOptionImageDelete
 		$this->navbar->addEntry($title);
 	}
 
-	// }}}
+
 }
 
 ?>

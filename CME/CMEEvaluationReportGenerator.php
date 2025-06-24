@@ -9,7 +9,7 @@ use Dompdf\Dompdf;
  */
 class CMEEvaluationReportGenerator
 {
-	// {{{ protected properties
+
 
 	/**
 	 * @var SwatDate
@@ -31,8 +31,8 @@ class CMEEvaluationReportGenerator
 	 */
 	protected $app;
 
-	// }}}
-	// {{{ public function __construct()
+
+
 
 	public function __construct(
 		SiteApplication $app,
@@ -54,10 +54,10 @@ class CMEEvaluationReportGenerator
 		$this->end_date->addMonths(3);
 	}
 
-	// }}}
+
 
 	// data retrieval methods
-	// {{{ protected function getResponses()
+
 
 	protected function getResponses()
 	{
@@ -217,10 +217,10 @@ class CMEEvaluationReportGenerator
 		return $response_array;
 	}
 
-	// }}}
+
 
 	// output methods
-	// {{{ public function saveFile()
+
 
 	public function saveFile($filename)
 	{
@@ -239,10 +239,10 @@ class CMEEvaluationReportGenerator
 		file_put_contents($filename, $dompdf->output());
 	}
 
-	// }}}
+
 
 	// report display methods
-	// {{{ protected function getTitle()
+
 
 	protected function getTitle()
 	{
@@ -257,8 +257,8 @@ class CMEEvaluationReportGenerator
 		);
 	}
 
-	// }}}
-	// {{{ protected function display()
+
+
 
 	protected function display()
 	{
@@ -283,8 +283,8 @@ class CMEEvaluationReportGenerator
 		echo '</html>';
 	}
 
-	// }}}
-	// {{{ protected function displayFooter()
+
+
 
 	protected function displayFooter()
 	{
@@ -355,8 +355,8 @@ class CMEEvaluationReportGenerator
 		$script_tag->display();
 	}
 
-	// }}}
-	// {{{ protected function displayStyles()
+
+
 
 	protected function displayStyles()
 	{
@@ -458,8 +458,8 @@ STYLESHEET;
 		echo '</style>';
 	}
 
-	// }}}
-	// {{{ protected function displayEvaluations()
+
+
 
 	protected function displayEvaluations(array $responses)
 	{
@@ -511,8 +511,8 @@ STYLESHEET;
 		echo '</div>';
 	}
 
-	// }}}
-	// {{{ protected function displayTitle()
+
+
 
 	protected function displayTitle()
 	{
@@ -521,8 +521,8 @@ STYLESHEET;
 		$header->display();
 	}
 
-	// }}}
-	// {{{ protected function displayQuestion()
+
+
 
 	protected function displayQuestion(
 		InquisitionQuestion $question,
@@ -579,8 +579,8 @@ STYLESHEET;
 		$div->close();
 	}
 
-	// }}}
-	// {{{ protected function displayRadioEntryQuestion()
+
+
 
 	protected function displayRadioEntryQuestion(
 		InquisitionQuestion $question,
@@ -656,8 +656,8 @@ STYLESHEET;
 		echo '</ul>';
 	}
 
-	// }}}
-	// {{{ protected function displayCheckboxEntryQuestion()
+
+
 
 	protected function displayCheckboxEntryQuestion(
 		InquisitionQuestion $question,
@@ -666,8 +666,8 @@ STYLESHEET;
 		$this->displayRadioEntryQuestion($question, $response_values);
 	}
 
-	// }}}
-	// {{{ protected function displayCheckboxListQuestion()
+
+
 
 	protected function displayCheckboxListQuestion(
 		InquisitionQuestion $question,
@@ -676,8 +676,8 @@ STYLESHEET;
 		$this->displayRadioEntryQuestion($question, $response_values);
 	}
 
-	// }}}
-	// {{{ protected function displayRadioListQuestion()
+
+
 
 	protected function displayRadioListQuestion(
 		InquisitionQuestion $question,
@@ -686,8 +686,8 @@ STYLESHEET;
 		$this->displayRadioEntryQuestion($question, $response_values);
 	}
 
-	// }}}
-	// {{{ protected function displayFlydownQuestion()
+
+
 
 	protected function displayFlydownQuestion(
 		InquisitionQuestion $question,
@@ -696,8 +696,8 @@ STYLESHEET;
 		$this->displayRadioListQuestion($question, $response_values);
 	}
 
-	// }}}
-	// {{{ protected function displayTextQuestion()
+
+
 
 	protected function displayTextQuestion(
 		InquisitionQuestion $question,
@@ -730,8 +730,8 @@ STYLESHEET;
 		}
 	}
 
-	// }}}
-	// {{{ protected function displayBar()
+
+
 
 	protected function displayBar($percent)
 	{
@@ -750,15 +750,15 @@ STYLESHEET;
 		echo '</div>';
 	}
 
-	// }}}
-	// {{{ protected function cleanText()
+
+
 
 	protected function convertText($text)
 	{
 		return iconv('UTF-8', 'ISO-8859-1//TRANSLIT', $text);
 	}
 
-	// }}}
+
 }
 
 ?>

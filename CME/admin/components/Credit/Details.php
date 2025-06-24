@@ -6,25 +6,25 @@
  */
 class CMECreditDetails extends InquisitionInquisitionDetails
 {
-	// {{{ protected properties
+
 
 	/**
 	 * @var CMECredit
 	 */
 	protected $credit;
 
-	// }}}
-	// {{{ protected function getCreditDetailsViewXml()
+
+
 
 	protected function getCreditDetailsViewXml()
 	{
 		return __DIR__.'/details-credit-fields.xml';
 	}
 
-	// }}}
+
 
 	// init phase
-	// {{{ protected function initInternal()
+
 
 	protected function initInternal()
 	{
@@ -58,8 +58,8 @@ class CMECreditDetails extends InquisitionInquisitionDetails
 		}
 	}
 
-	// }}}
-	// {{{ protected function initInquisition()
+
+
 
 	protected function initInquisition()
 	{
@@ -88,8 +88,8 @@ class CMECreditDetails extends InquisitionInquisitionDetails
 		}
 	}
 
-	// }}}
-	// {{{ protected function initCredit()
+
+
 
 	protected function initCredit()
 	{
@@ -107,10 +107,10 @@ class CMECreditDetails extends InquisitionInquisitionDetails
 		}
 	}
 
-	// }}}
+
 
 	// build phase
-	// {{{ protected function buildInternal()
+
 
 	protected function buildInternal()
 	{
@@ -130,8 +130,8 @@ class CMECreditDetails extends InquisitionInquisitionDetails
 			$this->app->default_time_zone;
 	}
 
-	// }}}
-	// {{{ protected function buildToolbars()
+
+
 
 	protected function buildToolbars()
 	{
@@ -148,8 +148,8 @@ class CMECreditDetails extends InquisitionInquisitionDetails
 		);
 	}
 
-	// }}}
-	// {{{ protected function buildNavBar()
+
+
 
 	protected function buildNavBar()
 	{
@@ -159,8 +159,8 @@ class CMECreditDetails extends InquisitionInquisitionDetails
 		$this->navbar->createEntry($this->credit->getTitle());
 	}
 
-	// }}}
-	// {{{ protected function getDetailsStore()
+
+
 
 	protected function getDetailsStore(InquisitionInquisition $inquisition)
 	{
@@ -170,7 +170,7 @@ class CMECreditDetails extends InquisitionInquisitionDetails
 		return $ds;
 	}
 
-	// }}}
+
 }
 
 ?>

@@ -9,17 +9,17 @@
  */
 class CMEQuestionImageDelete extends InquisitionQuestionImageDelete
 {
-	// {{{ protected properties
+
 
 	/**
 	 * @var CMEQuestionHelper
 	 */
 	protected $helper;
 
-	// }}}
+
 
 	// helper methods
-	// {{{ public function setInquisition()
+
 
 	public function setInquisition(?InquisitionInquisition $inquisition = null)
 	{
@@ -43,18 +43,18 @@ class CMEQuestionImageDelete extends InquisitionQuestionImageDelete
 		$this->helper->initInternal();
 	}
 
-	// }}}
-	// {{{ protected function getQuestionHelper()
+
+
 
 	protected function getQuestionHelper()
 	{
 		return new CMEQuestionHelper($this->app, $this->inquisition);
 	}
 
-	// }}}
+
 
 	// build phase
-	// {{{ protected function buildNavBar()
+
 
 	protected function buildNavBar()
 	{
@@ -68,7 +68,7 @@ class CMEQuestionImageDelete extends InquisitionQuestionImageDelete
 		$this->navbar->addEntry($title);
 	}
 
-	// }}}
+
 }
 
 ?>

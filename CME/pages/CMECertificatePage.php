@@ -9,7 +9,7 @@
  */
 abstract class CMECertificatePage extends SiteUiPage
 {
-	// {{{ protected properties
+
 
 	/**
 	 * @var array
@@ -29,18 +29,18 @@ abstract class CMECertificatePage extends SiteUiPage
 	 */
 	protected $has_pre_selection = false;
 
-	// }}}
-	// {{{ protected function getUiXml()
+
+
 
 	protected function getUiXml()
 	{
 		return __DIR__.'/cme-certificate.xml';
 	}
 
-	// }}}
+
 
 	// init phase
-	// {{{ public function init()
+
 
 	public function init()
 	{
@@ -73,8 +73,8 @@ abstract class CMECertificatePage extends SiteUiPage
 		parent::init();
 	}
 
-	// }}}
-	// {{{ protected function initInternal()
+
+
 
 	protected function initInternal()
 	{
@@ -83,8 +83,8 @@ abstract class CMECertificatePage extends SiteUiPage
 		$this->initList();
 	}
 
-	// }}}
-	// {{{ protected function initCredits()
+
+
 
 	protected function initCredits()
 	{
@@ -113,8 +113,8 @@ abstract class CMECertificatePage extends SiteUiPage
 		}
 	}
 
-	// }}}
-	// {{{ protected function getEpisodeIds()
+
+
 
 	protected function getEpisodeIds()
 	{
@@ -132,8 +132,8 @@ abstract class CMECertificatePage extends SiteUiPage
 		return $episode_ids;
 	}
 
-	// }}}
-	// {{{ protected function initList()
+
+
 
 	protected function initList()
 	{
@@ -157,8 +157,8 @@ abstract class CMECertificatePage extends SiteUiPage
 		$list->values = $values;
 	}
 
-	// }}}
-	// {{{ protected function getListOption()
+
+
 
 	protected function getListOption(CMEFrontMatter $front_matter)
 	{
@@ -169,16 +169,16 @@ abstract class CMECertificatePage extends SiteUiPage
 		);
 	}
 
-	// }}}
-	// {{{ protected function getListOptionMetaData()
+
+
 
 	protected function getListOptionMetaData(CMEFrontMatter $front_matter)
 	{
 		return array();
 	}
 
-	// }}}
-	// {{{ protected function getListOptionTitle()
+
+
 
 	protected function getListOptionTitle(CMEFrontMatter $front_matter)
 	{
@@ -228,8 +228,8 @@ abstract class CMECertificatePage extends SiteUiPage
 		return ob_get_clean();
 	}
 
-	// }}}
-	// {{{ protected function displayTitle()
+
+
 
 	protected function displayTitle(CMEFrontMatter $front_matter)
 	{
@@ -239,23 +239,23 @@ abstract class CMECertificatePage extends SiteUiPage
 		$title_span->display();
 	}
 
-	// }}}
-	// {{{ abstract protected function getFrontMatterTitle()
+
+
 
 	abstract protected function getFrontMatterTitle(
 		CMEFrontMatter $credit
 	);
 
-	// }}}
-	// {{{ protected function getFrontMatterDetails()
+
+
 
 	protected function getFrontMatterDetails(CMEFrontMatter $front_matter)
 	{
 		return '';
 	}
 
-	// }}}
-	// {{{ protected function isPreSelected()
+
+
 
 	protected function isPreSelected(CMEFrontMatter $front_matter)
 	{
@@ -268,10 +268,10 @@ abstract class CMECertificatePage extends SiteUiPage
 		return (is_array($selected) && in_array($front_matter->id, $selected));
 	}
 
-	// }}}
+
 
 	// process phase
-	// {{{ protected function processInternal()
+
 
 	protected function processInternal()
 	{
@@ -290,8 +290,8 @@ abstract class CMECertificatePage extends SiteUiPage
 		}
 	}
 
-	// }}}
-	// {{{ protected function isProcessed()
+
+
 
 	protected function isProcessed()
 	{
@@ -299,10 +299,10 @@ abstract class CMECertificatePage extends SiteUiPage
 		return ($this->has_pre_selection || $form->isProcessed());
 	}
 
-	// }}}
+
 
 	// build phase
-	// {{{ protected function buildInternal()
+
 
 	protected function buildInternal()
 	{
@@ -319,8 +319,8 @@ abstract class CMECertificatePage extends SiteUiPage
 		}
 	}
 
-	// }}}
-	// {{{ protected function buildContent()
+
+
 
 	protected function buildContent()
 	{
@@ -333,8 +333,8 @@ abstract class CMECertificatePage extends SiteUiPage
 		parent::buildContent();
 	}
 
-	// }}}
-	// {{{ protected function buildTitle()
+
+
 
 	protected function buildTitle()
 	{
@@ -342,13 +342,13 @@ abstract class CMECertificatePage extends SiteUiPage
 		$this->layout->data->title = CME::_('Print CME Certificates');
 	}
 
-	// }}}
-	// {{{ abstract protected function buildCertificates()
+
+
 
 	abstract protected function buildCertificates();
 
-	// }}}
-	// {{{ protected function getInlineJavaScript()
+
+
 
 	protected function getInlineJavaScript()
 	{
@@ -375,10 +375,10 @@ abstract class CMECertificatePage extends SiteUiPage
 JAVASCRIPT;
 	}
 
-	// }}}
+
 
 	// finalize phase
-	// {{{ public function finalize()
+
 
 	public function finalize()
 	{
@@ -394,7 +394,7 @@ JAVASCRIPT;
 		);
 	}
 
-	// }}}
+
 }
 
 ?>

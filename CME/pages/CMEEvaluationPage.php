@@ -7,7 +7,7 @@
  */
 abstract class CMEEvaluationPage extends SiteDBEditPage
 {
-	// {{{ protected properties
+
 
 	/**
 	 * @var CMECreditWrapper
@@ -50,24 +50,24 @@ abstract class CMEEvaluationPage extends SiteDBEditPage
 	 */
 	protected $response_values_by_binding_id = array();
 
-	// }}}
-	// {{{ protected function getUiXml()
+
+
 
 	protected function getUiXml()
 	{
 		return __DIR__.'/cme-evaluation.xml';
 	}
 
-	// }}}
-	// {{{ protected function getCacheKey()
+
+
 
 	protected function getCacheKey()
 	{
 		return 'cme-evaluation-page-'.$this->progress->id;
 	}
 
-	// }}}
-	// {{{ protected function getArgumentMap()
+
+
 
 	protected function getArgumentMap()
 	{
@@ -76,20 +76,20 @@ abstract class CMEEvaluationPage extends SiteDBEditPage
 		);
 	}
 
-	// }}}
-	// {{{ abstract protected function getCertificateURI()
+
+
 
 	abstract protected function getCertificateURI();
 
-	// }}}
-	// {{{ abstract protected function getTitle()
+
+
 
 	abstract protected function getTitle();
 
-	// }}}
+
 
 	// init phase
-	// {{{ protected function initInternal()
+
 
 	protected function initInternal()
 	{
@@ -116,8 +116,8 @@ abstract class CMEEvaluationPage extends SiteDBEditPage
 		}
 	}
 
-	// }}}
-	// {{{ protected function initCredits()
+
+
 
 	protected function initCredits()
 	{
@@ -160,16 +160,16 @@ abstract class CMEEvaluationPage extends SiteDBEditPage
 		}
 	}
 
-	// }}}
-	// {{{ protected function initFrontMatter()
+
+
 
 	protected function initFrontMatter()
 	{
 		$this->front_matter = $this->credits->getFirst()->front_matter;
 	}
 
-	// }}}
-	// {{{ protected function initProgress()
+
+
 
 	protected function initProgress()
 	{
@@ -202,8 +202,8 @@ abstract class CMEEvaluationPage extends SiteDBEditPage
 		$this->progress = $progress;
 	}
 
-	// }}}
-	// {{{ protected function getProgress()
+
+
 
 	protected function getProgress()
 	{
@@ -242,8 +242,8 @@ abstract class CMEEvaluationPage extends SiteDBEditPage
 		return $progress1;
 	}
 
-	// }}}
-	// {{{ protected function initEvaluation()
+
+
 
 	protected function initEvaluation()
 	{
@@ -290,8 +290,8 @@ abstract class CMEEvaluationPage extends SiteDBEditPage
 		}
 	}
 
-	// }}}
-	// {{{ protected function generateEvaluation()
+
+
 
 	protected function generateEvaluation()
 	{
@@ -309,8 +309,8 @@ abstract class CMEEvaluationPage extends SiteDBEditPage
 		return $evaluation;
 	}
 
-	// }}}
-	// {{{ protected function generateEvaluationQuestions()
+
+
 
 	protected function generateEvaluationQuestions(CMEEvaluation $evaluation)
 	{
@@ -376,8 +376,8 @@ abstract class CMEEvaluationPage extends SiteDBEditPage
 		}
 	}
 
-	// }}}
-	// {{{ protected function initResponse()
+
+
 
 	protected function initResponse()
 	{
@@ -386,8 +386,8 @@ abstract class CMEEvaluationPage extends SiteDBEditPage
 		);
 	}
 
-	// }}}
-	// {{{ protected function addQuestionToUi()
+
+
 
 	protected function addQuestionToUi(
 		InquisitionInquisitionQuestionBinding $question_binding,
@@ -425,8 +425,8 @@ abstract class CMEEvaluationPage extends SiteDBEditPage
 		$this->ui->getWidget('question_container')->add($container);
 	}
 
-	// }}}
-	// {{{ protected function getResponseValue()
+
+
 
 	protected function getResponseValue(
 		InquisitionInquisitionQuestionBinding $question_binding
@@ -445,8 +445,8 @@ abstract class CMEEvaluationPage extends SiteDBEditPage
 		return $value;
 	}
 
-	// }}}
-	// {{{ protected function isComplete()
+
+
 
 	protected function isComplete()
 	{
@@ -458,10 +458,10 @@ abstract class CMEEvaluationPage extends SiteDBEditPage
 		);
 	}
 
-	// }}}
+
 
 	// process phase
-	// {{{ protected function processForm()
+
 
 	protected function processForm(SwatForm $form)
 	{
@@ -472,8 +472,8 @@ abstract class CMEEvaluationPage extends SiteDBEditPage
 		}
 	}
 
-	// }}}
-	// {{{ protected function preProcessForm()
+
+
 
 	protected function preProcessForm(SwatForm $form)
 	{
@@ -483,8 +483,8 @@ abstract class CMEEvaluationPage extends SiteDBEditPage
 		}
 	}
 
-	// }}}
-	// {{{ protected function preProcessQuestionBinding()
+
+
 
 	protected function preProcessQuestionBinding($question_binding)
 	{
@@ -520,8 +520,8 @@ abstract class CMEEvaluationPage extends SiteDBEditPage
 		}
 	}
 
-	// }}}
-	// {{{ protected function questionViewIsVisible()
+
+
 
 	protected function questionViewIsVisible(
 		InquisitionInquisitionQuestionBinding $question_binding
@@ -571,8 +571,8 @@ abstract class CMEEvaluationPage extends SiteDBEditPage
 		return $question_view_visible;
 	}
 
-	// }}}
-	// {{{ protected function saveData()
+
+
 
 	protected function saveData(SwatForm $form)
 	{
@@ -626,8 +626,8 @@ abstract class CMEEvaluationPage extends SiteDBEditPage
 		$this->app->messages->add($this->getMessage($form));
 	}
 
-	// }}}
-	// {{{ protected function saveEarnedCredits()
+
+
 
 	protected function saveEarnedCredits()
 	{
@@ -661,8 +661,8 @@ abstract class CMEEvaluationPage extends SiteDBEditPage
 		$earned_credits->save();
 	}
 
-	// }}}
-	// {{{ protected function getMessage()
+
+
 
 	protected function getMessage(SwatForm $form)
 	{
@@ -689,16 +689,16 @@ abstract class CMEEvaluationPage extends SiteDBEditPage
 		return $message;
 	}
 
-	// }}}
-	// {{{ protected function getMessageSecondaryContent()
+
+
 
 	protected function getMessageSecondaryContent(SwatForm $form)
 	{
 		return null;
 	}
 
-	// }}}
-	// {{{ protected function sendCompletionEmail()
+
+
 
 	protected function sendCompletionEmail()
 	{
@@ -723,20 +723,20 @@ abstract class CMEEvaluationPage extends SiteDBEditPage
 		}
 	}
 
-	// }}}
-	// {{{ abstract protected function getCompletionEmailClass()
+
+
 
 	abstract protected function getCompletionEmailClass();
 
-	// }}}
-	// {{{ abstract protected function relocateForCompletedEvaluation()
+
+
 
 	abstract protected function relocateForCompletedEvaluation();
 
-	// }}}
+
 
 	// build phase
-	// {{{ protected function buildTitle()
+
 
 	protected function buildTitle()
 	{
@@ -748,8 +748,8 @@ abstract class CMEEvaluationPage extends SiteDBEditPage
 		);
 	}
 
-	// }}}
-	// {{{ protected function buildInternal()
+
+
 
 	protected function buildInternal()
 	{
@@ -760,8 +760,8 @@ abstract class CMEEvaluationPage extends SiteDBEditPage
 		$this->layout->endCapture();
 	}
 
-	// }}}
-	// {{{ protected function getInlineJavaScript()
+
+
 
 	protected function getInlineJavaScript()
 	{
@@ -792,17 +792,17 @@ abstract class CMEEvaluationPage extends SiteDBEditPage
 		return $javascript;
 	}
 
-	// }}}
-	// {{{ protected function load()
+
+
 
 	protected function load(SwatForm $form)
 	{
 	}
 
-	// }}}
+
 
 	// finalize phase
-	// {{{ public function finalize()
+
 
 	public function finalize()
 	{
@@ -817,7 +817,7 @@ abstract class CMEEvaluationPage extends SiteDBEditPage
 		);
 	}
 
-	// }}}
+
 }
 
 ?>

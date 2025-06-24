@@ -7,7 +7,7 @@
  */
 class CMEFrontMatterDisplay extends SwatControl
 {
-	// {{{ public properties
+
 
 	/**
 	 * @var string
@@ -29,8 +29,8 @@ class CMEFrontMatterDisplay extends SwatControl
 	 */
 	public $cancel_uri;
 
-	// }}}
-	// {{{ public function __construct()
+
+
 
 	public function __construct($id = null)
 	{
@@ -58,8 +58,8 @@ class CMEFrontMatterDisplay extends SwatControl
 		);
 	}
 
-	// }}}
-	// {{{ public function display()
+
+
 
 	public function display()
 	{
@@ -72,8 +72,8 @@ class CMEFrontMatterDisplay extends SwatControl
 		Swat::displayInlineJavaScript($this->getInlineJavaScript());
 	}
 
-	// }}}
-	// {{{ protected function getCSSClassNames()
+
+
 
 	protected function getCSSClassNames()
 	{
@@ -83,8 +83,8 @@ class CMEFrontMatterDisplay extends SwatControl
 		);
 	}
 
-	// }}}
-	// {{{ protected function getInlineJavaScript()
+
+
 
 	protected function getInlineJavaScript()
 	{
@@ -112,8 +112,8 @@ class CMEFrontMatterDisplay extends SwatControl
 		return $javascript;
 	}
 
-	// }}}
-	// {{{ protected function getInlineJavaScriptTranslations()
+
+
 
 	protected function getInlineJavaScriptTranslations()
 	{
@@ -133,15 +133,15 @@ class CMEFrontMatterDisplay extends SwatControl
 		);
 	}
 
-	// }}}
-	// {{{ protected function getJavaScriptClassName()
+
+
 
 	protected function getJavaScriptClassName()
 	{
 		return 'CMEFrontMatterDisplay';
 	}
 
-	// }}}
+
 }
 
 ?>

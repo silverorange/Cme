@@ -7,7 +7,7 @@
  */
 class CMEQuizResponseServer extends SiteArticlePage
 {
-	// {{{ public function __construct()
+
 
 	public function __construct(SiteAbstractPage $page)
 	{
@@ -20,8 +20,8 @@ class CMEQuizResponseServer extends SiteArticlePage
 		);
 	}
 
-	// }}}
-	// {{{ protected function getArgumentMap()
+
+
 
 	protected function getArgumentMap()
 	{
@@ -30,10 +30,10 @@ class CMEQuizResponseServer extends SiteArticlePage
 		);
 	}
 
-	// }}}
+
 
 	// build phase
-	// {{{ public function build()
+
 
 	public function build()
 	{
@@ -42,8 +42,8 @@ class CMEQuizResponseServer extends SiteArticlePage
 		$this->layout->endCapture();
 	}
 
-	// }}}
-	// {{{ protected function getJSONResponse()
+
+
 
 	protected function getJSONResponse()
 	{
@@ -140,8 +140,8 @@ class CMEQuizResponseServer extends SiteArticlePage
 		);
 	}
 
-	// }}}
-	// {{{ protected function getErrorResponse()
+
+
 
 	protected function getErrorResponse($message)
 	{
@@ -154,8 +154,8 @@ class CMEQuizResponseServer extends SiteArticlePage
 		);
 	}
 
-	// }}}
-	// {{{ protected function getCredits()
+
+
 
 	protected function getCredits()
 	{
@@ -194,8 +194,8 @@ class CMEQuizResponseServer extends SiteArticlePage
 		return $credits;
 	}
 
-	// }}}
-	// {{{ protected function getProgress()
+
+
 
 	protected function getProgress(CMECreditWrapper $credits)
 	{
@@ -226,8 +226,8 @@ class CMEQuizResponseServer extends SiteArticlePage
 		return $progress1;
 	}
 
-	// }}}
-	// {{{ protected function getQuiz()
+
+
 
 	protected function getQuiz(CMEAccountCMEProgress $progress)
 	{
@@ -244,8 +244,8 @@ class CMEQuizResponseServer extends SiteArticlePage
 		return $quiz;
 	}
 
-	// }}}
-	// {{{ protected function getQuestionBinding()
+
+
 
 	protected function getQuestionBinding(
 		InquisitionInquisition $quiz,
@@ -265,8 +265,8 @@ class CMEQuizResponseServer extends SiteArticlePage
 		return SwatDB::query($this->app->db, $sql, $wrapper)->getFirst();
 	}
 
-	// }}}
-	// {{{ protected function getResponse()
+
+
 
 	protected function getResponse(InquisitionInquisition $quiz)
 	{
@@ -294,8 +294,8 @@ class CMEQuizResponseServer extends SiteArticlePage
 		return $response;
 	}
 
-	// }}}
-	// {{{ protected function getResponseValue()
+
+
 
 	protected function getResponseValue(
 		CMEQuiz $quiz,
@@ -348,8 +348,8 @@ class CMEQuizResponseServer extends SiteArticlePage
 		return $response_value;
 	}
 
-	// }}}
-	// {{{ protected function saveResponseValue()
+
+
 
 	protected function saveResponseValue(
 		CMEQuizResponse $response,
@@ -363,15 +363,15 @@ class CMEQuizResponseServer extends SiteArticlePage
 		$response_value->save();
 	}
 
-	// }}}
-	// {{{ protected function getCacheKey()
+
+
 
 	protected function getCacheKey(CMEAccountCMEProgress $progress)
 	{
 		return 'cme-quiz-page-'.$progress->id;
 	}
 
-	// }}}
+
 }
 
 ?>

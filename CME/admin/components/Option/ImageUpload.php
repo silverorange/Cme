@@ -7,17 +7,17 @@
  */
 class CMEOptionImageUpload extends InquisitionOptionImageUpload
 {
-	// {{{ protected properties
+
 
 	/**
 	 * @var CMEOptionHelper
 	 */
 	protected $helper;
 
-	// }}}
+
 
 	// init phase
-	// {{{ protected function initInternal()
+
 
 	protected function initInternal()
 	{
@@ -27,8 +27,8 @@ class CMEOptionImageUpload extends InquisitionOptionImageUpload
 		$this->helper->initInternal();
 	}
 
-	// }}}
-	// {{{ protected function getOptionHelper()
+
+
 
 	protected function getOptionHelper()
 	{
@@ -44,10 +44,10 @@ class CMEOptionImageUpload extends InquisitionOptionImageUpload
 		);
 	}
 
-	// }}}
+
 
 	// build phase
-	// {{{ protected function buildNavBar()
+
 
 	protected function buildNavBar()
 	{
@@ -61,7 +61,7 @@ class CMEOptionImageUpload extends InquisitionOptionImageUpload
 		$this->navbar->addEntry($title);
 	}
 
-	// }}}
+
 }
 
 ?>

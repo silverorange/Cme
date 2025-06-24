@@ -10,7 +10,7 @@
  */
 class CMEFrontMatterWrapper extends SwatDBRecordsetWrapper
 {
-	// {{{ public function loadCredits()
+
 
 	public function loadCredits($read_only = true)
 	{
@@ -49,8 +49,8 @@ class CMEFrontMatterWrapper extends SwatDBRecordsetWrapper
 		return $credits;
 	}
 
-	// }}}
-	// {{{ public function loadProviders()
+
+
 
 	public function loadProviders($read_only = true)
 	{
@@ -100,8 +100,8 @@ class CMEFrontMatterWrapper extends SwatDBRecordsetWrapper
 		return $providers;
 	}
 
-	// }}}
-	// {{{ protected function init()
+
+
 
 	protected function init()
 	{
@@ -110,7 +110,7 @@ class CMEFrontMatterWrapper extends SwatDBRecordsetWrapper
 		$this->index_field = 'id';
 	}
 
-	// }}}
+
 }
 
 ?>

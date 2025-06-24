@@ -7,17 +7,17 @@
  */
 class CMEOptionEdit extends InquisitionOptionEdit
 {
-	// {{{ protected properties
+
 
 	/**
 	 * @var CMEOptionHelper
 	 */
 	protected $helper;
 
-	// }}}
+
 
 	// init phase
-	// {{{ protected function initInternal()
+
 
 	protected function initInternal()
 	{
@@ -27,8 +27,8 @@ class CMEOptionEdit extends InquisitionOptionEdit
 		$this->helper->initInternal();
 	}
 
-	// }}}
-	// {{{ protected function getOptionHelper()
+
+
 
 	protected function getOptionHelper()
 	{
@@ -44,10 +44,10 @@ class CMEOptionEdit extends InquisitionOptionEdit
 		);
 	}
 
-	// }}}
+
 
 	// build phase
-	// {{{ protected function buildNavBar()
+
 
 	protected function buildNavBar()
 	{
@@ -72,7 +72,7 @@ class CMEOptionEdit extends InquisitionOptionEdit
 		$this->navbar->addEntry($title);
 	}
 
-	// }}}
+
 }
 
 ?>

@@ -13,7 +13,7 @@
  */
 class CMEQuizResponseWrapper extends InquisitionResponseWrapper
 {
-	// {{{ protected function init()
+
 
 	protected function init()
 	{
@@ -21,7 +21,7 @@ class CMEQuizResponseWrapper extends InquisitionResponseWrapper
 		$this->row_wrapper_class = SwatDBClassMap::get('CMEQuizResponse');
 	}
 
-	// }}}
+
 }
 
 ?>

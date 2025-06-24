@@ -9,15 +9,15 @@
  */
 class CMEAccountCMEProgress extends SwatDBDataObject
 {
-	// {{{ public properties
+
 
 	/**
 	 * @var integer
 	 */
 	public $id;
 
-	// }}}
-	// {{{ protected function init()
+
+
 
 	protected function init()
 	{
@@ -40,7 +40,7 @@ class CMEAccountCMEProgress extends SwatDBDataObject
 		);
 	}
 
-	// }}}
+
 }
 
 ?>

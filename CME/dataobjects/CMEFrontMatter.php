@@ -7,7 +7,7 @@
  */
 abstract class CMEFrontMatter extends SwatDBDataObject
 {
-	// {{{ public properties
+
 
 	/**
 	 * @var integer
@@ -74,8 +74,8 @@ abstract class CMEFrontMatter extends SwatDBDataObject
 	 */
 	public $resettable;
 
-	// }}}
-	// {{{ public function getProviderTitleList()
+
+
 
 	public function getProviderTitleList()
 	{
@@ -86,18 +86,18 @@ abstract class CMEFrontMatter extends SwatDBDataObject
 		return SwatString::toList($titles);
 	}
 
-	// }}}
-	// {{{ abstract protected function getAttestationLink()
+
+
 
 	abstract protected function getAttestationLink();
 
-	// }}}
-	// {{{ abstract protected function getEvaluationLink()
+
+
 
 	abstract protected function getEvaluationLink();
 
-	// }}}
-	// {{{ protected function init()
+
+
 
 	protected function init()
 	{
@@ -113,8 +113,8 @@ abstract class CMEFrontMatter extends SwatDBDataObject
 		$this->registerDateProperty('review_date');
 	}
 
-	// }}}
-	// {{{ protected function loadCredits()
+
+
 
 	protected function loadCredits()
 	{
@@ -131,8 +131,8 @@ abstract class CMEFrontMatter extends SwatDBDataObject
 		);
 	}
 
-	// }}}
-	// {{{ protected function loadProviders()
+
+
 
 	protected function loadProviders()
 	{
@@ -153,7 +153,7 @@ abstract class CMEFrontMatter extends SwatDBDataObject
 		);
 	}
 
-	// }}}
+
 }
 
 ?>

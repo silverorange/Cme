@@ -8,7 +8,7 @@
 class CMECreditDelete extends AdminDBDelete
 {
 	// process phase
-	// {{{ protected function processDBData()
+
 
 	protected function processDBData(): void
 	{
@@ -36,10 +36,10 @@ class CMECreditDelete extends AdminDBDelete
 		$this->app->messages->add($message);
 	}
 
-	// }}}
+
 
 	// build phase
-	// {{{ protected function buildInternal()
+
 
 	protected function buildInternal()
 	{
@@ -84,10 +84,10 @@ class CMECreditDelete extends AdminDBDelete
 
 	}
 
-	// }}}
 
-	// }}}
-	// {{{ protected function buildNavBar()
+
+
+
 
 	protected function buildNavBar()
 	{
@@ -104,7 +104,7 @@ class CMECreditDelete extends AdminDBDelete
 		);
 	}
 
-	// }}}
+
 }
 
 ?>

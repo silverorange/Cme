@@ -8,7 +8,7 @@
  */
 class CMEAccountCMEProgressWrapper extends SwatDBRecordsetWrapper
 {
-	// {{{ protected function init()
+
 
 	protected function init()
 	{
@@ -18,7 +18,7 @@ class CMEAccountCMEProgressWrapper extends SwatDBRecordsetWrapper
 		);
 	}
 
-	// }}}
+
 }
 
 ?>

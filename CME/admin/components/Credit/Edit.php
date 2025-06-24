@@ -7,7 +7,7 @@
  */
 abstract class CMECreditEdit extends InquisitionInquisitionEdit
 {
-	// {{{ protected properties
+
 
 	/**
 	 * @var CMECredit
@@ -19,18 +19,18 @@ abstract class CMECreditEdit extends InquisitionInquisitionEdit
 	 */
 	protected $new_question_count;
 
-	// }}}
-	// {{{ protected function getUiXml()
+
+
 
 	protected function getUiXml()
 	{
 		return __DIR__.'/edit.xml';
 	}
 
-	// }}}
+
 
 	// init phase
-	// {{{ protected function initInternal()
+
 
 	protected function initInternal()
 	{
@@ -50,8 +50,8 @@ abstract class CMECreditEdit extends InquisitionInquisitionEdit
 		$this->setDefaultValues();
 	}
 
-	// }}}
-	// {{{ protected function initInquisition()
+
+
 
 	protected function initInquisition()
 	{
@@ -64,8 +64,8 @@ abstract class CMECreditEdit extends InquisitionInquisitionEdit
 		}
 	}
 
-	// }}}
-	// {{{ protected function initCredit()
+
+
 
 	protected function initCredit()
 	{
@@ -89,8 +89,8 @@ abstract class CMECreditEdit extends InquisitionInquisitionEdit
 		}
 	}
 
-	// }}}
-	// {{{ protected function initFrontMatter()
+
+
 
 	protected function initFrontMatter()
 	{
@@ -111,24 +111,24 @@ abstract class CMECreditEdit extends InquisitionInquisitionEdit
 		}
 	}
 
-	// }}}
-	// {{{ protected function getDefaultCreditHours()
+
+
 
 	protected function getDefaultCreditHours()
 	{
 		return 1;
 	}
 
-	// }}}
-	// {{{ protected function getDefaultCreditExpiryDate()
+
+
 
 	protected function getDefaultCreditExpiryDate()
 	{
 		return new SwatDate('+3 years');
 	}
 
-	// }}}
-	// {{{ protected function setDefaultValues()
+
+
 
 	protected function setDefaultValues()
 	{
@@ -137,10 +137,10 @@ abstract class CMECreditEdit extends InquisitionInquisitionEdit
 			$this->getDefaultCreditExpiryDate();
 	}
 
-	// }}}
+
 
 	// process phase
-	// {{{ protected function validate()
+
 
 	protected function validate(): void
 	{
@@ -155,8 +155,8 @@ abstract class CMECreditEdit extends InquisitionInquisitionEdit
 		}
 	}
 
-	// }}}
-	// {{{ protected function importInquisition()
+
+
 
 	protected function importInquisition($filename)
 	{
@@ -171,8 +171,8 @@ abstract class CMECreditEdit extends InquisitionInquisitionEdit
 		}
 	}
 
-	// }}}
-	// {{{ protected function saveDBData()
+
+
 
 	protected function saveDBData(): void
 	{
@@ -189,8 +189,8 @@ abstract class CMECreditEdit extends InquisitionInquisitionEdit
 		}
 	}
 
-	// }}}
-	// {{{ protected function updateCredit()
+
+
 
 	protected function updateCredit()
 	{
@@ -214,8 +214,8 @@ abstract class CMECreditEdit extends InquisitionInquisitionEdit
 		}
 	}
 
-	// }}}
-	// {{{ protected function getSavedMessage()
+
+
 
 	protected function getSavedMessage()
 	{
@@ -227,8 +227,8 @@ abstract class CMECreditEdit extends InquisitionInquisitionEdit
 		);
 	}
 
-	// }}}
-	// {{{ protected function relocate()
+
+
 
 	protected function relocate()
 	{
@@ -240,10 +240,10 @@ abstract class CMECreditEdit extends InquisitionInquisitionEdit
 		);
 	}
 
-	// }}}
+
 
 	// build phase
-	// {{{ protected function buildInternal()
+
 
 	protected function buildInternal()
 	{
@@ -260,8 +260,8 @@ abstract class CMECreditEdit extends InquisitionInquisitionEdit
 			SwatString::toList($provider_titles);
 	}
 
-	// }}}
-	// {{{ protected function buildNavBar()
+
+
 
 	protected function buildNavBar()
 	{
@@ -281,8 +281,8 @@ abstract class CMECreditEdit extends InquisitionInquisitionEdit
 		);
 	}
 
-	// }}}
-	// {{{ protected function buildForm()
+
+
 
 	protected function buildForm()
 	{
@@ -296,8 +296,8 @@ abstract class CMECreditEdit extends InquisitionInquisitionEdit
 		}
 	}
 
-	// }}}
-	// {{{ protected function loadDBData()
+
+
 
 	protected function loadDBData()
 	{
@@ -306,7 +306,7 @@ abstract class CMECreditEdit extends InquisitionInquisitionEdit
 		$this->ui->setValues($this->credit->getAttributes());
 	}
 
-	// }}}
+
 }
 
 ?>

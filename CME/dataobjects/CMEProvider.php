@@ -7,7 +7,7 @@
  */
 class CMEProvider extends SwatDBDataObject
 {
-	// {{{ public properties
+
 
 	/**
 	 * @var integer
@@ -39,8 +39,8 @@ class CMEProvider extends SwatDBDataObject
 	 */
 	public $displayorder;
 
-	// }}}
-	// {{{ public function loadByShortname()
+
+
 
 	public function loadByShortname($shortname)
 	{
@@ -69,8 +69,8 @@ class CMEProvider extends SwatDBDataObject
 		return true;
 	}
 
-	// }}}
-	// {{{ public function getCreditTitle()
+
+
 
 	public function getCreditTitle($hours, $credit_count = 1, $is_free = false)
 	{
@@ -91,8 +91,8 @@ class CMEProvider extends SwatDBDataObject
 		);
 	}
 
-	// }}}
-	// {{{ protected function init()
+
+
 
 	protected function init()
 	{
@@ -100,7 +100,7 @@ class CMEProvider extends SwatDBDataObject
 		$this->id_field = 'integer:id';
 	}
 
-	// }}}
+
 }
 
 ?>

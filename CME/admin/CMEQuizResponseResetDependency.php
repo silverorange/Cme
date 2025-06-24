@@ -7,7 +7,7 @@
  */
 class CMEQuizResponseResetDependency extends AdminListDependency
 {
-	// {{{ protected function getStatusLevelText()
+
 
 	protected function getStatusLevelText($status_level, $count)
 	{
@@ -41,7 +41,7 @@ class CMEQuizResponseResetDependency extends AdminListDependency
 		return $message;
 	}
 
-	// }}}
+
 }
 
 ?>

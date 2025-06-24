@@ -6,15 +6,15 @@
  */
 class CMEEvaluationDetails extends InquisitionInquisitionDetails
 {
-	// {{{ protected properties
+
 
 	/**
 	 * @var CMEFrontMatter
 	 */
 	protected $front_matter;
 
-	// }}}
-	// {{{ protected function getTitle()
+
+
 
 	protected function getTitle()
 	{
@@ -24,10 +24,10 @@ class CMEEvaluationDetails extends InquisitionInquisitionDetails
 		);
 	}
 
-	// }}}
+
 
 	// init phase
-	// {{{ protected function initInternal()
+
 
 	protected function initInternal()
 	{
@@ -39,8 +39,8 @@ class CMEEvaluationDetails extends InquisitionInquisitionDetails
 		$this->ui->getWidget('question_import')->visible = false;
 	}
 
-	// }}}
-	// {{{ protected function initFrontMatter()
+
+
 
 	protected function initFrontMatter()
 	{
@@ -65,10 +65,10 @@ class CMEEvaluationDetails extends InquisitionInquisitionDetails
 		}
 	}
 
-	// }}}
+
 
 	// build phase
-	// {{{ protected function buildInternal()
+
 
 	protected function buildInternal()
 	{
@@ -91,8 +91,8 @@ class CMEEvaluationDetails extends InquisitionInquisitionDetails
 		}
 	}
 
-	// }}}
-	// {{{ protected function buildToolbars()
+
+
 
 	protected function buildToolbars()
 	{
@@ -101,8 +101,8 @@ class CMEEvaluationDetails extends InquisitionInquisitionDetails
 		$this->ui->getWidget('details_toolbar')->visible = false;
 	}
 
-	// }}}
-	// {{{ protected function buildNavBar()
+
+
 
 	protected function buildNavBar()
 	{
@@ -112,7 +112,7 @@ class CMEEvaluationDetails extends InquisitionInquisitionDetails
 		$this->navbar->createEntry($this->getTitle());
 	}
 
-	// }}}
+
 }
 
 ?>

@@ -38,7 +38,7 @@
  */
 class CMECertificateFactory extends SwatObject
 {
-	// {{{ private static properties
+
 
 	/**
 	 * List of registered certificate classes indexed by the certificate type
@@ -54,8 +54,8 @@ class CMECertificateFactory extends SwatObject
 	 */
 	private static $search_paths = array('CME/certificates');
 
-	// }}}
-	// {{{ public static function get()
+
+
 
 	/**
 	 * Gets a certificate of the specified type
@@ -94,8 +94,8 @@ class CMECertificateFactory extends SwatObject
 		return $certificate;
 	}
 
-	// }}}
-	// {{{ public static function registerCertificate()
+
+
 
 	/**
 	 * Registers a certificate class with the factory
@@ -117,8 +117,8 @@ class CMECertificateFactory extends SwatObject
 		self::$certificate_class_names_by_type[$type] = $certificate_class_name;
 	}
 
-	// }}}
-	// {{{ public static function addPath()
+
+
 
 	/**
 	 * Adds a search path for class-definition files
@@ -143,8 +143,8 @@ class CMECertificateFactory extends SwatObject
 		}
 	}
 
-	// }}}
-	// {{{ public static function removePath()
+
+
 
 	/**
 	 * Removes a search path for certificate class-definition files
@@ -161,8 +161,8 @@ class CMECertificateFactory extends SwatObject
 		}
 	}
 
-	// }}}
-	// {{{ private static function loadCertificateClass()
+
+
 
 	/**
 	 * Loads a certificate class-definition if it is not defined
@@ -191,8 +191,8 @@ class CMECertificateFactory extends SwatObject
 		}
 	}
 
-	// }}}
-	// {{{ private function __construct()
+
+
 
 	/**
 	 * This class contains only static methods and should not be instantiated
@@ -201,7 +201,7 @@ class CMECertificateFactory extends SwatObject
 	{
 	}
 
-	// }}}
+
 }
 
 ?>

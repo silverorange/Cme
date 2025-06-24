@@ -7,17 +7,17 @@
  */
 class CMEOptionDelete extends InquisitionOptionDelete
 {
-	// {{{ protected properties
+
 
 	/**
 	 * @var CMEOptionHelper
 	 */
 	protected $helper;
 
-	// }}}
+
 
 	// init phase
-	// {{{ public function setInquisition()
+
 
 	public function setInquisition(InquisitionInquisition $inquisition = null)
 	{
@@ -27,8 +27,8 @@ class CMEOptionDelete extends InquisitionOptionDelete
 		$this->helper->initInternal();
 	}
 
-	// }}}
-	// {{{ protected function getOptionHelper()
+
+
 
 	protected function getOptionHelper()
 	{
@@ -44,10 +44,10 @@ class CMEOptionDelete extends InquisitionOptionDelete
 		);
 	}
 
-	// }}}
+
 
 	// build phase
-	// {{{ protected function buildNavBar()
+
 
 	protected function buildNavBar()
 	{
@@ -56,7 +56,7 @@ class CMEOptionDelete extends InquisitionOptionDelete
 		$this->helper->buildNavBar($this->navbar);
 	}
 
-	// }}}
+
 }
 
 ?>

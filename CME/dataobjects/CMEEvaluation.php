@@ -9,14 +9,14 @@
  */
 class CMEEvaluation extends InquisitionInquisition
 {
-	// {{{ protected function getResponseWrapperClass()
+
 
 	protected function getResponseWrapperClass()
 	{
 		return 'CMEEvaluationResponseWrapper';
 	}
 
-	// }}}
+
 }
 
 ?>

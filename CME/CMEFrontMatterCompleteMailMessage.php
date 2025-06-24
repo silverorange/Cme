@@ -8,7 +8,7 @@
 abstract class CMEFrontMatterCompleteMailMessage extends
 SiteReplacementMarkerMailMessage
 {
-	// {{{ protected properties
+
 
 	/**
 	 * The account this message is intended for
@@ -27,8 +27,8 @@ SiteReplacementMarkerMailMessage
 	 */
 	protected $response;
 
-	// }}}
-	// {{{ public function __construct()
+
+
 
 	/**
 	 * @param SiteApplication $app
@@ -63,29 +63,29 @@ SiteReplacementMarkerMailMessage
 		$this->to_address   = $account->email;
 	}
 
-	// }}}
-	// {{{ abstract protected function getCertificateLinkURI()
+
+
 
 	abstract protected function getCertificateLinkURI();
 
-	// }}}
-	// {{{ protected function getFromName()
+
+
 
 	protected function getFromName()
 	{
 		return $this->app->config->site->title;
 	}
 
-	// }}}
-	// {{{ protected function getFromAddress()
+
+
 
 	protected function getFromAddress()
 	{
 		return $this->app->config->email->service_address;
 	}
 
-	// }}}
-	// {{{ protected function getSubject()
+
+
 
 	protected function getSubject()
 	{
@@ -95,8 +95,8 @@ SiteReplacementMarkerMailMessage
 		);
 	}
 
-	// }}}
-	// {{{ protected function getBodyText()
+
+
 
 	protected function getBodyText()
 	{
@@ -109,8 +109,8 @@ SiteReplacementMarkerMailMessage
 		return $bodytext;
 	}
 
-	// }}}
-	// {{{ protected function getReplacementMarkerText()
+
+
 
 	protected function getReplacementMarkerText($marker_id)
 	{
@@ -137,7 +137,7 @@ SiteReplacementMarkerMailMessage
 		}
 	}
 
-	// }}}
+
 }
 
 ?>

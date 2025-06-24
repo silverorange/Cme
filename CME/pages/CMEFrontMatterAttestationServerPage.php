@@ -7,7 +7,7 @@
  */
 class CMEFrontMatterAttestationServerPage extends SiteArticlePage
 {
-	// {{{ public function __construct()
+
 
 	public function __construct(SiteAbstractPage $page)
 	{
@@ -20,8 +20,8 @@ class CMEFrontMatterAttestationServerPage extends SiteArticlePage
 		);
 	}
 
-	// }}}
-	// {{{ protected function getArgumentMap()
+
+
 
 	protected function getArgumentMap()
 	{
@@ -30,10 +30,10 @@ class CMEFrontMatterAttestationServerPage extends SiteArticlePage
 		);
 	}
 
-	// }}}
+
 
 	// build phase
-	// {{{ public function build()
+
 
 	public function build()
 	{
@@ -42,8 +42,8 @@ class CMEFrontMatterAttestationServerPage extends SiteArticlePage
 		$this->layout->endCapture();
 	}
 
-	// }}}
-	// {{{ protected function getFrontMatter()
+
+
 
 	protected function getFrontMatter()
 	{
@@ -62,8 +62,8 @@ class CMEFrontMatterAttestationServerPage extends SiteArticlePage
 		)->getFirst();
 	}
 
-	// }}}
-	// {{{ protected function getJSONResponse()
+
+
 
 	protected function getJSONResponse()
 	{
@@ -102,8 +102,8 @@ class CMEFrontMatterAttestationServerPage extends SiteArticlePage
 		);
 	}
 
-	// }}}
-	// {{{ protected function getErrorResponse()
+
+
 
 	protected function getErrorResponse($message)
 	{
@@ -115,8 +115,8 @@ class CMEFrontMatterAttestationServerPage extends SiteArticlePage
 		);
 	}
 
-	// }}}
-	// {{{ protected function saveAccountAttestedCMEFrontMatter()
+
+
 
 	protected function saveAccountAttestedCMEFrontMatter(
 		CMEAccount $account,
@@ -148,8 +148,8 @@ class CMEFrontMatterAttestationServerPage extends SiteArticlePage
 		$this->saveEarnedCredits($account, $front_matter);
 	}
 
-	// }}}
-	// {{{ protected function saveEarnedCredits()
+
+
 
 	protected function saveEarnedCredits(
 		CMEAccount $account,
@@ -184,7 +184,7 @@ class CMEFrontMatterAttestationServerPage extends SiteArticlePage
 		$earned_credits->save();
 	}
 
-	// }}}
+
 }
 
 ?>

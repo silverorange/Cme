@@ -9,17 +9,17 @@
  */
 class CMEQuestionEdit extends InquisitionQuestionEdit
 {
-	// {{{ protected properties
+
 
 	/**
 	 * @var CMEQuestionHelper
 	 */
 	protected $helper;
 
-	// }}}
+
 
 	// init phase
-	// {{{ protected function initInternal()
+
 
 	protected function initInternal()
 	{
@@ -29,8 +29,8 @@ class CMEQuestionEdit extends InquisitionQuestionEdit
 		$this->helper->initInternal();
 	}
 
-	// }}}
-	// {{{ protected function initInquisition()
+
+
 
 	protected function initInquisition()
 	{
@@ -51,18 +51,18 @@ class CMEQuestionEdit extends InquisitionQuestionEdit
 		}
 	}
 
-	// }}}
-	// {{{ protected function getQuestionHelper()
+
+
 
 	protected function getQuestionHelper()
 	{
 		return new CMEQuestionHelper($this->app, $this->inquisition);
 	}
 
-	// }}}
+
 
 	// build phase
-	// {{{ protected function buildNavBar()
+
 
 	protected function buildNavBar()
 	{
@@ -76,7 +76,7 @@ class CMEQuestionEdit extends InquisitionQuestionEdit
 		$this->navbar->addEntry($title);
 	}
 
-	// }}}
+
 }
 
 ?>

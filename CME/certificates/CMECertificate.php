@@ -7,7 +7,7 @@
  */
 abstract class CMECertificate extends SwatControl
 {
-	// {{{ protected properties
+
 
 	/**
 	 * @var CMEAccountEarnedCMECreditWrapper
@@ -24,32 +24,32 @@ abstract class CMECertificate extends SwatControl
 	 */
 	protected $account = null;
 
-	// }}}
-	// {{{ public function setApplication()
+
+
 
 	public function setApplication(SiteApplication $app)
 	{
 		$this->app = $app;
 	}
 
-	// }}}
-	// {{{ public function setAccount()
+
+
 
 	public function setAccount(CMEAccount $account)
 	{
 		$this->account = $account;
 	}
 
-	// }}}
-	// {{{ public function setEarnedCredits()
+
+
 
 	public function setEarnedCredits(CMEAccountEarnedCMECreditWrapper $credits)
 	{
 		$this->credits = $credits;
 	}
 
-	// }}}
-	// {{{ public function display()
+
+
 
 	public function display()
 	{
@@ -87,18 +87,18 @@ abstract class CMECertificate extends SwatControl
 		$certificate_div->close();
 	}
 
-	// }}}
-	// {{{ abstract protected function displayCertificateContent()
+
+
 
 	abstract protected function displayCertificateContent();
 
-	// }}}
-	// {{{ abstract protected function isPhysician()
+
+
 
 	abstract protected function isPhysician();
 
-	// }}}
-	// {{{ protected function getCSSClassNames()
+
+
 
 	protected function getCSSClassNames()
 	{
@@ -108,7 +108,7 @@ abstract class CMECertificate extends SwatControl
 		);
 	}
 
-	// }}}
+
 }
 
 ?>

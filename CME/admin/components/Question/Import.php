@@ -7,17 +7,17 @@
  */
 class CMEQuestionImport extends InquisitionQuestionImport
 {
-	// {{{ protected properties
+
 
 	/**
 	 * @var CMEQuestionHelper
 	 */
 	protected $helper;
 
-	// }}}
+
 
 	// init phase
-	// {{{ protected function initInternal()
+
 
 	protected function initInternal()
 	{
@@ -27,18 +27,18 @@ class CMEQuestionImport extends InquisitionQuestionImport
 		$this->helper->initInternal();
 	}
 
-	// }}}
-	// {{{ protected function getQuestionHelper()
+
+
 
 	protected function getQuestionHelper()
 	{
 		return new CMEQuestionHelper($this->app, $this->inquisition);
 	}
 
-	// }}}
+
 
 	// build phase
-	// {{{ protected function buildNavBar()
+
 
 	protected function buildNavBar()
 	{
@@ -47,7 +47,7 @@ class CMEQuestionImport extends InquisitionQuestionImport
 		$this->helper->buildNavBar($this->navbar);
 	}
 
-	// }}}
+
 }
 
 ?>

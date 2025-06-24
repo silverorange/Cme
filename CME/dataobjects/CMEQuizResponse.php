@@ -9,15 +9,15 @@
  */
 class CMEQuizResponse extends InquisitionResponse
 {
-	// {{{ public properties
+
 
 	/**
 	 * @var SwatDate
 	 */
 	public $reset_date;
 
-	// }}}
-	// {{{ public function getCorrectCount()
+
+
 
 	public function getCorrectCount()
 	{
@@ -35,16 +35,16 @@ class CMEQuizResponse extends InquisitionResponse
 		return $correct;
 	}
 
-	// }}}
-	// {{{ public function getGrade()
+
+
 
 	public function getGrade()
 	{
 		return $this->grade;
 	}
 
-	// }}}
-	// {{{ public function isPassed()
+
+
 
 	public function isPassed()
 	{
@@ -54,16 +54,16 @@ class CMEQuizResponse extends InquisitionResponse
 		);
 	}
 
-	// }}}
-	// {{{ public function getCredits()
+
+
 
 	public function getCredits()
 	{
 		return $this->credits;
 	}
 
-	// }}}
-	// {{{ protected function init()
+
+
 
 	protected function init()
 	{
@@ -75,8 +75,8 @@ class CMEQuizResponse extends InquisitionResponse
 		);
 	}
 
-	// }}}
-	// {{{ public function loadCredits()
+
+
 
 	public function loadCredits()
 	{
@@ -105,7 +105,7 @@ class CMEQuizResponse extends InquisitionResponse
 		);
 	}
 
-	// }}}
+
 }
 
 ?>

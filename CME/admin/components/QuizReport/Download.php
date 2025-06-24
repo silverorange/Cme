@@ -7,17 +7,17 @@
  */
 class CMEQuizReportDownload extends AdminPage
 {
-	// {{{ protected properties
+
 
 	/**
 	 * @var CMEQuizReport
 	 */
 	protected $report;
 
-	// }}}
+
 
 	// init phase
-	// {{{ protected function initInternal()
+
 
 	protected function initInternal()
 	{
@@ -25,8 +25,8 @@ class CMEQuizReportDownload extends AdminPage
 		$this->initReport();
 	}
 
-	// }}}
-	// {{{ protected function initReport()
+
+
 
 	protected function initReport()
 	{
@@ -97,10 +97,10 @@ class CMEQuizReportDownload extends AdminPage
 
 	}
 
-	// }}}
+
 
 	// build phase
-	// {{{ protected function buildInternal()
+
 
 	protected function buildInternal()
 	{
@@ -118,7 +118,7 @@ class CMEQuizReportDownload extends AdminPage
 		exit();
 	}
 
-	// }}}
+
 }
 
 ?>

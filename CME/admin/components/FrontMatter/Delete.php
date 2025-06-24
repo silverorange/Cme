@@ -8,7 +8,7 @@
 class CMEFrontMatterDelete extends AdminDBDelete
 {
 	// process phase
-	// {{{ protected function processDBData()
+
 
 	protected function processDBData(): void
 	{
@@ -36,10 +36,10 @@ class CMEFrontMatterDelete extends AdminDBDelete
 		$this->app->messages->add($message);
 	}
 
-	// }}}
+
 
 	// build phase
-	// {{{ protected function buildInternal()
+
 
 	protected function buildInternal()
 	{
@@ -96,8 +96,8 @@ class CMEFrontMatterDelete extends AdminDBDelete
 		}
 	}
 
-	// }}}
-	// {{{ protected function buildNavBar()
+
+
 
 	protected function buildNavBar()
 	{
@@ -114,7 +114,7 @@ class CMEFrontMatterDelete extends AdminDBDelete
 		);
 	}
 
-	// }}}
+
 }
 
 ?>

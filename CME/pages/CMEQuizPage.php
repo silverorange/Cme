@@ -7,7 +7,7 @@
  */
 abstract class CMEQuizPage extends SiteDBEditPage
 {
-	// {{{ protected properties
+
 
 	/**
 	 * @var CMECreditWrapper
@@ -55,24 +55,24 @@ abstract class CMEQuizPage extends SiteDBEditPage
 	 */
 	protected $response_message_display;
 
-	// }}}
-	// {{{ protected function getUiXml()
+
+
 
 	protected function getUiXml()
 	{
 		return __DIR__.'/cme-quiz.xml';
 	}
 
-	// }}}
-	// {{{ protected function getCacheKey()
+
+
 
 	protected function getCacheKey()
 	{
 		return 'cme-quiz-page-'.$this->progress->id;
 	}
 
-	// }}}
-	// {{{ protected function getArgumentMap()
+
+
 
 	protected function getArgumentMap()
 	{
@@ -81,20 +81,20 @@ abstract class CMEQuizPage extends SiteDBEditPage
 		);
 	}
 
-	// }}}
-	// {{{ abstract protected function getEvaluationURI()
+
+
 
 	abstract protected function getEvaluationURI();
 
-	// }}}
-	// {{{ abstract protected function getCertificateURI()
+
+
 
 	abstract protected function getCertificateURI();
 
-	// }}}
+
 
 	// init phase
-	// {{{ protected function initInternal()
+
 
 	protected function initInternal()
 	{
@@ -124,8 +124,8 @@ abstract class CMEQuizPage extends SiteDBEditPage
 		}
 	}
 
-	// }}}
-	// {{{ protected function initCredits()
+
+
 
 	protected function initCredits()
 	{
@@ -168,16 +168,16 @@ abstract class CMEQuizPage extends SiteDBEditPage
 		}
 	}
 
-	// }}}
-	// {{{ protected function initFrontMatter()
+
+
 
 	protected function initFrontMatter()
 	{
 		$this->front_matter = $this->credits->getFirst()->front_matter;
 	}
 
-	// }}}
-	// {{{ protected function initProgress()
+
+
 
 	protected function initProgress()
 	{
@@ -210,8 +210,8 @@ abstract class CMEQuizPage extends SiteDBEditPage
 		$this->progress = $progress;
 	}
 
-	// }}}
-	// {{{ protected function getProgress()
+
+
 
 	protected function getProgress()
 	{
@@ -250,8 +250,8 @@ abstract class CMEQuizPage extends SiteDBEditPage
 		return $progress1;
 	}
 
-	// }}}
-	// {{{ protected function initQuiz()
+
+
 
 	protected function initQuiz()
 	{
@@ -304,8 +304,8 @@ abstract class CMEQuizPage extends SiteDBEditPage
 		}
 	}
 
-	// }}}
-	// {{{ protected function generateQuiz()
+
+
 
 	protected function generateQuiz()
 	{
@@ -323,8 +323,8 @@ abstract class CMEQuizPage extends SiteDBEditPage
 		return $quiz;
 	}
 
-	// }}}
-	// {{{ protected function generateQuizQuestions()
+
+
 
 	protected function generateQuizQuestions(CMEQuiz $quiz)
 	{
@@ -349,8 +349,8 @@ abstract class CMEQuizPage extends SiteDBEditPage
 		}
 	}
 
-	// }}}
-	// {{{ protected function initResponse()
+
+
 
 	protected function initResponse()
 	{
@@ -397,8 +397,8 @@ abstract class CMEQuizPage extends SiteDBEditPage
 		}
 	}
 
-	// }}}
-	// {{{ protected function addQuestionToUi()
+
+
 
 	protected function addQuestionToUi(
 		InquisitionInquisitionQuestionBinding $question_binding
@@ -430,8 +430,8 @@ abstract class CMEQuizPage extends SiteDBEditPage
 		$this->ui->getWidget('question_container')->add($container);
 	}
 
-	// }}}
-	// {{{ protected function getResponseValue()
+
+
 
 	protected function getResponseValue(
 		InquisitionInquisitionQuestionBinding $question_binding
@@ -450,8 +450,8 @@ abstract class CMEQuizPage extends SiteDBEditPage
 		return $value;
 	}
 
-	// }}}
-	// {{{ protected function isComplete()
+
+
 
 	protected function isComplete()
 	{
@@ -459,10 +459,10 @@ abstract class CMEQuizPage extends SiteDBEditPage
 			$this->response->complete_date instanceof SwatDate);
 	}
 
-	// }}}
+
 
 	// process phase
-	// {{{ protected function saveData()
+
 
 	protected function saveData(SwatForm $form)
 	{
@@ -476,8 +476,8 @@ abstract class CMEQuizPage extends SiteDBEditPage
 		}
 	}
 
-	// }}}
-	// {{{ protected function saveQuizData()
+
+
 
 	protected function saveQuizData(SwatForm $form)
 	{
@@ -553,8 +553,8 @@ abstract class CMEQuizPage extends SiteDBEditPage
 		$this->app->deleteCacheValue($key, 'cme-hours');
 	}
 
-	// }}}
-	// {{{ protected function saveEarnedCredit()
+
+
 
 	protected function saveEarnedCredit()
 	{
@@ -592,8 +592,8 @@ abstract class CMEQuizPage extends SiteDBEditPage
 		}
 	}
 
-	// }}}
-	// {{{ protected function resetQuiz()
+
+
 
 	protected function resetQuiz(SwatForm $form)
 	{
@@ -618,8 +618,8 @@ abstract class CMEQuizPage extends SiteDBEditPage
 		SwatDB::exec($this->app->db, $sql);
 	}
 
-	// }}}
-	// {{{ protected function sendCompletionEmail()
+
+
 
 	protected function sendCompletionEmail()
 	{
@@ -643,8 +643,8 @@ abstract class CMEQuizPage extends SiteDBEditPage
 		}
 	}
 
-	// }}}
-	// {{{ protected function addCompletionMessage()
+
+
 
 	protected function addCompletionMessage()
 	{
@@ -666,31 +666,31 @@ abstract class CMEQuizPage extends SiteDBEditPage
 		}
 	}
 
-	// }}}
-	// {{{  protected function relocateToCertificate()
+
+
 
 	protected function relocateToCertificate()
 	{
 		$this->app->relocate($this->getCertificateURI());
 	}
 
-	// }}}
-	// {{{  protected function relocateToEvaluation()
+
+
 
 	protected function relocateToEvaluation()
 	{
 		$this->app->relocate($this->getEvaluationURI());
 	}
 
-	// }}}
-	// {{{ abstract protected function getCompletionEmailClass()
+
+
 
 	abstract protected function getCompletionEmailClass();
 
-	// }}}
+
 
 	// build phase
-	// {{{ protected function buildInternal()
+
 
 	protected function buildInternal()
 	{
@@ -709,8 +709,8 @@ abstract class CMEQuizPage extends SiteDBEditPage
 		}
 	}
 
-	// }}}
-	// {{{ protected function buildQuizResponse()
+
+
 
 	protected function buildQuizResponse()
 	{
@@ -747,8 +747,8 @@ abstract class CMEQuizPage extends SiteDBEditPage
 		$this->ui->getWidget('quiz_response_container')->visible = true;
 	}
 
-	// }}}
-	// {{{ protected function buildQuizResponseMessages()
+
+
 
 	protected function buildQuizResponseMessages()
 	{
@@ -846,8 +846,8 @@ abstract class CMEQuizPage extends SiteDBEditPage
 		$content_block->content_type = 'text/xml';
 	}
 
-	// }}}
-	// {{{ protected function displayQuizDetailsIncomplete()
+
+
 
 	protected function displayQuizDetailsIncomplete()
 	{
@@ -908,8 +908,8 @@ abstract class CMEQuizPage extends SiteDBEditPage
 		echo '</div>';
 	}
 
-	// }}}
-	// {{{ protected function buildContent()
+
+
 
 	protected function buildContent()
 	{
@@ -922,8 +922,8 @@ abstract class CMEQuizPage extends SiteDBEditPage
 		}
 	}
 
-	// }}}
-	// {{{ protected function buildTitle()
+
+
 
 	protected function buildTitle()
 	{
@@ -935,16 +935,16 @@ abstract class CMEQuizPage extends SiteDBEditPage
 		);
 	}
 
-	// }}}
-	// {{{ protected function getQuizDescription()
+
+
 
 	protected function getQuizDescription()
 	{
 		return '';
 	}
 
-	// }}}
-	// {{{ protected function getInlineJavaScript()
+
+
 
 	protected function getInlineJavaScript()
 	{
@@ -989,8 +989,8 @@ abstract class CMEQuizPage extends SiteDBEditPage
 		return $javascript;
 	}
 
-	// }}}
-	// {{{ protected function getInlineJavaScriptTranslations()
+
+
 
 	protected function getInlineJavaScriptTranslations()
 	{
@@ -1043,23 +1043,23 @@ abstract class CMEQuizPage extends SiteDBEditPage
 		return $javascript;
 	}
 
-	// }}}
-	// {{{ protected function getJavaScriptClassName()
+
+
 
 	protected function getJavaScriptClassName()
 	{
 		return 'CMEQuizPage';
 	}
 
-	// }}}
-	// {{{ protected function load()
+
+
 
 	protected function load(SwatForm $form)
 	{
 	}
 
-	// }}}
-	// {{{ protected function displayQuizResponse()
+
+
 
 	protected function displayQuizResponse()
 	{
@@ -1160,10 +1160,10 @@ abstract class CMEQuizPage extends SiteDBEditPage
 		echo '</ol>';
 	}
 
-	// }}}
+
 
 	// finalize phase
-	// {{{ public function finalize()
+
 
 	public function finalize()
 	{
@@ -1198,7 +1198,7 @@ abstract class CMEQuizPage extends SiteDBEditPage
 		}
 	}
 
-	// }}}
+
 }
 
 ?>

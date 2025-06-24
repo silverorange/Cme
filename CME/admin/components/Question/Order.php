@@ -7,17 +7,17 @@
  */
 class CMEQuestionOrder extends InquisitionQuestionOrder
 {
-	// {{{ protected properties
+
 
 	/**
 	 * @var CMEQuestionHelper
 	 */
 	protected $helper;
 
-	// }}}
+
 
 	// init phase
-	// {{{ protected function initInternal()
+
 
 	protected function initInternal()
 	{
@@ -27,18 +27,18 @@ class CMEQuestionOrder extends InquisitionQuestionOrder
 		$this->helper->initInternal();
 	}
 
-	// }}}
-	// {{{ protected function getQuestionHelper()
+
+
 
 	protected function getQuestionHelper()
 	{
 		return new CMEQuestionHelper($this->app, $this->inquisition);
 	}
 
-	// }}}
+
 
 	// process phase
-	// {{{ protected function relocate()
+
 
 	protected function relocate()
 	{
@@ -51,10 +51,10 @@ class CMEQuestionOrder extends InquisitionQuestionOrder
 		}
 	}
 
-	// }}}
+
 
 	// build phase
-	// {{{ protected function buildForm()
+
 
 	protected function buildForm()
 	{
@@ -64,8 +64,8 @@ class CMEQuestionOrder extends InquisitionQuestionOrder
 		$form->addHiddenField('inquisition', $this->inquisition->id);
 	}
 
-	// }}}
-	// {{{ protected function buildNavBar()
+
+
 
 	protected function buildNavBar()
 	{
@@ -74,7 +74,7 @@ class CMEQuestionOrder extends InquisitionQuestionOrder
 		$this->helper->buildNavBar($this->navbar);
 	}
 
-	// }}}
+
 }
 
 ?>

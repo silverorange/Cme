@@ -7,7 +7,7 @@
  */
 class CMEQuiz extends InquisitionInquisition
 {
-	// {{{ public function getResponseByAccount()
+
 
 	/**
 	 * Excludes quiz responses that were reset. We save the old quiz response
@@ -34,15 +34,15 @@ class CMEQuiz extends InquisitionInquisition
 		return $response;
 	}
 
-	// }}}
-	// {{{ protected function getResponseWrapperClass()
+
+
 
 	protected function getResponseWrapperClass()
 	{
 		return 'CMEQuizResponseWrapper';
 	}
 
-	// }}}
+
 }
 
 ?>

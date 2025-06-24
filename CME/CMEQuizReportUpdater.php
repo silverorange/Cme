@@ -7,15 +7,15 @@
  */
 abstract class CMEQuizReportUpdater extends CMEReportUpdater
 {
-	// {{{ protected function getStatusLine()
+
 
 	protected function getStatusLine()
 	{
 		return CME::_("Generating Quarterly Quiz Reports\n\n");
 	}
 
-	// }}}
-	// {{{ protected function getReports()
+
+
 
 	protected function getReports()
 	{
@@ -26,16 +26,16 @@ abstract class CMEQuizReportUpdater extends CMEReportUpdater
 		);
 	}
 
-	// }}}
-	// {{{ protected function getReportClassName()
+
+
 
 	protected function getReportClassName()
 	{
 		return SwatDBClassMap::get('CMEQuizReport');
 	}
 
-	// }}}
-	// {{{ protected function getReportGenerator()
+
+
 
 	protected function getReportGenerator(
 		CMEProvider $provider,
@@ -50,7 +50,7 @@ abstract class CMEQuizReportUpdater extends CMEReportUpdater
 		);
 	}
 
-	// }}}
+
 }
 
 ?>

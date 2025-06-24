@@ -9,7 +9,7 @@
  */
 class CME
 {
-	// {{{ constants
+
 
 	/**
 	 * The gettext domain for CME
@@ -18,8 +18,8 @@ class CME
 	 */
 	const GETTEXT_DOMAIN = 'cme';
 
-	// }}}
-	// {{{ private properties
+
+
 
 	/**
 	 * Whether or not this package is initialized
@@ -28,8 +28,8 @@ class CME
 	 */
 	private static $is_initialized = false;
 
-	// }}}
-	// {{{ public static function _()
+
+
 
 	/**
 	 * Translates a phrase
@@ -45,8 +45,8 @@ class CME
 		return self::gettext($message);
 	}
 
-	// }}}
-	// {{{ public static function gettext()
+
+
 
 	/**
 	 * Translates a phrase
@@ -63,8 +63,8 @@ class CME
 		return dgettext(self::GETTEXT_DOMAIN, $message);
 	}
 
-	// }}}
-	// {{{ public static function ngettext()
+
+
 
 	/**
 	 * Translates a plural phrase
@@ -96,8 +96,8 @@ class CME
 		);
 	}
 
-	// }}}
-	// {{{ public static function setupGettext()
+
+
 
 	public static function setupGettext()
 	{
@@ -105,8 +105,8 @@ class CME
 		bind_textdomain_codeset(self::GETTEXT_DOMAIN, 'UTF-8');
 	}
 
-	// }}}
-	// {{{ public static function init()
+
+
 
 	public static function init()
 	{
@@ -124,8 +124,8 @@ class CME
 		self::$is_initialized = true;
 	}
 
-	// }}}
-	// {{{ private function __construct()
+
+
 
 	/**
 	 * Don't allow instantiation of the CME object
@@ -136,7 +136,7 @@ class CME
 	{
 	}
 
-	// }}}
+
 }
 
 ?>

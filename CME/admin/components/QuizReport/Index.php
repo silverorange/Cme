@@ -7,7 +7,7 @@
  */
 class CMEQuizReportIndex extends AdminIndex
 {
-	// {{{ protected properties
+
 
 	/**
 	 * @var array
@@ -24,18 +24,18 @@ class CMEQuizReportIndex extends AdminIndex
 	 */
 	protected $start_date;
 
-	// }}}
-	// {{{ protected function getUiXml()
+
+
 
 	protected function getUiXml()
 	{
 		return __DIR__.'/index.xml';
 	}
 
-	// }}}
+
 
 	// init phase
-	// {{{ protected function initInternal()
+
 
 	protected function initInternal()
 	{
@@ -47,8 +47,8 @@ class CMEQuizReportIndex extends AdminIndex
 		$this->initTableViewColumns();
 	}
 
-	// }}}
-	// {{{ protected function initStartDate()
+
+
 
 	protected function initStartDate()
 	{
@@ -64,8 +64,8 @@ class CMEQuizReportIndex extends AdminIndex
 		$this->start_date->setTimezone($this->app->default_time_zone);
 	}
 
-	// }}}
-	// {{{ protected function initProviders()
+
+
 
 	protected function initProviders()
 	{
@@ -76,8 +76,8 @@ class CMEQuizReportIndex extends AdminIndex
 		);
 	}
 
-	// }}}
-	// {{{ protected function initReportsByQuarter()
+
+
 
 	protected function initReportsByQuarter()
 	{
@@ -105,8 +105,8 @@ class CMEQuizReportIndex extends AdminIndex
 		}
 	}
 
-	// }}}
-	// {{{ protected function initTableViewColumns()
+
+
 
 	protected function initTableViewColumns()
 	{
@@ -139,10 +139,10 @@ class CMEQuizReportIndex extends AdminIndex
 		}
 	}
 
-	// }}}
+
 
 	// build phase
-	// {{{ protected function getTableModel()
+
 
 	protected function getTableModel(SwatView $view): ?SwatTableModel
 	{
@@ -214,7 +214,7 @@ class CMEQuizReportIndex extends AdminIndex
 		return $store;
 	}
 
-	// }}}
+
 }
 
 ?>

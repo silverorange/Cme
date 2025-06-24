@@ -9,7 +9,7 @@
  */
 class CMEEvaluationResponse extends InquisitionResponse
 {
-	// {{{ public function getFrontMatter()
+
 
 	public function getFrontMatter()
 	{
@@ -29,8 +29,8 @@ class CMEEvaluationResponse extends InquisitionResponse
 		)->getFirst();
 	}
 
-	// }}}
-	// {{{ protected function init()
+
+
 
 	protected function init()
 	{
@@ -41,7 +41,7 @@ class CMEEvaluationResponse extends InquisitionResponse
 		);
 	}
 
-	// }}}
+
 }
 
 ?>

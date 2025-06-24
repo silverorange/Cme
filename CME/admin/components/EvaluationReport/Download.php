@@ -7,17 +7,17 @@
  */
 class CMEEvaluationReportDownload extends AdminPage
 {
-	// {{{ protected properties
+
 
 	/**
 	 * @var CMEEvaluationReport
 	 */
 	protected $report;
 
-	// }}}
+
 
 	// init phase
-	// {{{ protected function initInternal()
+
 
 	protected function initInternal()
 	{
@@ -25,8 +25,8 @@ class CMEEvaluationReportDownload extends AdminPage
 		$this->initReport();
 	}
 
-	// }}}
-	// {{{ protected function initReport()
+
+
 
 	protected function initReport()
 	{
@@ -94,10 +94,10 @@ class CMEEvaluationReportDownload extends AdminPage
 		}
 	}
 
-	// }}}
+
 
 	// build phase
-	// {{{ protected function buildInternal()
+
 
 	protected function buildInternal()
 	{
@@ -115,7 +115,7 @@ class CMEEvaluationReportDownload extends AdminPage
 		exit();
 	}
 
-	// }}}
+
 }
 
 ?>

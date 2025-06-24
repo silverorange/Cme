@@ -7,15 +7,15 @@
  */
 abstract class CMEEvaluationReportUpdater extends CMEReportUpdater
 {
-	// {{{ protected function getStatusLine()
+
 
 	protected function getStatusLine()
 	{
 		return CME::_("Generating Quarterly Evaluation Reports\n\n");
 	}
 
-	// }}}
-	// {{{ protected function getReports()
+
+
 
 	protected function getReports()
 	{
@@ -26,16 +26,16 @@ abstract class CMEEvaluationReportUpdater extends CMEReportUpdater
 		);
 	}
 
-	// }}}
-	// {{{ protected function getReportClassName()
+
+
 
 	protected function getReportClassName()
 	{
 		return SwatDBClassMap::get('CMEEvaluationReport');
 	}
 
-	// }}}
-	// {{{ protected function getReportGenerator()
+
+
 
 	protected function getReportGenerator(
 		CMEProvider $provider,
@@ -52,15 +52,15 @@ abstract class CMEEvaluationReportUpdater extends CMEReportUpdater
 		);
 	}
 
-	// }}}
-	// {{{ protected function getReportGeneratorClassName()
+
+
 
 	protected function getReportGeneratorClassName()
 	{
 		return 'CMEEvaluationReportGenerator';
 	}
 
-	// }}}
+
 }
 
 ?>

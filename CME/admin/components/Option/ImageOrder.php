@@ -7,17 +7,17 @@
  */
 class CMEOptionImageOrder extends InquisitionOptionImageOrder
 {
-	// {{{ protected properties
+
 
 	/**
 	 * @var CMEOptionHelper
 	 */
 	protected $helper;
 
-	// }}}
+
 
 	// init phase
-	// {{{ protected function initInternal()
+
 
 	protected function initInternal()
 	{
@@ -27,8 +27,8 @@ class CMEOptionImageOrder extends InquisitionOptionImageOrder
 		$this->helper->initInternal();
 	}
 
-	// }}}
-	// {{{ protected function getOptionHelper()
+
+
 
 	protected function getOptionHelper()
 	{
@@ -44,10 +44,10 @@ class CMEOptionImageOrder extends InquisitionOptionImageOrder
 		);
 	}
 
-	// }}}
+
 
 	// build phase
-	// {{{ protected function buildNavBar()
+
 
 	protected function buildNavBar()
 	{
@@ -61,7 +61,7 @@ class CMEOptionImageOrder extends InquisitionOptionImageOrder
 		$this->navbar->addEntry($title);
 	}
 
-	// }}}
+
 }
 
 ?>

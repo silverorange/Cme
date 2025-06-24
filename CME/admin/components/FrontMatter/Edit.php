@@ -7,23 +7,23 @@
  */
 abstract class CMEFrontMatterEdit extends AdminObjectEdit
 {
-	// {{{ protected function getUiXml()
+
 
 	protected function getUiXml()
 	{
 		return __DIR__.'/edit.xml';
 	}
 
-	// }}}
-	// {{{ protected function getObjectClass()
+
+
 
 	protected function getObjectClass()
 	{
 		return 'CMEFrontMatter';
 	}
 
-	// }}}
-	// {{{ protected function getObjectUiValueNames()
+
+
 
 	protected function getObjectUiValueNames()
 	{
@@ -39,10 +39,10 @@ abstract class CMEFrontMatterEdit extends AdminObjectEdit
 		);
 	}
 
-	// }}}
+
 
 	// init phase
-	// {{{ protected function initInternal()
+
 
 	protected function initInternal()
 	{
@@ -69,8 +69,8 @@ abstract class CMEFrontMatterEdit extends AdminObjectEdit
 		}
 	}
 
-	// }}}
-	// {{{ protected function getDefaultProviderShortnames()
+
+
 
 	/**
 	 * @return array the default provider shortnames. If an empty array is
@@ -82,8 +82,8 @@ abstract class CMEFrontMatterEdit extends AdminObjectEdit
 		return array();
 	}
 
-	// }}}
-	// {{{ protected function getAvailableProviders()
+
+
 
 	protected function getAvailableProviders()
 	{
@@ -94,8 +94,8 @@ abstract class CMEFrontMatterEdit extends AdminObjectEdit
 		);
 	}
 
-	// }}}
-	// {{{ protected function setDefaultProviders()
+
+
 
 	protected function setDefaultProviders(CMEProviderWrapper $providers)
 	{
@@ -118,8 +118,8 @@ abstract class CMEFrontMatterEdit extends AdminObjectEdit
 		}
 	}
 
-	// }}}
-	// {{{ protected function setDefaultValues()
+
+
 
 	protected function setDefaultValues()
 	{
@@ -131,16 +131,16 @@ abstract class CMEFrontMatterEdit extends AdminObjectEdit
 			$this->getDefaultObjectives();
 	}
 
-	// }}}
-	// {{{ protected function getDefaultPassingGrade()
+
+
 
 	protected function getDefaultPassingGrade()
 	{
 		return 0.70;
 	}
 
-	// }}}
-	// {{{ protected function getDefaultObjectives()
+
+
 
 	protected function getDefaultObjectives()
 	{
@@ -152,15 +152,15 @@ abstract class CMEFrontMatterEdit extends AdminObjectEdit
 HTML;
 	}
 
-	// }}}
+
 
 	// process phase
-	// {{{ abstract protected function getTitle()
+
 
 	abstract protected function getTitle();
 
-	// }}}
-	// {{{ protected function validate()
+
+
 
 	protected function validate(): void
 	{
@@ -187,16 +187,16 @@ HTML;
 
 	}
 
-	// }}}
-	// {{{ protected function validateProvider()
+
+
 
 	protected function validateProvider(CMEProvider $provider = null)
 	{
 		return true;
 	}
 
-	// }}}
-	// {{{ protected function updateObject()
+
+
 
 	protected function updateObject()
 	{
@@ -224,8 +224,8 @@ HTML;
 		}
 	}
 
-	// }}}
-	// {{{ protected function postSaveObject()
+
+
 
 	protected function postSaveObject()
 	{
@@ -234,8 +234,8 @@ HTML;
 		$this->saveProviderBindingTable();
 	}
 
-	// }}}
-	// {{{ protected function saveProviderBindingTable()
+
+
 
 	protected function saveProviderBindingTable()
 	{
@@ -262,8 +262,8 @@ HTML;
 		SwatDB::exec($this->app->db, $insert_sql);
 	}
 
-	// }}}
-	// {{{ protected function createEvaluation()
+
+
 
 	protected function createEvaluation()
 	{
@@ -275,40 +275,40 @@ HTML;
 		return $evaluation;
 	}
 
-	// }}}
-	// {{{ protected function getPlanningCommitteeNoDisclosures()
+
+
 
 	protected function getPlanningCommitteeNoDisclosures()
 	{
 		return '';
 	}
 
-	// }}}
-	// {{{ protected function getPlanningCommitteeWithDisclosures()
+
+
 
 	protected function getPlanningCommitteeWithDisclosures()
 	{
 		return '';
 	}
 
-	// }}}
-	// {{{ protected function getSupportStaffNoDisclosures()
+
+
 
 	protected function getSupportStaffNoDisclosures()
 	{
 		return '';
 	}
 
-	// }}}
-	// {{{ protected function getSupportStaffWithDisclosures()
+
+
 
 	protected function getSupportStaffWithDisclosures()
 	{
 		return '';
 	}
 
-	// }}}
-	// {{{ protected function getSavedMessagePrimaryContent()
+
+
 
 	protected function getSavedMessagePrimaryContent()
 	{
@@ -319,10 +319,10 @@ HTML;
 		);
 	}
 
-	// }}}
+
 
 	// build phase
-	// {{{ protected function buildInternal()
+
 
 	protected function buildInternal()
 	{
@@ -330,8 +330,8 @@ HTML;
 		$this->buildEmailHelp();
 	}
 
-	// }}}
-	// {{{ protected function loadDBData()
+
+
 
 	protected function loadDBData()
 	{
@@ -342,8 +342,8 @@ HTML;
 		}
 	}
 
-	// }}}
-	// {{{ protected function buildNavBar()
+
+
 
 	protected function buildNavBar()
 	{
@@ -358,8 +358,8 @@ HTML;
 		}
 	}
 
-	// }}}
-	// {{{ protected function buildEmailHelp()
+
+
 
 	protected function buildEmailHelp()
 	{
@@ -409,8 +409,8 @@ HTML;
 		$help->content_type = 'text/xml';
 	}
 
-	// }}}
-	// {{{ protected function getEmailHelpVariableDefinitions()
+
+
 
 	protected function getEmailHelpVariableDefinitions()
 	{
@@ -430,10 +430,10 @@ HTML;
 		);
 	}
 
-	// }}}
+
 
 	// finalize phase
-	// {{{ public function finalize()
+
 
 	public function finalize()
 	{
@@ -444,7 +444,7 @@ HTML;
 		);
 	}
 
-	// }}}
+
 }
 
 ?>

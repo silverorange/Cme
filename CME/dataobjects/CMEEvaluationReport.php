@@ -7,7 +7,7 @@
  */
 class CMEEvaluationReport extends SwatDBDataObject
 {
-	// {{{ public properties
+
 
 	/**
 	 * @var integer
@@ -29,24 +29,24 @@ class CMEEvaluationReport extends SwatDBDataObject
 	 */
 	public $createdate;
 
-	// }}}
-	// {{{ protected properties
+
+
 
 	/**
 	 * @var string
 	 */
 	protected $file_base;
 
-	// }}}
-	// {{{ public function setFileBase()
+
+
 
 	public function setFileBase($file_base)
 	{
 		$this->file_base = $file_base;
 	}
 
-	// }}}
-	// {{{ public function getFileDirectory()
+
+
 
 	public function getFileDirectory()
 	{
@@ -58,8 +58,8 @@ class CMEEvaluationReport extends SwatDBDataObject
 		return implode(DIRECTORY_SEPARATOR, $path);
 	}
 
-	// }}}
-	// {{{ public function getFilePath()
+
+
 
 	public function getFilePath()
 	{
@@ -71,8 +71,8 @@ class CMEEvaluationReport extends SwatDBDataObject
 		return implode(DIRECTORY_SEPARATOR, $path);
 	}
 
-	// }}}
-	// {{{ protected function init()
+
+
 
 	protected function init()
 	{
@@ -90,7 +90,7 @@ class CMEEvaluationReport extends SwatDBDataObject
 		$this->registerDateProperty('createdate');
 	}
 
-	// }}}
+
 }
 
 ?>

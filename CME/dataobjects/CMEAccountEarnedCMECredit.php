@@ -9,7 +9,7 @@
  */
 class CMEAccountEarnedCMECredit extends SwatDBDataObject
 {
-	// {{{ public properties
+
 
 	/**
 	 * @var integer
@@ -21,8 +21,8 @@ class CMEAccountEarnedCMECredit extends SwatDBDataObject
 	 */
 	public $earned_date;
 
-	// }}}
-	// {{{ protected function init()
+
+
 
 	protected function init()
 	{
@@ -42,7 +42,7 @@ class CMEAccountEarnedCMECredit extends SwatDBDataObject
 		$this->registerDateProperty('earned_date');
 	}
 
-	// }}}
+
 }
 
 ?>

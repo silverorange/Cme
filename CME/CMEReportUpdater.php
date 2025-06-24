@@ -7,7 +7,7 @@
  */
 abstract class CMEReportUpdater extends SiteCommandLineApplication
 {
-	// {{{ protected properties
+
 
 	/**
 	 * @var integer
@@ -24,8 +24,8 @@ abstract class CMEReportUpdater extends SiteCommandLineApplication
 	 */
 	protected $reports_by_quarter = null;
 
-	// }}}
-	// {{{ public function run()
+
+
 
 	public function run()
 	{
@@ -83,26 +83,26 @@ abstract class CMEReportUpdater extends SiteCommandLineApplication
 		$this->debug("All done.\n", true);
 	}
 
-	// }}}
-	// {{{ abstract protected function getStatusLine()
+
+
 
 	/**
 	 * @return string
 	 */
 	abstract protected function getStatusLine();
 
-	// }}}
-	// {{{ abstract protected function getReports()
+
+
 
 	abstract protected function getReports();
 
-	// }}}
-	// {{{ abstract protected function getReportClassName()
+
+
 
 	abstract protected function getReportClassName();
 
-	// }}}
-	// {{{ abstract protected function getReportGenerator()
+
+
 
 	abstract protected function getReportGenerator(
 		CMEProvider $provider,
@@ -110,18 +110,18 @@ abstract class CMEReportUpdater extends SiteCommandLineApplication
 		$quarter
 	);
 
-	// }}}
-	// {{{ abstract protected function getFileBase()
+
+
 
 	abstract protected function getFileBase();
 
-	// }}}
-	// {{{ abstract protected function getFilenamePattern()
+
+
 
 	abstract protected function getFilenamePattern();
 
-	// }}}
-	// {{{ protected function initStartDate()
+
+
 
 	protected function initStartDate()
 	{
@@ -137,8 +137,8 @@ abstract class CMEReportUpdater extends SiteCommandLineApplication
 		$this->start_date = new SwatDate($oldest_date_string);
 	}
 
-	// }}}
-	// {{{ protected function initProviders()
+
+
 
 	protected function initProviders()
 	{
@@ -149,8 +149,8 @@ abstract class CMEReportUpdater extends SiteCommandLineApplication
 		);
 	}
 
-	// }}}
-	// {{{ protected function initReportsByQuarter()
+
+
 
 	protected function initReportsByQuarter()
 	{
@@ -174,8 +174,8 @@ abstract class CMEReportUpdater extends SiteCommandLineApplication
 		}
 	}
 
-	// }}}
-	// {{{ protected function getQuarters()
+
+
 
 	protected function getQuarters(CMEProvider $provider)
 	{
@@ -229,8 +229,8 @@ abstract class CMEReportUpdater extends SiteCommandLineApplication
 		return $quarters;
 	}
 
-	// }}}
-	// {{{ protected function getQuarterEarnedCredits()
+
+
 
 	protected function getQuarterEarnedCredits(
 		CMEProvider $provider,
@@ -277,8 +277,8 @@ abstract class CMEReportUpdater extends SiteCommandLineApplication
 		return SwatDB::queryOne($this->db, $sql);
 	}
 
-	// }}}
-	// {{{ protected function getDataObject()
+
+
 
 	protected function getDataObject(
 		SwatDate $quarter,
@@ -302,8 +302,8 @@ abstract class CMEReportUpdater extends SiteCommandLineApplication
 		return $report;
 	}
 
-	// }}}
-	// {{{ protected function saveReport()
+
+
 
 	protected function saveReport(
 		SwatDate $quarter,
@@ -322,8 +322,8 @@ abstract class CMEReportUpdater extends SiteCommandLineApplication
 		$report->saveFile($filepath);
 	}
 
-	// }}}
-	// {{{ protected function getFilename()
+
+
 
 	protected function getFilename(
 		SwatDate $quarter,
@@ -342,8 +342,8 @@ abstract class CMEReportUpdater extends SiteCommandLineApplication
 		);
 	}
 
-	// }}}
-	// {{{ protected function getDefaultModuleList()
+
+
 
 	/**
 	 * Gets the list of modules to load for this search indexer
@@ -363,7 +363,7 @@ abstract class CMEReportUpdater extends SiteCommandLineApplication
 		);
 	}
 
-	// }}}
+
 }
 
 ?>

@@ -9,7 +9,7 @@
  */
 abstract class CMEAccount extends StoreAccount
 {
-	// {{{ protected properties
+
 
 	/**
 	 * @var array
@@ -26,13 +26,13 @@ abstract class CMEAccount extends StoreAccount
 	 */
 	protected $response_by_cme_eval;
 
-	// }}}
-	// {{{ abstract public function hasCMEAccess()
+
+
 
 	abstract public function hasCMEAccess();
 
-	// }}}
-	// {{{ public function hasAttested()
+
+
 
 	public function hasAttested(CMEFrontMatter $front_matter)
 	{
@@ -48,8 +48,8 @@ abstract class CMEAccount extends StoreAccount
 		return (SwatDB::queryOne($this->db, $sql) > 0);
 	}
 
-	// }}}
-	// {{{ public function isEvaluationComplete()
+
+
 
 	public function isEvaluationComplete(CMECredit $credit)
 	{
@@ -73,8 +73,8 @@ abstract class CMEAccount extends StoreAccount
 		return $complete;
 	}
 
-	// }}}
-	// {{{ public function isQuizComplete()
+
+
 
 	public function isQuizComplete(CMECredit $credit)
 	{
@@ -98,8 +98,8 @@ abstract class CMEAccount extends StoreAccount
 		return $complete;
 	}
 
-	// }}}
-	// {{{ public function isQuizPassed()
+
+
 
 	public function isQuizPassed(CMECredit $credit)
 	{
@@ -125,8 +125,8 @@ abstract class CMEAccount extends StoreAccount
 		return $passed;
 	}
 
-	// }}}
-	// {{{ public function isCreditEarned()
+
+
 
 	public function isCreditEarned(CMECredit $credit)
 	{
@@ -142,8 +142,8 @@ abstract class CMEAccount extends StoreAccount
 		return $earned;
 	}
 
-	// }}}
-	// {{{ public function getEarnedCMECreditHours()
+
+
 
 	public function getEarnedCMECreditHours()
 	{
@@ -156,8 +156,8 @@ abstract class CMEAccount extends StoreAccount
 		return $hours;
 	}
 
-	// }}}
-	// {{{ public function getEarnedCMECreditsByProvider()
+
+
 
 	public function getEarnedCMECreditsByProvider(CMEProvider $provider)
 	{
@@ -175,8 +175,8 @@ abstract class CMEAccount extends StoreAccount
 		return $credits;
 	}
 
-	// }}}
-	// {{{ public function getEarnedCMECreditHoursByProvider()
+
+
 
 	public function getEarnedCMECreditHoursByProvider(CMEProvider $provider)
 	{
@@ -188,8 +188,8 @@ abstract class CMEAccount extends StoreAccount
 		return $hours;
 	}
 
-	// }}}
-	// {{{ public function getEarnedCMECreditHoursByFrontMatter()
+
+
 
 	public function getEarnedCMECreditHoursByFrontMatter(
 		CMEFrontMatter $front_matter
@@ -206,8 +206,8 @@ abstract class CMEAccount extends StoreAccount
 		return $hours;
 	}
 
-	// }}}
-	// {{{ public function getEnabledEarnedCMECreditHours()
+
+
 
 	public function getEnabledEarnedCMECreditHours(
 		SwatDate $start_date = null,
@@ -224,8 +224,8 @@ abstract class CMEAccount extends StoreAccount
 		return $hours;
 	}
 
-	// }}}
-	// {{{ public function getCMEProgress()
+
+
 
 	public function getCMEProgress(CMECredit $credit)
 	{
@@ -260,8 +260,8 @@ abstract class CMEAccount extends StoreAccount
 			: null;
 	}
 
-	// }}}
-	// {{{ public function getResponseByCMEQuiz()
+
+
 
 	public function getResponseByCMEQuiz($quiz_id)
 	{
@@ -294,8 +294,8 @@ abstract class CMEAccount extends StoreAccount
 			: null;
 	}
 
-	// }}}
-	// {{{ public function getResponseByCMEEvaluation()
+
+
 
 	public function getResponseByCMEEvaluation($evaluation_id)
 	{
@@ -327,8 +327,8 @@ abstract class CMEAccount extends StoreAccount
 			: null;
 	}
 
-	// }}}
-	// {{{ public function hasSameCMEProgress()
+
+
 
 	public function hasSameCMEProgress(CMECredit $credit1, CMECredit $credit2)
 	{
@@ -354,10 +354,10 @@ abstract class CMEAccount extends StoreAccount
 		return $combine;
 	}
 
-	// }}}
+
 
 	// loader methods
-	// {{{ protected function loadEarnedCMECredits()
+
 
 	protected function loadEarnedCMECredits()
 	{
@@ -404,8 +404,8 @@ abstract class CMEAccount extends StoreAccount
 		return $earned_credits;
 	}
 
-	// }}}
-	// {{{ protected function loadAttestedCMECredits()
+
+
 
 	protected function loadAttestedCMECredits()
 	{
@@ -447,7 +447,7 @@ abstract class CMEAccount extends StoreAccount
 		return $credits;
 	}
 
-	// }}}
+
 }
 
 ?>

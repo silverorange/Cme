@@ -7,7 +7,7 @@
  */
 class CMEOptionHelper
 {
-	// {{{ protected properties
+
 
 	/**
 	 * @var SiteApplication
@@ -24,8 +24,8 @@ class CMEOptionHelper
 	 */
 	protected $question;
 
-	// }}}
-	// {{{ public function __construct()
+
+
 
 	public function __construct(
 		SiteApplication $app,
@@ -37,36 +37,36 @@ class CMEOptionHelper
 		$this->question_helper = $question_helper;
 	}
 
-	// }}}
-	// {{{ public function isEvaluation()
+
+
 
 	public function isEvaluation()
 	{
 		return $this->question_helper->isEvaluation();
 	}
 
-	// }}}
-	// {{{ public function isQuiz()
+
+
 
 	public function isQuiz()
 	{
 		return $this->question_helper->isQuiz();
 	}
 
-	// }}}
+
 
 	// init phase
-	// {{{ public function initInternal()
+
 
 	public function initInternal()
 	{
 		$this->question_helper->initInternal();
 	}
 
-	// }}}
+
 
 	// process phase
-	// {{{ public function getRelocateURI()
+
 
 	public function getRelocateURI()
 	{
@@ -87,10 +87,10 @@ class CMEOptionHelper
 		return $uri;
 	}
 
-	// }}}
+
 
 	// build phase
-	// {{{ public function buildNavBar()
+
 
 	public function buildNavBar(SwatNavBar $navbar)
 	{
@@ -127,8 +127,8 @@ class CMEOptionHelper
 		$navbar->addEntry($title);
 	}
 
-	// }}}
-	// {{{ protected function getQuestionTitle()
+
+
 
 	protected function getQuestionTitle()
 	{
@@ -136,7 +136,7 @@ class CMEOptionHelper
 		return CME::_('Question');
 	}
 
-	// }}}
+
 }
 
 ?>

@@ -7,7 +7,7 @@
  */
 class CMEQuestionHelper
 {
-	// {{{ protected properties
+
 
 	/**
 	 * @var SiteApplication
@@ -34,8 +34,8 @@ class CMEQuestionHelper
 	 */
 	protected $type;
 
-	// }}}
-	// {{{ public function __construct()
+
+
 
 	public function __construct(
 		SiteApplication $app,
@@ -45,34 +45,34 @@ class CMEQuestionHelper
 		$this->inquisition = $inquisition;
 	}
 
-	// }}}
-	// {{{ public function isEvaluation()
+
+
 
 	public function isEvaluation()
 	{
 		return ($this->type == 'evaluation');
 	}
 
-	// }}}
-	// {{{ public function isQuiz()
+
+
 
 	public function isQuiz()
 	{
 		return ($this->type == 'quiz');
 	}
 
-	// }}}
-	// {{{ public function getInquisition()
+
+
 
 	public function getInquisition()
 	{
 		return $this->inquisition;
 	}
 
-	// }}}
+
 
 	// init phase
-	// {{{ public function initInternal()
+
 
 	public function initInternal()
 	{
@@ -81,8 +81,8 @@ class CMEQuestionHelper
 		$this->initType();
 	}
 
-	// }}}
-	// {{{ protected function initCredit()
+
+
 
 	protected function initCredit()
 	{
@@ -100,8 +100,8 @@ class CMEQuestionHelper
 		}
 	}
 
-	// }}}
-	// {{{ protected function initFrontMatter()
+
+
 
 	protected function initFrontMatter()
 	{
@@ -123,8 +123,8 @@ class CMEQuestionHelper
 		}
 	}
 
-	// }}}
-	// {{{ protected function initType()
+
+
 
 	protected function initType()
 	{
@@ -135,10 +135,10 @@ class CMEQuestionHelper
 		}
 	}
 
-	// }}}
+
 
 	// process phase
-	// {{{ public function getRelocateURI()
+
 
 	public function getRelocateURI()
 	{
@@ -159,10 +159,10 @@ class CMEQuestionHelper
 		return $uri;
 	}
 
-	// }}}
+
 
 	// build phase
-	// {{{ public function buildNavBar()
+
 
 	public function buildNavBar(SwatNavBar $navbar)
 	{
@@ -206,8 +206,8 @@ class CMEQuestionHelper
 		$navbar->addEntry($title);
 	}
 
-	// }}}
-	// {{{ protected function getCreditNavBarTitle()
+
+
 
 	protected function getCreditNavBarTitle()
 	{
@@ -217,8 +217,8 @@ class CMEQuestionHelper
 		);
 	}
 
-	// }}}
-	// {{{ protected function getEvaluationNavBarTitle()
+
+
 
 	protected function getEvaluationNavBarTitle()
 	{
@@ -228,7 +228,7 @@ class CMEQuestionHelper
 		);
 	}
 
-	// }}}
+
 }
 
 ?>

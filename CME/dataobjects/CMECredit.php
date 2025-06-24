@@ -7,7 +7,7 @@
  */
 abstract class CMECredit extends SwatDBDataObject
 {
-	// {{{ public properties
+
 
 	/**
 	 * @var integer
@@ -29,8 +29,8 @@ abstract class CMECredit extends SwatDBDataObject
 	 */
 	public $expiry_date;
 
-	// }}}
-	// {{{ public static function formatCreditHours()
+
+
 
 	public static function formatCreditHours($hours)
 	{
@@ -55,16 +55,16 @@ abstract class CMECredit extends SwatDBDataObject
 		return $locale->formatNumber($hours, $decimal_places);
 	}
 
-	// }}}
-	// {{{ public function getFormattedHours()
+
+
 
 	public function getFormattedHours()
 	{
 		return static::formatCreditHours($this->hours);
 	}
 
-	// }}}
-	// {{{ public function hasQuiz()
+
+
 
 	public function hasQuiz()
 	{
@@ -73,8 +73,8 @@ abstract class CMECredit extends SwatDBDataObject
 			count($this->quiz->question_bindings) > 0;
 	}
 
-	// }}}
-	// {{{ public function isEarned()
+
+
 
 	public function isEarned(CMEAccount $account)
 	{
@@ -90,8 +90,8 @@ abstract class CMECredit extends SwatDBDataObject
 			);
 	}
 
-	// }}}
-	// {{{ public function isExpired()
+
+
 
 	public function isExpired()
 	{
@@ -101,8 +101,8 @@ abstract class CMECredit extends SwatDBDataObject
 		return $now->after($this->expiry_date);
 	}
 
-	// }}}
-	// {{{ public function getTitle()
+
+
 
 	public function getTitle()
 	{
@@ -112,13 +112,13 @@ abstract class CMECredit extends SwatDBDataObject
 		);
 	}
 
-	// }}}
-	// {{{ abstract protected function getQuizLink()
+
+
 
 	abstract protected function getQuizLink();
 
-	// }}}
-	// {{{ protected function init()
+
+
 
 	protected function init()
 	{
@@ -137,7 +137,7 @@ abstract class CMECredit extends SwatDBDataObject
 		);
 	}
 
-	// }}}
+
 }
 
 ?>
