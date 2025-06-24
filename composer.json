@@ -1,61 +1,69 @@
 {
-	"name": "silverorange/cme",
-	"description": "Continuing Medical Education certification framework.",
-	"type": "library",
-	"keywords": [ "cme", "medical", "education" ],
-	"homepage": "https://github.com/silverorange/cme",
-	"license": "MIT",
-	"authors": [
-		{
-			"name": "Charles Waddell",
-			"email": "charles@silverorange.com"
-		},
-		{
-			"name": "Isaac Grant",
-			"email": "isaac@silverorange.com"
-		},
-		{
-			"name": "Michael Gauthier",
-			"email": "mike@silverorange.com"
-		},
-		{
-			"name": "Nick Burka",
-			"email": "nick@silverorange.com"
-		}
-	],
-	"repositories": [
-		{
-			"type": "composer",
-			"url": "https://composer.silverorange.com",
-			"only": ["silverorange/*"]
-		}
-	],
-	"require": {
-		"php": ">=8.1.0",
-		"ext-mbstring": "*",
-		"dompdf/dompdf": "^2.0.0",
-		"silverorange/admin": "^6.2.0 || ^7.0.0",
-		"silverorange/inquisition": "^4.1.0",
-		"silverorange/site": "^14.5.0 || ^15.0.0",
-		"silverorange/store": "^10.0.0",
-		"silverorange/swat": "^7.1.0"
-	},
-	"require-dev": {
-		"phpstan/phpstan": "^1.12",
-		"silverorange/coding-standard": "^1.0.0"
-	},
-	"scripts": {
-		"phpcs": "./vendor/bin/php-cs-fixer check -v",
-		"phpcs:ci": "./vendor/bin/php-cs-fixer check --config=.php-cs-fixer.php --no-interaction --show-progress=none --diff --using-cache=no -vvv",
-		"phpcs:write": "./vendor/bin/php-cs-fixer fix -v",
-		"phpstan": "./vendor/bin/phpstan analyze",
-		"phpstan:ci": "./vendor/bin/phpstan analyze -vvv --no-progress --memory-limit 2G",
-		"phpstan:baseline": "./vendor/bin/phpstan analyze --generate-baseline"
-	},
-	"autoload": {
-		"classmap": [ "CME/" ]
-	},
-	"config": {
-		"sort-packages": true
-	}
+  "name": "silverorange/cme",
+  "description": "Continuing Medical Education certification framework.",
+  "type": "library",
+  "keywords": [
+    "cme",
+    "medical",
+    "education"
+  ],
+  "homepage": "https://github.com/silverorange/cme",
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "Charles Waddell",
+      "email": "charles@silverorange.com"
+    },
+    {
+      "name": "Isaac Grant",
+      "email": "isaac@silverorange.com"
+    },
+    {
+      "name": "Michael Gauthier",
+      "email": "mike@silverorange.com"
+    },
+    {
+      "name": "Nick Burka",
+      "email": "nick@silverorange.com"
+    }
+  ],
+  "repositories": [
+    {
+      "type": "composer",
+      "url": "https://composer.silverorange.com",
+      "only": [
+        "silverorange/*"
+      ]
+    }
+  ],
+  "require": {
+    "php": ">=8.1.0",
+    "ext-mbstring": "*",
+    "dompdf/dompdf": "^2.0.0",
+    "silverorange/admin": "^6.2.0 || ^7.0.0",
+    "silverorange/inquisition": "^4.1.0",
+    "silverorange/site": "^14.5.0 || ^15.0.0",
+    "silverorange/store": "^10.0.0",
+    "silverorange/swat": "^7.1.0"
+  },
+  "require-dev": {
+    "phpstan/phpstan": "^1.12",
+    "silverorange/coding-standard": "^1.0.0"
+  },
+  "scripts": {
+    "phpcs": "./vendor/bin/php-cs-fixer check -v",
+    "phpcs:ci": "./vendor/bin/php-cs-fixer check --config=.php-cs-fixer.php --no-interaction --show-progress=none --diff --using-cache=no -vvv",
+    "phpcs:write": "./vendor/bin/php-cs-fixer fix -v",
+    "phpstan": "./vendor/bin/phpstan analyze",
+    "phpstan:ci": "./vendor/bin/phpstan analyze -vvv --no-progress --memory-limit 2G",
+    "phpstan:baseline": "./vendor/bin/phpstan analyze --generate-baseline"
+  },
+  "autoload": {
+    "classmap": [
+      "CME/"
+    ]
+  },
+  "config": {
+    "sort-packages": true
+  }
 }

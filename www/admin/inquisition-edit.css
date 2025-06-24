@@ -1,21 +1,21 @@
 #email_help_text {
-	padding: 12px 16px;
-	background-image: none;
-	margin: 16px 0 0;
-	border-style: solid;
-	width: 300px;
-	float: right;
-	border-radius: 2px;
+  padding: 12px 16px;
+  background-image: none;
+  margin: 16px 0 0;
+  border-style: solid;
+  width: 300px;
+  float: right;
+  border-radius: 2px;
 }
 
 #email_help_text ul {
-	margin-bottom: 0;
+  margin-bottom: 0;
 }
 
 #email_fields {
-	margin-right: 340px;
+  margin-right: 340px;
 }
 
 #email_fields textarea {
-	width: 96%;
+  width: 96%;
 }
