@@ -1,124 +1,107 @@
 <?php
 
 /**
- * @package   CME
  * @copyright 2011-2016 silverorange
  * @license   http://www.opensource.org/licenses/mit-license.html MIT License
  */
 class CMEQuizReportDownload extends AdminPage
 {
+    /**
+     * @var CMEQuizReport
+     */
+    protected $report;
 
+    // init phase
 
-	/**
-	 * @var CMEQuizReport
-	 */
-	protected $report;
+    protected function initInternal()
+    {
+        parent::initInternal();
+        $this->initReport();
+    }
 
+    protected function initReport()
+    {
+        $quarter = SiteApplication::initVar(
+            'quarter',
+            null,
+            SiteApplication::VAR_GET
+        );
 
+        if ($quarter === null
+            || preg_match('/^2[0-9]{3}-0[1-4]$/', $quarter) === 0) {
+            throw new AdminNotFoundException('Invalid quarter.');
+        }
 
-	// init phase
+        [$year, $quarter] = explode('-', $quarter, 2);
 
+        $start_month = ((intval($quarter) - 1) * 3) + 1;
 
-	protected function initInternal()
-	{
-		parent::initInternal();
-		$this->initReport();
-	}
+        $quarter = new SwatDate();
+        $quarter->setTime(0, 0, 0);
+        $quarter->setDate($year, $start_month, 1);
+        $quarter->setTZ($this->app->default_time_zone);
+        $quarter->toUTC();
 
+        $type = SiteApplication::initVar(
+            'type',
+            null,
+            SiteApplication::VAR_GET
+        );
 
+        $provider = new CMEProvider();
+        $provider->setDatabase($this->app->db);
+        if (!$provider->loadByShortname($type)) {
+            throw new AdminNotFoundException('Invalid CME provider.');
+        }
 
-
-	protected function initReport()
-	{
-		$quarter = SiteApplication::initVar(
-			'quarter',
-			null,
-			SiteApplication::VAR_GET
-		);
-
-		if ($quarter === null ||
-			preg_match('/^2[0-9]{3}-0[1-4]$/', $quarter) === 0) {
-			throw new AdminNotFoundException('Invalid quarter.');
-		}
-
-		list($year, $quarter) = explode('-', $quarter, 2);
-
-		$start_month = ((intval($quarter) - 1) * 3) + 1;
-
-		$quarter = new SwatDate();
-		$quarter->setTime(0, 0, 0);
-		$quarter->setDate($year, $start_month, 1);
-		$quarter->setTZ($this->app->default_time_zone);
-		$quarter->toUTC();
-
-		$type = SiteApplication::initVar(
-			'type',
-			null,
-			SiteApplication::VAR_GET
-		);
-
-		$provider = new CMEProvider();
-		$provider->setDatabase($this->app->db);
-		if (!$provider->loadByShortname($type)) {
-			throw new AdminNotFoundException('Invalid CME provider.');
-		}
-
-		$sql = sprintf(
-			'select * from QuizReport
+        $sql = sprintf(
+            'select * from QuizReport
 			where quarter = %s and provider = %s',
-			$this->app->db->quote($quarter->getDate(), 'date'),
-			$this->app->db->quote($provider->id, 'integer')
-		);
+            $this->app->db->quote($quarter->getDate(), 'date'),
+            $this->app->db->quote($provider->id, 'integer')
+        );
 
-		$this->report = SwatDB::query(
-			$this->app->db,
-			$sql,
-			SwatDBClassMap::get('CMEQuizReportWrapper')
-		)->getFirst();
+        $this->report = SwatDB::query(
+            $this->app->db,
+            $sql,
+            SwatDBClassMap::get('CMEQuizReportWrapper')
+        )->getFirst();
 
-		if (!$this->report instanceof CMEQuizReport) {
-			throw new AdminNotFoundException(
-				sprintf(
-					'Report not found for quarter %s.',
-					$quarter->getDate()
-				)
-			);
-		}
+        if (!$this->report instanceof CMEQuizReport) {
+            throw new AdminNotFoundException(
+                sprintf(
+                    'Report not found for quarter %s.',
+                    $quarter->getDate()
+                )
+            );
+        }
 
-		$this->report->setFileBase('../../system/quiz-report-updater');
-		if (!file_exists($this->report->getFilePath())) {
-			throw new AdminNotFoundException(
-				sprintf(
-					'Report file ‘%s’ not found',
-					$this->report->getFilePath()
-				)
-			);
-		}
+        $this->report->setFileBase('../../system/quiz-report-updater');
+        if (!file_exists($this->report->getFilePath())) {
+            throw new AdminNotFoundException(
+                sprintf(
+                    'Report file ‘%s’ not found',
+                    $this->report->getFilePath()
+                )
+            );
+        }
+    }
 
-	}
+    // build phase
 
+    protected function buildInternal()
+    {
+        header(
+            sprintf(
+                'Content-Disposition: attachment;filename="%s"',
+                $this->report->filename
+            )
+        );
 
+        header('Content-Type: text/csv');
 
-	// build phase
+        readfile($this->report->getFilePath());
 
-
-	protected function buildInternal()
-	{
-		header(
-			sprintf(
-				'Content-Disposition: attachment;filename="%s"',
-				$this->report->filename
-			)
-		);
-
-		header('Content-Type: text/csv');
-
-		readfile($this->report->getFilePath());
-
-		exit();
-	}
-
-
+        exit;
+    }
 }
-
-?>

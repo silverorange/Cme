@@ -1,67 +1,51 @@
 <?php
 
 /**
- * @package   CME
  * @copyright 2014-2016 silverorange
  * @license   http://www.opensource.org/licenses/mit-license.html MIT License
  */
 class CMEOptionImageUpload extends InquisitionOptionImageUpload
 {
+    /**
+     * @var CMEOptionHelper
+     */
+    protected $helper;
 
+    // init phase
 
-	/**
-	 * @var CMEOptionHelper
-	 */
-	protected $helper;
+    protected function initInternal()
+    {
+        parent::initInternal();
 
+        $this->helper = $this->getOptionHelper();
+        $this->helper->initInternal();
+    }
 
+    protected function getOptionHelper()
+    {
+        $question_helper = new CMEQuestionHelper(
+            $this->app,
+            $this->inquisition
+        );
 
-	// init phase
+        return new CMEOptionHelper(
+            $this->app,
+            $question_helper,
+            $this->question
+        );
+    }
 
+    // build phase
 
-	protected function initInternal()
-	{
-		parent::initInternal();
+    protected function buildNavBar()
+    {
+        parent::buildNavBar();
 
-		$this->helper = $this->getOptionHelper();
-		$this->helper->initInternal();
-	}
+        // put edit entry at the end
+        $title = $this->navbar->popEntry();
 
+        $this->helper->buildNavBar($this->navbar);
 
-
-
-	protected function getOptionHelper()
-	{
-		$question_helper = new CMEQuestionHelper(
-			$this->app,
-			$this->inquisition
-		);
-
-		return new CMEOptionHelper(
-			$this->app,
-			$question_helper,
-			$this->question
-		);
-	}
-
-
-
-	// build phase
-
-
-	protected function buildNavBar()
-	{
-		parent::buildNavBar();
-
-		// put edit entry at the end
-		$title = $this->navbar->popEntry();
-
-		$this->helper->buildNavBar($this->navbar);
-
-		$this->navbar->addEntry($title);
-	}
-
-
+        $this->navbar->addEntry($title);
+    }
 }
-
-?>

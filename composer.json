@@ -47,8 +47,8 @@
     "silverorange/swat": "^7.1.0"
   },
   "require-dev": {
-    "phpstan/phpstan": "^1.12",
-    "silverorange/coding-standard": "^1.0.0"
+    "friendsofphp/php-cs-fixer": "3.64.0",
+    "phpstan/phpstan": "^1.12"
   },
   "scripts": {
     "phpcs": "./vendor/bin/php-cs-fixer check -v",
