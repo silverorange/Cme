@@ -1,80 +1,58 @@
 <?php
 
 /**
- * @package   CME
  * @copyright 2012-2016 silverorange
  * @license   http://www.opensource.org/licenses/mit-license.html MIT License
  */
 class CMEQuestionOrder extends InquisitionQuestionOrder
 {
-	// {{{ protected properties
+    /**
+     * @var CMEQuestionHelper
+     */
+    protected $helper;
 
-	/**
-	 * @var CMEQuestionHelper
-	 */
-	protected $helper;
+    // init phase
 
-	// }}}
+    protected function initInternal()
+    {
+        parent::initInternal();
 
-	// init phase
-	// {{{ protected function initInternal()
+        $this->helper = $this->getQuestionHelper();
+        $this->helper->initInternal();
+    }
 
-	protected function initInternal()
-	{
-		parent::initInternal();
+    protected function getQuestionHelper()
+    {
+        return new CMEQuestionHelper($this->app, $this->inquisition);
+    }
 
-		$this->helper = $this->getQuestionHelper();
-		$this->helper->initInternal();
-	}
+    // process phase
 
-	// }}}
-	// {{{ protected function getQuestionHelper()
+    protected function relocate()
+    {
+        $uri = $this->helper->getRelocateURI();
 
-	protected function getQuestionHelper()
-	{
-		return new CMEQuestionHelper($this->app, $this->inquisition);
-	}
+        if ($uri == '') {
+            parent::relocate();
+        } else {
+            $this->app->relocate($uri);
+        }
+    }
 
-	// }}}
+    // build phase
 
-	// process phase
-	// {{{ protected function relocate()
+    protected function buildForm()
+    {
+        parent::buildForm();
 
-	protected function relocate()
-	{
-		$uri = $this->helper->getRelocateURI();
+        $form = $this->ui->getWidget('order_form');
+        $form->addHiddenField('inquisition', $this->inquisition->id);
+    }
 
-		if ($uri == '') {
-			parent::relocate();
-		} else {
-			$this->app->relocate($uri);
-		}
-	}
+    protected function buildNavBar()
+    {
+        parent::buildNavBar();
 
-	// }}}
-
-	// build phase
-	// {{{ protected function buildForm()
-
-	protected function buildForm()
-	{
-		parent::buildForm();
-
-		$form = $this->ui->getWidget('order_form');
-		$form->addHiddenField('inquisition', $this->inquisition->id);
-	}
-
-	// }}}
-	// {{{ protected function buildNavBar()
-
-	protected function buildNavBar()
-	{
-		parent::buildNavBar();
-
-		$this->helper->buildNavBar($this->navbar);
-	}
-
-	// }}}
+        $this->helper->buildNavBar($this->navbar);
+    }
 }
-
-?>

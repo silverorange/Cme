@@ -1,71 +1,52 @@
 <?php
 
 /**
- * Delete confirmation page for question images
+ * Delete confirmation page for question images.
  *
- * @package   CME
  * @copyright 2012-2016 silverorange
  * @license   http://www.opensource.org/licenses/mit-license.html MIT License
  */
 class CMEQuestionDelete extends InquisitionQuestionDelete
 {
-	// {{{ protected properties
+    /**
+     * @var CMEQuestionHelper
+     */
+    protected $helper;
 
-	/**
-	 * @var CMEQuestionHelper
-	 */
-	protected $helper;
+    // helper methods
 
-	// }}}
+    public function setId($id)
+    {
+        parent::setId($id);
 
-	// helper methods
-	// {{{ public function setId()
+        $this->helper = $this->getQuestionHelper();
+        $this->helper->initInternal();
+    }
 
-	public function setId($id)
-	{
-		parent::setId($id);
+    protected function getQuestionHelper()
+    {
+        return new CMEQuestionHelper($this->app, $this->inquisition);
+    }
 
-		$this->helper = $this->getQuestionHelper();
-		$this->helper->initInternal();
-	}
+    // process phase
 
-	// }}}
-	// {{{ protected function getQuestionHelper()
+    protected function relocate()
+    {
+        $uri = $this->helper->getRelocateURI();
 
-	protected function getQuestionHelper()
-	{
-		return new CMEQuestionHelper($this->app, $this->inquisition);
-	}
+        if ($uri == '') {
+            parent::relocate();
+        } else {
+            $this->app->relocate($uri);
+        }
+    }
 
-	// }}}
+    // build phase
 
-	// process phase
-	// {{{ protected function relocate()
+    protected function buildNavBar()
+    {
+        parent::buildNavBar();
 
-	protected function relocate()
-	{
-		$uri = $this->helper->getRelocateURI();
-
-		if ($uri == '') {
-			parent::relocate();
-		} else {
-			$this->app->relocate($uri);
-		}
-	}
-
-	// }}}
-
-	// build phase
-	// {{{ protected function buildNavBar()
-
-	protected function buildNavBar()
-	{
-		parent::buildNavBar();
-
-		$this->helper->buildNavBar($this->navbar);
-	}
-
-	// }}}
+        $this->helper->buildNavBar($this->navbar);
+    }
 }
-
-?>

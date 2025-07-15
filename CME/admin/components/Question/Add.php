@@ -1,78 +1,59 @@
 <?php
 
 /**
- * Question edit page for inquisitions
+ * Question edit page for inquisitions.
  *
- * @package   CME
  * @copyright 2011-2016 silverorange
  * @license   http://www.opensource.org/licenses/mit-license.html MIT License
  */
 class CMEQuestionAdd extends InquisitionQuestionAdd
 {
-	// {{{ protected properties
+    /**
+     * @var CMEQuestionHelper
+     */
+    protected $helper;
 
-	/**
-	 * @var CMEQuestionHelper
-	 */
-	protected $helper;
+    // init phase
 
-	// }}}
+    protected function initInternal()
+    {
+        parent::initInternal();
 
-	// init phase
-	// {{{ protected function initInternal()
+        $this->helper = $this->getQuestionHelper($this->inquisition);
+        $this->helper->initInternal();
 
-	protected function initInternal()
-	{
-		parent::initInternal();
+        // for evaluations, hide correct option column
+        if ($this->helper->isEvaluation()) {
+            $view = $this->ui->getWidget('question_option_table_view');
+            $correct_column = $view->getColumn('correct_option');
+            $correct_column->visible = false;
+        }
+    }
 
-		$this->helper = $this->getQuestionHelper($this->inquisition);
-		$this->helper->initInternal();
+    protected function getQuestionHelper()
+    {
+        return new CMEQuestionHelper($this->app, $this->inquisition);
+    }
 
-		// for evaluations, hide correct option column
-		if ($this->helper->isEvaluation()) {
-			$view = $this->ui->getWidget('question_option_table_view');
-			$correct_column = $view->getColumn('correct_option');
-			$correct_column->visible = false;
-		}
-	}
+    // process phase
 
-	// }}}
-	// {{{ protected function getQuestionHelper()
+    protected function relocate()
+    {
+        $uri = $this->helper->getRelocateURI();
 
-	protected function getQuestionHelper()
-	{
-		return new CMEQuestionHelper($this->app, $this->inquisition);
-	}
+        if ($uri == '') {
+            parent::relocate();
+        } else {
+            $this->app->relocate($uri);
+        }
+    }
 
-	// }}}
+    // build phase
 
-	// process phase
-	// {{{ protected function relocate()
+    protected function buildNavBar()
+    {
+        parent::buildNavBar();
 
-	protected function relocate()
-	{
-		$uri = $this->helper->getRelocateURI();
-
-		if ($uri == '') {
-			parent::relocate();
-		} else {
-			$this->app->relocate($uri);
-		}
-	}
-
-	// }}}
-
-	// build phase
-	// {{{ protected function buildNavBar()
-
-	protected function buildNavBar()
-	{
-		parent::buildNavBar();
-
-		$this->helper->buildNavBar($this->navbar);
-	}
-
-	// }}}
+        $this->helper->buildNavBar($this->navbar);
+    }
 }
-
-?>

@@ -1,147 +1,122 @@
 <?php
 
 /**
- * @package   CME
  * @copyright 2011-2016 silverorange
  * @license   http://www.opensource.org/licenses/mit-license.html MIT License
  */
 class CMEFrontMatterDisplay extends SwatControl
 {
-	// {{{ public properties
+    /**
+     * @var string
+     */
+    public $content;
 
-	/**
-	 * @var string
-	 */
-	public $content;
+    /**
+     * @var string
+     */
+    public $title;
 
-	/**
-	 * @var string
-	 */
-	public $title;
+    /**
+     * @var string
+     */
+    public $server;
 
-	/**
-	 * @var string
-	 */
-	public $server;
+    /**
+     * @var string
+     */
+    public $cancel_uri;
 
-	/**
-	 * @var string
-	 */
-	public $cancel_uri;
+    public function __construct($id = null)
+    {
+        parent::__construct($id);
 
-	// }}}
-	// {{{ public function __construct()
+        $yui = new SwatYUI(
+            [
+                'dom',
+                'event',
+                'animation',
+                'connection',
+                'container_core',
+            ]
+        );
+        $this->html_head_entry_set->addEntrySet($yui->getHtmlHeadEntrySet());
 
-	public function __construct($id = null)
-	{
-		parent::__construct($id);
+        $this->addJavaScript(
+            'packages/swat/javascript/swat-z-index-manager.js'
+        );
+        $this->addJavaScript(
+            'packages/site/javascript/site-dialog.js'
+        );
+        $this->addJavaScript(
+            'packages/cme/javascript/cme-front-matter-display.js'
+        );
+    }
 
-		$yui = new SwatYUI(
-			array(
-				'dom',
-				'event',
-				'animation',
-				'connection',
-				'container_core',
-			)
-		);
-		$this->html_head_entry_set->addEntrySet($yui->getHtmlHeadEntrySet());
+    public function display()
+    {
+        if (!$this->visible) {
+            return;
+        }
 
-		$this->addJavaScript(
-			'packages/swat/javascript/swat-z-index-manager.js'
-		);
-		$this->addJavaScript(
-			'packages/site/javascript/site-dialog.js'
-		);
-		$this->addJavaScript(
-			'packages/cme/javascript/cme-front-matter-display.js'
-		);
-	}
+        parent::display();
 
-	// }}}
-	// {{{ public function display()
+        Swat::displayInlineJavaScript($this->getInlineJavaScript());
+    }
 
-	public function display()
-	{
-		if (!$this->visible) {
-			return;
-		}
+    protected function getCSSClassNames()
+    {
+        return array_merge(
+            ['cme-front-matter-display'],
+            parent::getCSSClassNames()
+        );
+    }
 
-		parent::display();
+    protected function getInlineJavaScript()
+    {
+        static $shown = false;
 
-		Swat::displayInlineJavaScript($this->getInlineJavaScript());
-	}
+        if (!$shown) {
+            $javascript = $this->getInlineJavaScriptTranslations();
+            $shown = true;
+        } else {
+            $javascript = '';
+        }
 
-	// }}}
-	// {{{ protected function getCSSClassNames()
+        $javascript .= sprintf(
+            '%s_obj = new %s(%s, %s, %s, %s, %s, %s);',
+            $this->id,
+            $this->getJavaScriptClassName(),
+            SwatString::quoteJavaScriptString($this->id),
+            SwatString::quoteJavaScriptString($this->getCSSClassString()),
+            SwatString::quoteJavaScriptString($this->server),
+            SwatString::quoteJavaScriptString($this->title),
+            SwatString::quoteJavaScriptString($this->content),
+            SwatString::quoteJavaScriptString($this->cancel_uri)
+        );
 
-	protected function getCSSClassNames()
-	{
-		return array_merge(
-			array('cme-front-matter-display'),
-			parent::getCSSClassNames()
-		);
-	}
+        return $javascript;
+    }
 
-	// }}}
-	// {{{ protected function getInlineJavaScript()
+    protected function getInlineJavaScriptTranslations()
+    {
+        $accept_text = CME::_('I Have Read the CME Information / Continue');
+        $cancel_text = CME::_('Cancel and Return');
+        $confirm_text = CME::_(
+            'Before you view %s, please attest to reading the following:'
+        );
 
-	protected function getInlineJavaScript()
-	{
-		static $shown = false;
+        return sprintf(
+            "CMEFrontMatterDisplay.accept_text = %s;\n" .
+            "CMEFrontMatterDisplay.cancel_text = %s;\n" .
+            "CMEFrontMatterDisplay.confirm_text = %s;\n",
+            SwatString::quoteJavaScriptString($accept_text),
+            SwatString::quoteJavaScriptString($cancel_text),
+            SwatString::quoteJavaScriptString($confirm_text)
+        );
+    }
 
-		if (!$shown) {
-			$javascript = $this->getInlineJavaScriptTranslations();
-			$shown = true;
-		} else {
-			$javascript = '';
-		}
-
-		$javascript.= sprintf(
-			'%s_obj = new %s(%s, %s, %s, %s, %s, %s);',
-			$this->id,
-			$this->getJavaScriptClassName(),
-			SwatString::quoteJavaScriptString($this->id),
-			SwatString::quoteJavaScriptString($this->getCSSClassString()),
-			SwatString::quoteJavaScriptString($this->server),
-			SwatString::quoteJavaScriptString($this->title),
-			SwatString::quoteJavaScriptString($this->content),
-			SwatString::quoteJavaScriptString($this->cancel_uri)
-		);
-
-		return $javascript;
-	}
-
-	// }}}
-	// {{{ protected function getInlineJavaScriptTranslations()
-
-	protected function getInlineJavaScriptTranslations()
-	{
-		$accept_text = CME::_('I Have Read the CME Information / Continue');
-		$cancel_text = CME::_('Cancel and Return');
-		$confirm_text = CME::_(
-			'Before you view %s, please attest to reading the following:'
-		);
-
-		return sprintf(
-			"CMEFrontMatterDisplay.accept_text = %s;\n".
-			"CMEFrontMatterDisplay.cancel_text = %s;\n".
-			"CMEFrontMatterDisplay.confirm_text = %s;\n",
-			SwatString::quoteJavaScriptString($accept_text),
-			SwatString::quoteJavaScriptString($cancel_text),
-			SwatString::quoteJavaScriptString($confirm_text)
-		);
-	}
-
-	// }}}
-	// {{{ protected function getJavaScriptClassName()
-
-	protected function getJavaScriptClassName()
-	{
-		return 'CMEFrontMatterDisplay';
-	}
-
-	// }}}
+    protected function getJavaScriptClassName()
+    {
+        return 'CMEFrontMatterDisplay';
+    }
 }
-
-?>

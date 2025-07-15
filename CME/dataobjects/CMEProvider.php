@@ -1,106 +1,91 @@
 <?php
 
 /**
- * @package   CME
  * @copyright 2013-2016 silverorange
  * @license   http://www.opensource.org/licenses/mit-license.html MIT License
  */
 class CMEProvider extends SwatDBDataObject
 {
-	// {{{ public properties
+    /**
+     * @var int
+     */
+    public $id;
 
-	/**
-	 * @var integer
-	 */
-	public $id;
+    /**
+     * @var string
+     */
+    public $shortname;
 
-	/**
-	 * @var string
-	 */
-	public $shortname;
+    /**
+     * @var string
+     */
+    public $title;
 
-	/**
-	 * @var string
-	 */
-	public $title;
+    /**
+     * @var string
+     */
+    public $credit_title;
 
-	/**
-	 * @var string
-	 */
-	public $credit_title;
+    /**
+     * @var string
+     */
+    public $credit_title_plural;
 
-	/**
-	 * @var string
-	 */
-	public $credit_title_plural;
+    /**
+     * @var int
+     */
+    public $displayorder;
 
-	/**
-	 * @var integer
-	 */
-	public $displayorder;
+    public function loadByShortname($shortname)
+    {
+        $this->checkDB();
 
-	// }}}
-	// {{{ public function loadByShortname()
+        $row = null;
 
-	public function loadByShortname($shortname)
-	{
-		$this->checkDB();
+        if ($this->table !== null) {
+            $sql = sprintf(
+                'select * from %s where shortname = %s',
+                $this->table,
+                $this->db->quote($shortname, 'text')
+            );
 
-		$row = null;
+            $rs = SwatDB::query($this->db, $sql, null);
+            $row = $rs->fetchRow(MDB2_FETCHMODE_ASSOC);
+        }
 
-		if ($this->table !== null) {
-			$sql = sprintf(
-				'select * from %s where shortname = %s',
-				$this->table,
-				$this->db->quote($shortname, 'text')
-			);
+        if ($row === null) {
+            return false;
+        }
 
-			$rs = SwatDB::query($this->db, $sql, null);
-			$row = $rs->fetchRow(MDB2_FETCHMODE_ASSOC);
-		}
+        $this->initFromRow($row);
+        $this->generatePropertyHashes();
 
-		if ($row === null) {
-			return false;
-		}
+        return true;
+    }
 
-		$this->initFromRow($row);
-		$this->generatePropertyHashes();
+    public function getCreditTitle($hours, $credit_count = 1, $is_free = false)
+    {
+        $locale = SwatI18NLocale::get();
 
-		return true;
-	}
+        return sprintf(
+            SwatString::minimizeEntities(
+                ($is_free)
+                    ? CME::_('%s Free %s%s%s certified by %s')
+                    : CME::_('%s %s%s%s certified by %s')
+            ),
+            SwatString::minimizeEntities($locale->formatNumber($hours)),
+            '<em>',
+            (abs($hours - 1.0) < 0.01)
+                ? SwatString::minimizeEntities($this->credit_title)
+                : SwatString::minimizeEntities($this->credit_title_plural),
+            '</em>',
+            SwatString::minimizeEntities($this->title)
+        );
+    }
 
-	// }}}
-	// {{{ public function getCreditTitle()
-
-	public function getCreditTitle($hours, $credit_count = 1, $is_free = false)
-	{
-		$locale = SwatI18NLocale::get();
-		return sprintf(
-			SwatString::minimizeEntities(
-				($is_free)
-					? CME::_('%s Free %s%s%s certified by %s')
-					: CME::_('%s %s%s%s certified by %s')
-			),
-			SwatString::minimizeEntities($locale->formatNumber($hours)),
-			'<em>',
-			(abs($hours - 1.0) < 0.01)
-				? SwatString::minimizeEntities($this->credit_title)
-				: SwatString::minimizeEntities($this->credit_title_plural),
-			'</em>',
-			SwatString::minimizeEntities($this->title)
-		);
-	}
-
-	// }}}
-	// {{{ protected function init()
-
-	protected function init()
-	{
-		$this->table = 'CMEProvider';
-		$this->id_field = 'integer:id';
-	}
-
-	// }}}
+    protected function init()
+    {
+        $this->table = 'CMEProvider';
+        $this->id_field = 'integer:id';
+    }
 }
-
-?>

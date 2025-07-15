@@ -1,176 +1,145 @@
 <?php
 
 /**
- * @package   CME
  * @copyright 2014-2016 silverorange
  */
 class CMECreditDetails extends InquisitionInquisitionDetails
 {
-	// {{{ protected properties
+    /**
+     * @var CMECredit
+     */
+    protected $credit;
 
-	/**
-	 * @var CMECredit
-	 */
-	protected $credit;
+    protected function getCreditDetailsViewXml()
+    {
+        return __DIR__ . '/details-credit-fields.xml';
+    }
 
-	// }}}
-	// {{{ protected function getCreditDetailsViewXml()
+    // init phase
 
-	protected function getCreditDetailsViewXml()
-	{
-		return __DIR__.'/details-credit-fields.xml';
-	}
+    protected function initInternal()
+    {
+        AdminIndex::initInternal();
 
-	// }}}
+        $this->id = SiteApplication::initVar('id');
 
-	// init phase
-	// {{{ protected function initInternal()
+        if (is_numeric($this->id)) {
+            $this->id = intval($this->id);
+        }
 
-	protected function initInternal()
-	{
-		AdminIndex::initInternal();
+        $this->initCredit();
+        $this->initInquisition();
 
-		$this->id = SiteApplication::initVar('id');
+        $this->ui->loadFromXML($this->getUiXml());
 
-		if (is_numeric($this->id)) {
-			$this->id = intval($this->id);
-		}
+        $local_ui = new SwatUI();
+        $local_ui->loadFromXML($this->getCreditDetailsViewXml());
 
-		$this->initCredit();
-		$this->initInquisition();
+        $provider_titles = [];
+        foreach ($this->credit->front_matter->providers as $provider) {
+            $provider_titles[] = $provider->credit_title_plural;
+        }
 
-		$this->ui->loadFromXML($this->getUiXml());
+        $local_ui->getWidget('details_view')->getField('hour')->title =
+            SwatString::toList($provider_titles);
 
-		$local_ui = new SwatUI();
-		$local_ui->loadFromXML($this->getCreditDetailsViewXml());
+        $view = $this->ui->getWidget('details_view');
+        foreach ($local_ui->getWidget('details_view')->getFields() as $field) {
+            $view->appendField($field);
+        }
+    }
 
-		$provider_titles = array();
-		foreach ($this->credit->front_matter->providers as $provider) {
-			$provider_titles[] = $provider->credit_title_plural;
-		}
+    protected function initInquisition()
+    {
+        $this->inquisition = $this->credit->quiz;
 
-		$local_ui->getWidget('details_view')->getField('hour')->title =
-			SwatString::toList($provider_titles);
+        $bindings = $this->inquisition->question_bindings;
 
-		$view = $this->ui->getWidget('details_view');
-		foreach ($local_ui->getWidget('details_view')->getFields() as $field) {
-			$view->appendField($field);
-		}
-	}
+        // efficiently load questions
+        $questions = $bindings->loadAllSubDataObjects(
+            'question',
+            $this->app->db,
+            'select * from InquisitionQuestion where id in (%s)',
+            SwatDBClassMap::get(InquisitionQuestionWrapper::class)
+        );
 
-	// }}}
-	// {{{ protected function initInquisition()
+        // efficiently load question options
+        if ($questions instanceof InquisitionQuestionWrapper) {
+            $questions->loadAllSubRecordsets(
+                'options',
+                SwatDBClassMap::get(InquisitionQuestionOptionWrapper::class),
+                'InquisitionQuestionOption',
+                'question',
+                '',
+                'displayorder, id'
+            );
+        }
+    }
 
-	protected function initInquisition()
-	{
-		$this->inquisition = $this->credit->quiz;
+    protected function initCredit()
+    {
+        $this->credit = SwatDBClassMap::new(CMECredit::class);
+        $this->credit->setDatabase($this->app->db);
 
-		$bindings = $this->inquisition->question_bindings;
+        if (!$this->credit->load($this->id)) {
+            throw new AdminNotFoundException(
+                sprintf(
+                    'A CME credit with the id of ‘%s’ does not exist.',
+                    $this->id
+                )
+            );
+        }
+    }
 
-		// efficiently load questions
-		$questions = $bindings->loadAllSubDataObjects(
-			'question',
-			$this->app->db,
-			'select * from InquisitionQuestion where id in (%s)',
-			SwatDBClassMap::get('InquisitionQuestionWrapper')
-		);
+    // build phase
 
-		// efficiently load question options
-		if ($questions instanceof InquisitionQuestionWrapper) {
-			$questions->loadAllSubRecordsets(
-				'options',
-				SwatDBClassMap::get('InquisitionQuestionOptionWrapper'),
-				'InquisitionQuestionOption',
-				'question',
-				'',
-				'displayorder, id'
-			);
-		}
-	}
+    protected function buildInternal()
+    {
+        parent::buildInternal();
 
-	// }}}
-	// {{{ protected function initCredit()
+        $this->ui->getWidget('details_frame')->title =
+            $this->credit->getTitle();
 
-	protected function initCredit()
-	{
-		$class_name = SwatDBClassMap::get('CMECredit');
-		$this->credit = new $class_name();
-		$this->credit->setDatabase($this->app->db);
+        $view = $this->ui->getWidget('details_view');
+        $view->getField('title')->visible = false;
+        $view->getField('createdate')->visible = false;
 
-		if (!$this->credit->load($this->id)) {
-			throw new AdminNotFoundException(
-				sprintf(
-					'A CME credit with the id of ‘%s’ does not exist.',
-					$this->id
-				)
-			);
-		}
-	}
+        // set default time zone
+        $expiry_date_field = $view->getField('expiry_date');
+        $expiry_date_renderer = $expiry_date_field->getFirstRenderer();
+        $expiry_date_renderer->display_time_zone =
+            $this->app->default_time_zone;
+    }
 
-	// }}}
+    protected function buildToolbars()
+    {
+        parent::buildToolbars();
 
-	// build phase
-	// {{{ protected function buildInternal()
+        $this->ui->getWidget('edit_link')->link = sprintf(
+            'Credit/Edit?id=%s',
+            $this->credit->id
+        );
 
-	protected function buildInternal()
-	{
-		parent::buildInternal();
+        $this->ui->getWidget('delete_link')->link = sprintf(
+            'Credit/Delete?id=%s',
+            $this->credit->id
+        );
+    }
 
-		$this->ui->getWidget('details_frame')->title =
-			$this->credit->getTitle();
+    protected function buildNavBar()
+    {
+        parent::buildNavBar();
 
-		$view = $this->ui->getWidget('details_view');
-		$view->getField('title')->visible = false;
-		$view->getField('createdate')->visible = false;
+        $this->navbar->popEntry();
+        $this->navbar->createEntry($this->credit->getTitle());
+    }
 
-		// set default time zone
-		$expiry_date_field = $view->getField('expiry_date');
-		$expiry_date_renderer = $expiry_date_field->getFirstRenderer();
-		$expiry_date_renderer->display_time_zone =
-			$this->app->default_time_zone;
-	}
+    protected function getDetailsStore(InquisitionInquisition $inquisition)
+    {
+        $ds = parent::getDetailsStore($inquisition);
+        $ds->hours = $this->credit->hours;
+        $ds->expiry_date = $this->credit->expiry_date;
 
-	// }}}
-	// {{{ protected function buildToolbars()
-
-	protected function buildToolbars()
-	{
-		parent::buildToolbars();
-
-		$this->ui->getWidget('edit_link')->link = sprintf(
-			'Credit/Edit?id=%s',
-			$this->credit->id
-		);
-
-		$this->ui->getWidget('delete_link')->link = sprintf(
-			'Credit/Delete?id=%s',
-			$this->credit->id
-		);
-	}
-
-	// }}}
-	// {{{ protected function buildNavBar()
-
-	protected function buildNavBar()
-	{
-		parent::buildNavBar();
-
-		$this->navbar->popEntry();
-		$this->navbar->createEntry($this->credit->getTitle());
-	}
-
-	// }}}
-	// {{{ protected function getDetailsStore()
-
-	protected function getDetailsStore(InquisitionInquisition $inquisition)
-	{
-		$ds = parent::getDetailsStore($inquisition);
-		$ds->hours = $this->credit->hours;
-		$ds->expiry_date = $this->credit->expiry_date;
-		return $ds;
-	}
-
-	// }}}
+        return $ds;
+    }
 }
-
-?>

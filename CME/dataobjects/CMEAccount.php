@@ -1,368 +1,309 @@
 <?php
 
 /**
- * CME specific Account object
+ * CME specific Account object.
  *
- * @package   CME
  * @copyright 2011-2016 silverorange
  * @license   http://www.opensource.org/licenses/mit-license.html MIT License
  */
 abstract class CMEAccount extends StoreAccount
 {
-	// {{{ protected properties
+    /**
+     * @var array
+     */
+    protected $cme_progress_by_credit;
 
-	/**
-	 * @var array
-	 */
-	protected $cme_progress_by_credit;
+    /**
+     * @var array
+     */
+    protected $response_by_cme_quiz;
 
-	/**
-	 * @var array
-	 */
-	protected $response_by_cme_quiz;
+    /**
+     * @var array
+     */
+    protected $response_by_cme_eval;
 
-	/**
-	 * @var array
-	 */
-	protected $response_by_cme_eval;
+    abstract public function hasCMEAccess();
 
-	// }}}
-	// {{{ abstract public function hasCMEAccess()
+    public function hasAttested(CMEFrontMatter $front_matter)
+    {
+        $this->checkDB();
 
-	abstract public function hasCMEAccess();
-
-	// }}}
-	// {{{ public function hasAttested()
-
-	public function hasAttested(CMEFrontMatter $front_matter)
-	{
-		$this->checkDB();
-
-		$sql = sprintf(
-			'select count(1) from AccountAttestedCMEFrontMatter
+        $sql = sprintf(
+            'select count(1) from AccountAttestedCMEFrontMatter
 			where account = %s and front_matter = %s',
-			$this->db->quote($this->id, 'integer'),
-			$this->db->quote($front_matter->id, 'integer')
-		);
+            $this->db->quote($this->id, 'integer'),
+            $this->db->quote($front_matter->id, 'integer')
+        );
 
-		return (SwatDB::queryOne($this->db, $sql) > 0);
-	}
+        return SwatDB::queryOne($this->db, $sql) > 0;
+    }
 
-	// }}}
-	// {{{ public function isEvaluationComplete()
+    public function isEvaluationComplete(CMECredit $credit)
+    {
+        $complete = false;
 
-	public function isEvaluationComplete(CMECredit $credit)
-	{
-		$complete = false;
+        $progress = $this->getCMEProgress($credit);
 
-		$progress = $this->getCMEProgress($credit);
+        if ($progress instanceof CMEAccountCMEProgress
+            && $progress->hasInternalValue('evaluation')) {
+            $response = $this->getResponseByCMEEvaluation(
+                $progress->getInternalValue('evaluation')
+            );
 
-		if ($progress instanceof CMEAccountCMEProgress &&
-			$progress->hasInternalValue('evaluation')) {
+            $complete = (
+                $response instanceof CMEEvaluationResponse
+                && $response->complete_date instanceof SwatDate
+            );
+        }
 
-			$response = $this->getResponseByCMEEvaluation(
-				$progress->getInternalValue('evaluation')
-			);
+        return $complete;
+    }
 
-			$complete = (
-				$response instanceof CMEEvaluationResponse &&
-				$response->complete_date instanceof SwatDate
-			);
-		}
+    public function isQuizComplete(CMECredit $credit)
+    {
+        $complete = false;
 
-		return $complete;
-	}
+        $progress = $this->getCMEProgress($credit);
 
-	// }}}
-	// {{{ public function isQuizComplete()
+        if ($progress instanceof CMEAccountCMEProgress
+            && $progress->hasInternalValue('quiz')) {
+            $quiz_response = $this->getResponseByCMEQuiz(
+                $progress->getInternalValue('quiz')
+            );
 
-	public function isQuizComplete(CMECredit $credit)
-	{
-		$complete = false;
+            $complete = (
+                $quiz_response instanceof CMEQuizResponse
+                && $quiz_response->complete_date instanceof SwatDate
+            );
+        }
 
-		$progress = $this->getCMEProgress($credit);
+        return $complete;
+    }
 
-		if ($progress instanceof CMEAccountCMEProgress &&
-			$progress->hasInternalValue('quiz')) {
+    public function isQuizPassed(CMECredit $credit)
+    {
+        $passed = false;
 
-			$quiz_response = $this->getResponseByCMEQuiz(
-				$progress->getInternalValue('quiz')
-			);
+        if ($this->isQuizComplete($credit)) {
+            $progress = $this->getCMEProgress($credit);
 
-			$complete = (
-				$quiz_response instanceof CMEQuizResponse &&
-				$quiz_response->complete_date instanceof SwatDate
-			);
-		}
+            if ($progress instanceof CMEAccountCMEProgress
+                && $progress->hasInternalValue('quiz')) {
+                $quiz_response = $this->getResponseByCMEQuiz(
+                    $progress->getInternalValue('quiz')
+                );
 
-		return $complete;
-	}
+                $passed = (
+                    $quiz_response instanceof CMEQuizResponse
+                    && $quiz_response->isPassed()
+                );
+            }
+        }
 
-	// }}}
-	// {{{ public function isQuizPassed()
+        return $passed;
+    }
 
-	public function isQuizPassed(CMECredit $credit)
-	{
-		$passed = false;
+    public function isCreditEarned(CMECredit $credit)
+    {
+        $earned = false;
 
-		if ($this->isQuizComplete($credit)) {
-			$progress = $this->getCMEProgress($credit);
+        foreach ($this->earned_cme_credits as $earned_credit) {
+            if ($earned_credit->credit->id === $credit->id) {
+                $earned = true;
+                break;
+            }
+        }
 
-			if ($progress instanceof CMEAccountCMEProgress &&
-				$progress->hasInternalValue('quiz')) {
+        return $earned;
+    }
 
-				$quiz_response = $this->getResponseByCMEQuiz(
-					$progress->getInternalValue('quiz')
-				);
+    public function getEarnedCMECreditHours()
+    {
+        $hours = 0;
 
-				$passed = (
-					$quiz_response instanceof CMEQuizResponse &&
-					$quiz_response->isPassed()
-				);
-			}
-		}
+        foreach ($this->earned_cme_credits as $earned_credit) {
+            $hours += $earned_credit->credit->hours;
+        }
 
-		return $passed;
-	}
+        return $hours;
+    }
 
-	// }}}
-	// {{{ public function isCreditEarned()
+    public function getEarnedCMECreditsByProvider(CMEProvider $provider)
+    {
+        $credits = SwatDBClassMap::new(CMECreditWrapper::class);
 
-	public function isCreditEarned(CMECredit $credit)
-	{
-		$earned = false;
+        foreach ($this->earned_cme_credits as $earned_credit) {
+            $cme_providers = $earned_credit->credit->front_matter->providers;
+            $cme_provider = $cme_providers->getByIndex($provider->id);
+            if ($cme_provider instanceof CMEProvider) {
+                $credits->add($earned_credit->credit);
+            }
+        }
 
-		foreach ($this->earned_cme_credits as $earned_credit) {
-			if ($earned_credit->credit->id === $credit->id) {
-				$earned = true;
-				break;
-			}
-		}
+        return $credits;
+    }
 
-		return $earned;
-	}
+    public function getEarnedCMECreditHoursByProvider(CMEProvider $provider)
+    {
+        $hours = 0;
+        foreach ($this->getEarnedCMECreditsByProvider($provider) as $credit) {
+            $hours += $credit->hours;
+        }
 
-	// }}}
-	// {{{ public function getEarnedCMECreditHours()
+        return $hours;
+    }
 
-	public function getEarnedCMECreditHours()
-	{
-		$hours = 0;
+    public function getEarnedCMECreditHoursByFrontMatter(
+        CMEFrontMatter $front_matter
+    ) {
+        $hours = 0;
 
-		foreach ($this->earned_cme_credits as $earned_credit) {
-			$hours += $earned_credit->credit->hours;
-		}
+        foreach ($this->earned_cme_credits as $earned_credit) {
+            $credit = $earned_credit->credit;
+            if ($credit->front_matter->id === $front_matter->id) {
+                $hours += $earned_credit->credit->hours;
+            }
+        }
 
-		return $hours;
-	}
+        return $hours;
+    }
 
-	// }}}
-	// {{{ public function getEarnedCMECreditsByProvider()
+    public function getEnabledEarnedCMECreditHours(
+        ?SwatDate $start_date = null,
+        ?SwatDate $end_date = null
+    ) {
+        $hours = 0;
 
-	public function getEarnedCMECreditsByProvider(CMEProvider $provider)
-	{
-		$class_name = SwatDBClassMap::get('CMECreditWrapper');
-		$credits = new $class_name();
+        foreach ($this->earned_cme_credits as $earned_credit) {
+            if ($earned_credit->credit->front_matter->enabled) {
+                $hours += $earned_credit->credit->hours;
+            }
+        }
 
-		foreach ($this->earned_cme_credits as $earned_credit) {
-			$cme_providers = $earned_credit->credit->front_matter->providers;
-			$cme_provider = $cme_providers->getByIndex($provider->id);
-			if ($cme_provider instanceof CMEProvider) {
-				$credits->add($earned_credit->credit);
-			}
-		}
+        return $hours;
+    }
 
-		return $credits;
-	}
+    public function getCMEProgress(CMECredit $credit)
+    {
+        $this->checkDB();
 
-	// }}}
-	// {{{ public function getEarnedCMECreditHoursByProvider()
-
-	public function getEarnedCMECreditHoursByProvider(CMEProvider $provider)
-	{
-		$hours = 0;
-		foreach ($this->getEarnedCMECreditsByProvider($provider) as $credit) {
-			$hours += $credit->hours;
-		}
-
-		return $hours;
-	}
-
-	// }}}
-	// {{{ public function getEarnedCMECreditHoursByFrontMatter()
-
-	public function getEarnedCMECreditHoursByFrontMatter(
-		CMEFrontMatter $front_matter
-	) {
-		$hours = 0;
-
-		foreach ($this->earned_cme_credits as $earned_credit) {
-			$credit = $earned_credit->credit;
-			if ($credit->front_matter->id === $front_matter->id) {
-				$hours += $earned_credit->credit->hours;
-			}
-		}
-
-		return $hours;
-	}
-
-	// }}}
-	// {{{ public function getEnabledEarnedCMECreditHours()
-
-	public function getEnabledEarnedCMECreditHours(
-		SwatDate $start_date = null,
-		SwatDate $end_date = null
-	) {
-		$hours = 0;
-
-		foreach ($this->earned_cme_credits as $earned_credit) {
-			if ($earned_credit->credit->front_matter->enabled) {
-				$hours += $earned_credit->credit->hours;
-			}
-		}
-
-		return $hours;
-	}
-
-	// }}}
-	// {{{ public function getCMEProgress()
-
-	public function getCMEProgress(CMECredit $credit)
-	{
-		$this->checkDB();
-
-		if ($this->cme_progress_by_credit === null) {
-			$sql = sprintf(
-				'select AccountCMEProgress.*,
+        if ($this->cme_progress_by_credit === null) {
+            $sql = sprintf(
+                'select AccountCMEProgress.*,
 					AccountCMEProgressCreditBinding.credit
 				from AccountCMEProgress
 				inner join AccountCMEProgressCreditBinding on
 					AccountCMEProgressCreditBinding.progress =
 						AccountCMEProgress.id
 				where AccountCMEProgress.account = %s',
-				$this->db->quote($this->id, 'integer'),
-				$this->db->quote($credit->id, 'integer')
-			);
+                $this->db->quote($this->id, 'integer')
+            );
 
-			$rows = SwatDB::query($this->db, $sql);
+            $rows = SwatDB::query($this->db, $sql);
 
-			$this->cme_progress_by_credit = array();
-			$class_name = SwatDBClassMap::get('CMEAccountCMEProgress');
-			foreach ($rows as $row) {
-				$progress = new $class_name($row);
-				$progress->setDatabase($this->db);
-				$this->cme_progress_by_credit[$row->credit] = $progress;
-			}
-		}
+            $this->cme_progress_by_credit = [];
+            foreach ($rows as $row) {
+                $progress = SwatDBClassMap::new(CMEAccountCMEProgress::class, $row);
+                $progress->setDatabase($this->db);
+                $this->cme_progress_by_credit[$row->credit] = $progress;
+            }
+        }
 
-		return (isset($this->cme_progress_by_credit[$credit->id]))
-			? $this->cme_progress_by_credit[$credit->id]
-			: null;
-	}
+        return (isset($this->cme_progress_by_credit[$credit->id]))
+            ? $this->cme_progress_by_credit[$credit->id]
+            : null;
+    }
 
-	// }}}
-	// {{{ public function getResponseByCMEQuiz()
+    public function getResponseByCMEQuiz($quiz_id)
+    {
+        $this->checkDB();
 
-	public function getResponseByCMEQuiz($quiz_id)
-	{
-		$this->checkDB();
+        if ($this->response_by_cme_quiz === null) {
+            $this->response_by_cme_quiz[] = [];
 
-		if ($this->response_by_cme_quiz === null) {
-			$this->response_by_cme_quiz[] = array();
-
-			$sql = sprintf(
-				'select * from InquisitionResponse
+            $sql = sprintf(
+                'select * from InquisitionResponse
 				where account = %s and reset_date is null',
-				$this->db->quote($this->id, 'integer')
-			);
+                $this->db->quote($this->id, 'integer')
+            );
 
-			$responses = SwatDB::query(
-				$this->db,
-				$sql,
-				SwatDBClassMap::get('CMEQuizResponseWrapper')
-			);
+            $responses = SwatDB::query(
+                $this->db,
+                $sql,
+                SwatDBClassMap::get(CMEQuizResponseWrapper::class)
+            );
 
-			foreach ($responses as $response) {
-				$id = $response->getInternalValue('inquisition');
+            foreach ($responses as $response) {
+                $id = $response->getInternalValue('inquisition');
 
-				$this->response_by_cme_quiz[$id] = $response;
-			}
-		}
+                $this->response_by_cme_quiz[$id] = $response;
+            }
+        }
 
-		return (isset($this->response_by_cme_quiz[$quiz_id]))
-			? $this->response_by_cme_quiz[$quiz_id]
-			: null;
-	}
+        return (isset($this->response_by_cme_quiz[$quiz_id]))
+            ? $this->response_by_cme_quiz[$quiz_id]
+            : null;
+    }
 
-	// }}}
-	// {{{ public function getResponseByCMEEvaluation()
+    public function getResponseByCMEEvaluation($evaluation_id)
+    {
+        $this->checkDB();
 
-	public function getResponseByCMEEvaluation($evaluation_id)
-	{
-		$this->checkDB();
+        if ($this->response_by_cme_eval === null) {
+            $this->response_by_cme_eval[] = [];
 
-		if ($this->response_by_cme_eval === null) {
-			$this->response_by_cme_eval[] = array();
+            $sql = sprintf(
+                'select * from InquisitionResponse where account = %s',
+                $this->db->quote($this->id, 'integer')
+            );
 
-			$sql = sprintf(
-				'select * from InquisitionResponse where account = %s',
-				$this->db->quote($this->id, 'integer')
-			);
+            $responses = SwatDB::query(
+                $this->db,
+                $sql,
+                SwatDBClassMap::get(CMEEvaluationResponseWrapper::class)
+            );
 
-			$responses = SwatDB::query(
-				$this->db,
-				$sql,
-				SwatDBClassMap::get('CMEEvaluationResponseWrapper')
-			);
+            foreach ($responses as $response) {
+                $id = $response->getInternalValue('inquisition');
 
-			foreach ($responses as $response) {
-				$id = $response->getInternalValue('inquisition');
+                $this->response_by_cme_eval[$id] = $response;
+            }
+        }
 
-				$this->response_by_cme_eval[$id] = $response;
-			}
-		}
+        return (isset($this->response_by_cme_eval[$evaluation_id]))
+            ? $this->response_by_cme_eval[$evaluation_id]
+            : null;
+    }
 
-		return (isset($this->response_by_cme_eval[$evaluation_id]))
-			? $this->response_by_cme_eval[$evaluation_id]
-			: null;
-	}
+    public function hasSameCMEProgress(CMECredit $credit1, CMECredit $credit2)
+    {
+        $progress1 = $this->getCMEProgress($credit1);
+        $progress2 = $this->getCMEProgress($credit2);
 
-	// }}}
-	// {{{ public function hasSameCMEProgress()
+        // combine credits if they have the same progress
+        if ($progress1 instanceof CMEAccountCMEProgress
+            && $progress2 instanceof CMEAccountCMEProgress
+            && $progress1->id === $progress2->id) {
+            $combine = true;
 
-	public function hasSameCMEProgress(CMECredit $credit1, CMECredit $credit2)
-	{
-		$progress1 = $this->getCMEProgress($credit1);
-		$progress2 = $this->getCMEProgress($credit2);
+        // combine credits if they both haven't been started
+        } elseif (!$progress1 instanceof CMEAccountCMEProgress
+            && !$progress2 instanceof CMEAccountCMEProgress) {
+            $combine = true;
+        } else {
+            $combine = false;
+        }
 
-		// combine credits if they have the same progress
-		if ($progress1 instanceof CMEAccountCMEProgress &&
-			$progress2 instanceof CMEAccountCMEProgress &&
-			$progress1->id === $progress2->id) {
+        return $combine;
+    }
 
-			$combine = true;
+    // loader methods
 
-			// combine credits if they both haven't been started
-		} elseif (!$progress1 instanceof CMEAccountCMEProgress &&
-			!$progress2 instanceof CMEAccountCMEProgress) {
-
-			$combine = true;
-		} else {
-			$combine = false;
-		}
-
-		return $combine;
-	}
-
-	// }}}
-
-	// loader methods
-	// {{{ protected function loadEarnedCMECredits()
-
-	protected function loadEarnedCMECredits()
-	{
-		$sql = sprintf(
-			'select AccountEarnedCMECredit.*
+    protected function loadEarnedCMECredits()
+    {
+        $sql = sprintf(
+            'select AccountEarnedCMECredit.*
 			from AccountEarnedCMECredit
 				inner join CMECredit
 					on AccountEarnedCMECredit.credit = CMECredit.id
@@ -370,47 +311,44 @@ abstract class CMEAccount extends StoreAccount
 					on CMECredit.front_matter = CMEFrontMatter.id
 			where account = %s
 			order by CMEFrontMatter.id, CMECredit.displayorder',
-			$this->db->quote($this->id, 'integer')
-		);
+            $this->db->quote($this->id, 'integer')
+        );
 
-		$earned_credits = SwatDB::query(
-			$this->db,
-			$sql,
-			SwatDBClassMap::get('CMEAccountEarnedCMECreditWrapper')
-		);
+        $earned_credits = SwatDB::query(
+            $this->db,
+            $sql,
+            SwatDBClassMap::get(CMEAccountEarnedCMECreditWrapper::class)
+        );
 
-		foreach ($earned_credits as $earned_credit) {
-			$earned_credit->account = $this;
-		}
+        foreach ($earned_credits as $earned_credit) {
+            $earned_credit->account = $this;
+        }
 
-		$credits = $earned_credits->loadAllSubDataObjects(
-			'credit',
-			$this->db,
-			'select * from CMECredit where id in (%s)',
-			SwatDBClassMap::get('CMECreditWrapper')
-		);
+        $credits = $earned_credits->loadAllSubDataObjects(
+            'credit',
+            $this->db,
+            'select * from CMECredit where id in (%s)',
+            SwatDBClassMap::get(CMECreditWrapper::class)
+        );
 
-		if ($credits instanceof CMECreditWrapper) {
-			$front_matters = $credits->loadAllSubDataObjects(
-				'front_matter',
-				$this->db,
-				'select * from CMEFrontMatter where id in (%s)',
-				SwatDBClassMap::get('CMEFrontMatterWrapper')
-			);
+        if ($credits instanceof CMECreditWrapper) {
+            $front_matters = $credits->loadAllSubDataObjects(
+                'front_matter',
+                $this->db,
+                'select * from CMEFrontMatter where id in (%s)',
+                SwatDBClassMap::get(CMEFrontMatterWrapper::class)
+            );
 
-			$front_matters->loadProviders();
-		}
+            $front_matters->loadProviders();
+        }
 
-		return $earned_credits;
-	}
+        return $earned_credits;
+    }
 
-	// }}}
-	// {{{ protected function loadAttestedCMECredits()
-
-	protected function loadAttestedCMECredits()
-	{
-		$sql = sprintf(
-			'select CMECredit.* from CMECredit
+    protected function loadAttestedCMECredits()
+    {
+        $sql = sprintf(
+            'select CMECredit.* from CMECredit
 				inner join CMEFrontMatter
 					on CMECredit.front_matter = CMEFrontMatter.id
 				inner join AccountAttestedCMEFrontMatter on
@@ -419,35 +357,31 @@ abstract class CMEAccount extends StoreAccount
 						account = %s
 			where CMECredit.hours > 0
 			order by CMEFrontMatter.id, CMECredit.displayorder',
-			$this->db->quote($this->id, 'integer')
-		);
+            $this->db->quote($this->id, 'integer')
+        );
 
-		$credits = SwatDB::query(
-			$this->db,
-			$sql,
-			SwatDBClassMap::get('CMECreditWrapper')
-		);
+        $credits = SwatDB::query(
+            $this->db,
+            $sql,
+            SwatDBClassMap::get(CMECreditWrapper::class)
+        );
 
-		if ($credits instanceof CMECreditWrapper) {
-			$front_matters = $credits->loadAllSubDataObjects(
-				'front_matter',
-				$this->db,
-				'select * from CMEFrontMatter where id in(%s)',
-				SwatDBClassMap::get('CMEFrontMatterWrapper')
-			);
+        if ($credits instanceof CMECreditWrapper) {
+            $front_matters = $credits->loadAllSubDataObjects(
+                'front_matter',
+                $this->db,
+                'select * from CMEFrontMatter where id in(%s)',
+                SwatDBClassMap::get(CMEFrontMatterWrapper::class)
+            );
 
-			$providers = $front_matters->loadAllSubDataObjects(
-				'provider',
-				$this->db,
-				'select * from CMEProvider where id in(%s)',
-				SwatDBClassMap::get('CMEProviderWrapper')
-			);
-		}
+            $providers = $front_matters->loadAllSubDataObjects(
+                'provider',
+                $this->db,
+                'select * from CMEProvider where id in(%s)',
+                SwatDBClassMap::get(CMEProviderWrapper::class)
+            );
+        }
 
-		return $credits;
-	}
-
-	// }}}
+        return $credits;
+    }
 }
-
-?>

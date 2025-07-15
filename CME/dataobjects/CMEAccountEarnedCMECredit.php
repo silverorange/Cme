@@ -1,48 +1,38 @@
 <?php
 
 /**
- * CME specific Account object
+ * CME specific Account object.
  *
- * @package   CME
  * @copyright 2011-2016 silverorange
  * @license   http://www.opensource.org/licenses/mit-license.html MIT License
  */
 class CMEAccountEarnedCMECredit extends SwatDBDataObject
 {
-	// {{{ public properties
+    /**
+     * @var int
+     */
+    public $id;
 
-	/**
-	 * @var integer
-	 */
-	public $id;
+    /**
+     * @var SwatDate
+     */
+    public $earned_date;
 
-	/**
-	 * @var SwatDate
-	 */
-	public $earned_date;
+    protected function init()
+    {
+        $this->table = 'AccountEarnedCMECredit';
+        $this->id_field = 'integer:id';
 
-	// }}}
-	// {{{ protected function init()
+        $this->registerInternalProperty(
+            'account',
+            SwatDBClassMap::get(CMEAccount::class)
+        );
 
-	protected function init()
-	{
-		$this->table = 'AccountEarnedCMECredit';
-		$this->id_field = 'integer:id';
+        $this->registerInternalProperty(
+            'credit',
+            SwatDBClassMap::get(CMECredit::class)
+        );
 
-		$this->registerInternalProperty(
-			'account',
-			SwatDBClassMap::get('CMEAccount')
-		);
-
-		$this->registerInternalProperty(
-			'credit',
-			SwatDBClassMap::get('CMECredit')
-		);
-
-		$this->registerDateProperty('earned_date');
-	}
-
-	// }}}
+        $this->registerDateProperty('earned_date');
+    }
 }
-
-?>

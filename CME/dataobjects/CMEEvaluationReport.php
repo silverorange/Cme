@@ -1,96 +1,74 @@
 <?php
 
 /**
- * @package   CME
  * @copyright 2011-2016 silverorange
  * @license   http://www.opensource.org/licenses/mit-license.html MIT License
  */
 class CMEEvaluationReport extends SwatDBDataObject
 {
-	// {{{ public properties
+    /**
+     * @var int
+     */
+    public $id;
 
-	/**
-	 * @var integer
-	 */
-	public $id;
+    /**
+     * @var string
+     */
+    public $filename;
 
-	/**
-	 * @var string
-	 */
-	public $filename;
+    /**
+     * @var SwatDate
+     */
+    public $quarter;
 
-	/**
-	 * @var SwatDate
-	 */
-	public $quarter;
+    /**
+     * @var SwatDate
+     */
+    public $createdate;
 
-	/**
-	 * @var SwatDate
-	 */
-	public $createdate;
+    /**
+     * @var string
+     */
+    protected $file_base;
 
-	// }}}
-	// {{{ protected properties
+    public function setFileBase($file_base)
+    {
+        $this->file_base = $file_base;
+    }
 
-	/**
-	 * @var string
-	 */
-	protected $file_base;
+    public function getFileDirectory()
+    {
+        $path = [
+            $this->file_base,
+            'reports',
+        ];
 
-	// }}}
-	// {{{ public function setFileBase()
+        return implode(DIRECTORY_SEPARATOR, $path);
+    }
 
-	public function setFileBase($file_base)
-	{
-		$this->file_base = $file_base;
-	}
+    public function getFilePath()
+    {
+        $path = [
+            $this->getFileDirectory(),
+            $this->filename,
+        ];
 
-	// }}}
-	// {{{ public function getFileDirectory()
+        return implode(DIRECTORY_SEPARATOR, $path);
+    }
 
-	public function getFileDirectory()
-	{
-		$path = array(
-			$this->file_base,
-			'reports'
-		);
+    protected function init()
+    {
+        parent::init();
 
-		return implode(DIRECTORY_SEPARATOR, $path);
-	}
+        $this->table = 'EvaluationReport';
+        $this->id_field = 'integer:id';
 
-	// }}}
-	// {{{ public function getFilePath()
+        $this->registerInternalProperty(
+            'provider',
+            SwatDBClassMap::get(CMEProvider::class)
+        );
 
-	public function getFilePath()
-	{
-		$path = array(
-			$this->getFileDirectory(),
-			$this->filename
-		);
-
-		return implode(DIRECTORY_SEPARATOR, $path);
-	}
-
-	// }}}
-	// {{{ protected function init()
-
-	protected function init()
-	{
-		parent::init();
-
-		$this->table = 'EvaluationReport';
-		$this->id_field = 'integer:id';
-
-		$this->registerInternalProperty(
-			'provider',
-			SwatDBClassMap::get('CMEProvider')
-		);
-
-		$this->registerDateProperty('quarter');
-		$this->registerDateProperty('createdate');
-	}
-
-	// }}}
+        $this->registerDateProperty('quarter');
+        $this->registerDateProperty('createdate');
+    }
 }
-
-?>

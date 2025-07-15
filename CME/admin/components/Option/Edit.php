@@ -1,78 +1,62 @@
 <?php
 
 /**
- * @package   CME
  * @copyright 2014-2016 silverorange
  * @license   http://www.opensource.org/licenses/mit-license.html MIT License
  */
 class CMEOptionEdit extends InquisitionOptionEdit
 {
-	// {{{ protected properties
+    /**
+     * @var CMEOptionHelper
+     */
+    protected $helper;
 
-	/**
-	 * @var CMEOptionHelper
-	 */
-	protected $helper;
+    // init phase
 
-	// }}}
+    protected function initInternal()
+    {
+        parent::initInternal();
 
-	// init phase
-	// {{{ protected function initInternal()
+        $this->helper = $this->getOptionHelper();
+        $this->helper->initInternal();
+    }
 
-	protected function initInternal()
-	{
-		parent::initInternal();
+    protected function getOptionHelper()
+    {
+        $question_helper = new CMEQuestionHelper(
+            $this->app,
+            $this->inquisition
+        );
 
-		$this->helper = $this->getOptionHelper();
-		$this->helper->initInternal();
-	}
+        return new CMEOptionHelper(
+            $this->app,
+            $question_helper,
+            $this->question
+        );
+    }
 
-	// }}}
-	// {{{ protected function getOptionHelper()
+    // build phase
 
-	protected function getOptionHelper()
-	{
-		$question_helper = new CMEQuestionHelper(
-			$this->app,
-			$this->inquisition
-		);
+    protected function buildNavBar()
+    {
+        parent::buildNavBar();
 
-		return new CMEOptionHelper(
-			$this->app,
-			$question_helper,
-			$this->question
-		);
-	}
+        // put add/edit title entry at the end
+        $title = $this->navbar->popEntry();
 
-	// }}}
+        // Add dummy entry. The CMEOptionHelper will remove this. All other
+        // option admin components have a details component in the nav bar.
+        if ($this->isNew()) {
+            $this->navbar->createEntry('');
+        }
 
-	// build phase
-	// {{{ protected function buildNavBar()
+        $this->helper->buildNavBar($this->navbar);
 
-	protected function buildNavBar()
-	{
-		parent::buildNavBar();
+        // remove dummy entry.
+        if ($this->isNew()) {
+            $this->navbar->popEntry();
+        }
 
-		// put add/edit title entry at the end
-		$title = $this->navbar->popEntry();
-
-		// Add dummy entry. The CMEOptionHelper will remove this. All other
-		// option admin components have a details component in the nav bar.
-		if ($this->isNew()) {
-			$this->navbar->createEntry('');
-		}
-
-		$this->helper->buildNavBar($this->navbar);
-
-		// remove dummy entry.
-		if ($this->isNew()) {
-			$this->navbar->popEntry();
-		}
-
-		$this->navbar->addEntry($title);
-	}
-
-	// }}}
+        $this->navbar->addEntry($title);
+    }
 }
-
-?>
