@@ -3,6 +3,13 @@
 /**
  * @copyright 2011-2016 silverorange
  * @license   http://www.opensource.org/licenses/mit-license.html MIT License
+ *
+ * @property int         $id
+ * @property ?string     $filename
+ * @property ?SwatDate   $quarter
+ * @property ?SwatDate   $createdate
+ * @property ?string     $file_base
+ * @property CMEProvider $provider
  */
 class CMEQuizReport extends SwatDBDataObject
 {
