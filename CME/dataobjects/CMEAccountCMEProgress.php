@@ -5,6 +5,11 @@
  *
  * @copyright 2015-2016 silverorange
  * @license   http://www.opensource.org/licenses/mit-license.html MIT License
+ *
+ * @property int            $id
+ * @property CMEAccount     $account
+ * @property ?CMEQuiz       $quiz
+ * @property ?CMEEvaluation $evaluation
  */
 class CMEAccountCMEProgress extends SwatDBDataObject
 {
