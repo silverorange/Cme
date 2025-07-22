@@ -13,8 +13,8 @@ jobs:
       - name: Setup Tailscale
         uses: tailscale/github-action@v3
         with:
-          oauth-client-id: ${{ secrets.SILVERORANGE_TAILSCALE_OAUTH_CLIENT_ID }}
-          oauth-secret: ${{ secrets.SILVERORANGE_TAILSCALE_OAUTH_SECRET }}
+          oauth-client-id: ${{ secrets.TAILSCALE_OAUTH_CLIENT_ID }}
+          oauth-secret: ${{ secrets.TAILSCALE_OAUTH_SECRET }}
           tags: tag:silverorange-gh-actions
           version: latest
 
