@@ -13,14 +13,7 @@
  */
 class CMEAccountEarnedCMECredit extends SwatDBDataObject
 {
-    /**
-     * @var int
-     */
     public $id;
-
-    /**
-     * @var SwatDate
-     */
     public $earned_date;
 
     protected function init()

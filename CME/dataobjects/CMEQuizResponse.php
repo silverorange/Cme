@@ -12,9 +12,6 @@
  */
 class CMEQuizResponse extends InquisitionResponse
 {
-    /**
-     * @var SwatDate
-     */
     public $reset_date;
 
     public function getCorrectCount()

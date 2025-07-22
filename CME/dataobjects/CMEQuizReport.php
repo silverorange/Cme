@@ -13,29 +13,11 @@
  */
 class CMEQuizReport extends SwatDBDataObject
 {
-    /**
-     * @var int
-     */
     public $id;
-
-    /**
-     * @var string
-     */
     public $filename;
-
-    /**
-     * @var SwatDate
-     */
     public $quarter;
-
-    /**
-     * @var SwatDate
-     */
     public $createdate;
 
-    /**
-     * @var string
-     */
     protected $file_base;
 
     public function setFileBase($file_base)

@@ -13,34 +13,11 @@
  */
 class CMEProvider extends SwatDBDataObject
 {
-    /**
-     * @var int
-     */
     public $id;
-
-    /**
-     * @var string
-     */
     public $shortname;
-
-    /**
-     * @var string
-     */
     public $title;
-
-    /**
-     * @var string
-     */
     public $credit_title;
-
-    /**
-     * @var string
-     */
     public $credit_title_plural;
-
-    /**
-     * @var int
-     */
     public $displayorder;
 
     public function loadByShortname($shortname)

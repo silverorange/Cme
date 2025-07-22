@@ -13,24 +13,9 @@
  */
 abstract class CMECredit extends SwatDBDataObject
 {
-    /**
-     * @var int
-     */
     public $id;
-
-    /**
-     * @var float
-     */
     public $hours;
-
-    /**
-     * @var bool
-     */
     public $is_free;
-
-    /**
-     * @var SwatDate
-     */
     public $expiry_date;
 
     public static function formatCreditHours($hours)

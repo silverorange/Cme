@@ -23,69 +23,18 @@
  */
 abstract class CMEFrontMatter extends SwatDBDataObject
 {
-    /**
-     * @var int
-     */
     public $id;
-
-    /**
-     * @var string
-     */
     public $objectives;
-
-    /**
-     * @var string
-     */
     public $planning_committee_no_disclosures;
-
-    /**
-     * @var string
-     */
     public $planning_committee_with_disclosures;
-
-    /**
-     * @var string
-     */
     public $support_staff_no_disclosures;
-
-    /**
-     * @var string
-     */
     public $support_staff_with_disclosures;
-
-    /**
-     * @var SwatDate
-     */
     public $release_date;
-
-    /**
-     * @var SwatDate
-     */
     public $review_date;
-
-    /**
-     * @var bool
-     */
     public $enabled;
-
-    /**
-     * @var int
-     */
     public $passing_grade;
-
-    /**
-     * @var string
-     */
     public $email_content_pass;
-
-    /**
-     * @var string
-     */
     public $email_content_fail;
-
-    /**
-     * @var bool
-     */
     public $resettable;
 
     public function getProviderTitleList()
