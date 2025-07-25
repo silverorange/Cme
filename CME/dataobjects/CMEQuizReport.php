@@ -4,23 +4,33 @@
  * @copyright 2011-2016 silverorange
  * @license   http://www.opensource.org/licenses/mit-license.html MIT License
  *
- * @property int         $id
- * @property ?string     $filename
- * @property ?SwatDate   $quarter
- * @property ?SwatDate   $createdate
- * @property ?string     $file_base
  * @property CMEProvider $provider
  */
 class CMEQuizReport extends SwatDBDataObject
 {
+    /**
+     * @var int
+     */
     public $id;
+
+    /**
+     * @var string
+     */
     public $filename;
+
+    /**
+     * @var SwatDate
+     */
     public $quarter;
+
+    /**
+     * @var SwatDate
+     */
     public $createdate;
 
-    protected $file_base;
+    protected string $file_base = '';
 
-    public function setFileBase($file_base)
+    public function setFileBase(string $file_base): void
     {
         $this->file_base = $file_base;
     }

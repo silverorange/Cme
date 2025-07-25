@@ -3,21 +3,37 @@
 /**
  * @copyright 2013-2016 silverorange
  * @license   http://www.opensource.org/licenses/mit-license.html MIT License
- *
- * @property int     $id
- * @property ?string $shortname
- * @property ?string $title
- * @property ?string $credit_title
- * @property ?string $credit_title_plural
- * @property ?int    $displayorder
  */
 class CMEProvider extends SwatDBDataObject
 {
+    /**
+     * @var int
+     */
     public $id;
+
+    /**
+     * @var string
+     */
     public $shortname;
+
+    /**
+     * @var string
+     */
     public $title;
+
+    /**
+     * @var string
+     */
     public $credit_title;
+
+    /**
+     * @var string
+     */
     public $credit_title_plural;
+
+    /**
+     * @var int
+     */
     public $displayorder;
 
     public function loadByShortname($shortname)

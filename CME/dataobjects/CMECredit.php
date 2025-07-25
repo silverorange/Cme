@@ -4,18 +4,29 @@
  * @copyright 2013-2016 silverorange
  * @license   http://www.opensource.org/licenses/mit-license.html MIT License
  *
- * @property int            $id
- * @property ?float         $hours
- * @property ?bool          $is_free
- * @property ?SwatDate      $expiry_date
  * @property CMEFrontMatter $front_matter
  * @property ?CMEQuiz       $quiz
  */
 abstract class CMECredit extends SwatDBDataObject
 {
+    /**
+     * @var int
+     */
     public $id;
+
+    /**
+     * @var float
+     */
     public $hours;
+
+    /**
+     * @var bool
+     */
     public $is_free;
+
+    /**
+     * @var SwatDate
+     */
     public $expiry_date;
 
     public static function formatCreditHours($hours)
