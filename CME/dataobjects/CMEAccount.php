@@ -6,28 +6,25 @@
  * @copyright 2011-2016 silverorange
  * @license   http://www.opensource.org/licenses/mit-license.html MIT License
  *
- * @property ?array                           $cme_progress_by_credit
- * @property ?array                           $response_by_cme_quiz
- * @property ?array                           $response_by_cme_eval
  * @property CMECreditWrapper                 $attested_cme_credits
  * @property CMEAccountEarnedCMECreditWrapper $earned_cme_credits
  */
 abstract class CMEAccount extends StoreAccount
 {
     /**
-     * @var array
+     * @var ?array<int, CMEAccountCMEProgress>
      */
-    protected $cme_progress_by_credit;
+    protected ?array $cme_progress_by_credit;
 
     /**
-     * @var array
+     * @var ?array<int, CMEQuiz>
      */
-    protected $response_by_cme_quiz;
+    protected ?array $response_by_cme_quiz;
 
     /**
-     * @var array
+     * @var ?array<int, CMEEvaluation>
      */
-    protected $response_by_cme_eval;
+    protected ?array $response_by_cme_eval;
 
     abstract public function hasCMEAccess();
 
