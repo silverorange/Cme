@@ -14,17 +14,17 @@ abstract class CMEAccount extends StoreAccount
     /**
      * @var ?array<int, CMEAccountCMEProgress>
      */
-    protected ?array $cme_progress_by_credit;
+    protected ?array $cme_progress_by_credit = null;
 
     /**
      * @var ?array<int, CMEQuiz>
      */
-    protected ?array $response_by_cme_quiz;
+    protected ?array $response_by_cme_quiz = null;
 
     /**
      * @var ?array<int, CMEEvaluation>
      */
-    protected ?array $response_by_cme_eval;
+    protected ?array $response_by_cme_eval = null;
 
     abstract public function hasCMEAccess();
 
