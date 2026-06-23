@@ -3,7 +3,7 @@
 /**
  * CME specific Account object.
  *
- * @copyright 2011-2016 silverorange
+ * @copyright 2011-2026 silverorange
  * @license   http://www.opensource.org/licenses/mit-license.html MIT License
  *
  * @property CMECreditWrapper                 $attested_cme_credits
@@ -213,9 +213,7 @@ abstract class CMEAccount extends StoreAccount
             }
         }
 
-        return (isset($this->cme_progress_by_credit[$credit->id]))
-            ? $this->cme_progress_by_credit[$credit->id]
-            : null;
+        return $this->cme_progress_by_credit[$credit->id] ?? null;
     }
 
     public function getResponseByCMEQuiz($quiz_id)
@@ -244,9 +242,7 @@ abstract class CMEAccount extends StoreAccount
             }
         }
 
-        return (isset($this->response_by_cme_quiz[$quiz_id]))
-            ? $this->response_by_cme_quiz[$quiz_id]
-            : null;
+        return $this->response_by_cme_quiz[$quiz_id] ?? null;
     }
 
     public function getResponseByCMEEvaluation($evaluation_id)
@@ -274,9 +270,7 @@ abstract class CMEAccount extends StoreAccount
             }
         }
 
-        return (isset($this->response_by_cme_eval[$evaluation_id]))
-            ? $this->response_by_cme_eval[$evaluation_id]
-            : null;
+        return $this->response_by_cme_eval[$evaluation_id] ?? null;
     }
 
     public function hasSameCMEProgress(CMECredit $credit1, CMECredit $credit2)
