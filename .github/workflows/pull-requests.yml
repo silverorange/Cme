@@ -10,14 +10,6 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Setup Tailscale
-        uses: tailscale/github-action@v3
-        with:
-          oauth-client-id: ${{ secrets.TAILSCALE_OAUTH_CLIENT_ID }}
-          oauth-secret: ${{ secrets.TAILSCALE_OAUTH_SECRET }}
-          tags: tag:silverorange-gh-actions
-          version: latest
-
       - name: Check out repository code
         uses: actions/checkout@v4
 
@@ -60,6 +52,6 @@ jobs:
       - name: Run tests
         timeout-minutes: 5
         run: |
-          pnpm prettier
           composer run phpcs:ci
+          pnpm format
           composer run phpstan:ci
