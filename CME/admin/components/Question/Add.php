@@ -19,7 +19,7 @@ class CMEQuestionAdd extends InquisitionQuestionAdd
     {
         parent::initInternal();
 
-        $this->helper = $this->getQuestionHelper($this->inquisition);
+        $this->helper = $this->getQuestionHelper();
         $this->helper->initInternal();
 
         // for evaluations, hide correct option column
