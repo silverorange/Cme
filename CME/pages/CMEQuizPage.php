@@ -468,8 +468,8 @@ abstract class CMEQuizPage extends SiteDBEditPage
 
         // save grade
         if ($total_questions_with_answers > 0) {
-            $this->response->grade = $correct_answers /
-                $total_questions_with_answers;
+            $this->response->grade = $correct_answers
+                / $total_questions_with_answers;
 
             $this->response->save();
         }
@@ -573,8 +573,8 @@ abstract class CMEQuizPage extends SiteDBEditPage
             if ($this->front_matter->evaluation instanceof CMEEvaluation
                 && !$account->isEvaluationComplete($this->credits->getFirst())) {
                 $message->secondary_content = CME::_(
-                    'After completing this evaluation you’ll be able to ' .
-                    'print your certificate.'
+                    'After completing this evaluation you’ll be able to '
+                    . 'print your certificate.'
                 );
             }
 
@@ -721,8 +721,8 @@ abstract class CMEQuizPage extends SiteDBEditPage
             $p_tag->setContent(
                 sprintf(
                     CME::_(
-                        'A grade of %s%% is required to qualify for CME ' .
-                        'credit.'
+                        'A grade of %s%% is required to qualify for CME '
+                        . 'credit.'
                     ),
                     $locale->formatNumber(
                         $this->front_matter->passing_grade * 100
@@ -897,8 +897,8 @@ abstract class CMEQuizPage extends SiteDBEditPage
                 '%s questions are unanswered.'
             ),
             'review_status_required_text' => CME::_(
-                'All questions must be answered before the quiz can be ' .
-                'submitted.'
+                'All questions must be answered before the quiz can be '
+                . 'submitted.'
             ),
             'time_hours_text_1'      => CME::_('one hour'),
             'time_hours_text_many'   => CME::_('%s hours'),
@@ -947,8 +947,8 @@ abstract class CMEQuizPage extends SiteDBEditPage
             // if there's a response, check it
             if (isset($response_values[$question_binding->id])) {
                 $response_value = $response_values[$question_binding->id];
-                $response_option_id =
-                    $response_value->getInternalValue('question_option');
+                $response_option_id
+                    = $response_value->getInternalValue('question_option');
 
                 $correct = ($correct_option_id === $response_option_id);
             }
@@ -989,11 +989,11 @@ abstract class CMEQuizPage extends SiteDBEditPage
                 $response_option = $question->options[$response_option_id];
                 $dd_tag = new SwatHtmlTag('dd');
                 if ($option->id !== $response_option_id) {
-                    $dd_tag->class =
-                        'quiz-question-option quiz-question-option-incorrect';
+                    $dd_tag->class
+                        = 'quiz-question-option quiz-question-option-incorrect';
                 } else {
-                    $dd_tag->class =
-                        'quiz-question-option';
+                    $dd_tag->class
+                        = 'quiz-question-option';
                 }
 
                 $dd_tag->setContent($response_option->title);
@@ -1007,8 +1007,8 @@ abstract class CMEQuizPage extends SiteDBEditPage
                 $dt_tag->setContent(CME::_('Correct Answer:'));
                 $dt_tag->display();
                 $dd_tag = new SwatHtmlTag('dd');
-                $dd_tag->class =
-                    'quiz-question-option quiz-question-option-correct';
+                $dd_tag->class
+                    = 'quiz-question-option quiz-question-option-correct';
 
                 $dd_tag->setContent($option->title);
                 $dd_tag->display();

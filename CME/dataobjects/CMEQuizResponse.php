@@ -40,8 +40,8 @@ class CMEQuizResponse extends InquisitionResponse
     public function isPassed()
     {
         return
-            $this->getGrade() >=
-            $this->credits->getFirst()->front_matter->passing_grade;
+            $this->getGrade()
+            >= $this->credits->getFirst()->front_matter->passing_grade;
     }
 
     public function getCredits()

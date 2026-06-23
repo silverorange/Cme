@@ -164,8 +164,8 @@ class CMECertificateFactory extends SwatObject
         if (!class_exists($certificate_class_name)) {
             throw new SwatClassNotFoundException(
                 sprintf(
-                    'Certificate class "%s" does not exist and could not ' .
-                    'be found in the search path.',
+                    'Certificate class "%s" does not exist and could not '
+                    . 'be found in the search path.',
                     $certificate_class_name
                 ),
                 0,

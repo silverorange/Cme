@@ -271,8 +271,8 @@ abstract class CMEEvaluationPage extends SiteDBEditPage
         $question_bindings = SwatDB::query(
             $this->app->db,
             sprintf(
-                'select * from InquisitionInquisitionQuestionBinding ' .
-                'where inquisition = %s',
+                'select * from InquisitionInquisitionQuestionBinding '
+                . 'where inquisition = %s',
                 $this->app->db->quote(
                     $this->front_matter->evaluation->id,
                     'integer'
@@ -301,8 +301,8 @@ abstract class CMEEvaluationPage extends SiteDBEditPage
         $dependencies = SwatDB::query(
             $this->app->db,
             sprintf(
-                'select * from InquisitionQuestionDependency ' .
-                'where question_binding in (%s)',
+                'select * from InquisitionQuestionDependency '
+                . 'where question_binding in (%s)',
                 $this->app->db->datatype->implodeArray(
                     array_keys($id_map),
                     'integer'
@@ -505,11 +505,11 @@ abstract class CMEEvaluationPage extends SiteDBEditPage
         $this->inquisition_response = SwatDBClassMap::new(CMEEvaluationResponse::class);
         $this->inquisition_response->setDatabase($this->app->db);
 
-        $this->inquisition_response->account =
-            $this->app->session->account->id;
+        $this->inquisition_response->account
+            = $this->app->session->account->id;
 
-        $this->inquisition_response->inquisition =
-            $this->evaluation->id;
+        $this->inquisition_response->inquisition
+            = $this->evaluation->id;
 
         $this->inquisition_response->createdate = new SwatDate();
         $this->inquisition_response->createdate->toUTC();
@@ -668,8 +668,8 @@ abstract class CMEEvaluationPage extends SiteDBEditPage
 
             $question['binding'] = $question_binding->id;
             $question['question'] = $question_binding->question->id;
-            $question['dependencies'] =
-                $question_binding->getDependentOptions();
+            $question['dependencies']
+                = $question_binding->getDependentOptions();
 
             $questions[] = $question;
         }

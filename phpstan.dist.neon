@@ -1,6 +1,3 @@
-includes:
-  - phpstan-baseline.neon
-
 parameters:
   phpVersion: 80200
   level: 0
@@ -8,3 +5,49 @@ parameters:
     - CME
   editorUrl: '%%file%%:%%line%%'
   editorUrlTitle: '%%file%%:%%line%%'
+  errorFormat: table
+
+  # @todo these should be fixed
+  ignoreErrors:
+    -
+      message: '#^Access to an undefined property CMEOptionDetails\:\:\$question\.$#'
+      identifier: property.notFound
+      count: 1
+      path: CME/admin/components/Option/Details.php
+
+    -
+      message: '#^Access to an undefined property CMEOptionImageDelete\:\:\$question\.$#'
+      identifier: property.notFound
+      count: 1
+      path: CME/admin/components/Option/ImageDelete.php
+
+    -
+      message: '#^Access to an undefined property CMEOptionImageOrder\:\:\$question\.$#'
+      identifier: property.notFound
+      count: 1
+      path: CME/admin/components/Option/ImageOrder.php
+
+    -
+      message: '#^Access to an undefined property CMEOptionImageUpload\:\:\$question\.$#'
+      identifier: property.notFound
+      count: 1
+      path: CME/admin/components/Option/ImageUpload.php
+
+    -
+      message: '#^Access to an undefined property CMEOptionHelper\:\:\$credit\.$#'
+      identifier: property.notFound
+      count: 1
+      path: CME/admin/components/Option/include/CMEOptionHelper.php
+
+    -
+      message: '#^Access to an undefined property CMEOptionHelper\:\:\$inquisition\.$#'
+      identifier: property.notFound
+      count: 1
+      path: CME/admin/components/Option/include/CMEOptionHelper.php
+
+    -
+      message: '#^Access to an undefined property CMEQuestionImport\:\:\$inquisition\.$#'
+      identifier: property.notFound
+      count: 1
+      path: CME/admin/components/Question/Import.php
+

@@ -101,8 +101,8 @@ abstract class CMECertificatePage extends SiteUiPage
     protected function getEpisodeIds()
     {
         $episode_ids = [];
-        $selected_front_matter_ids =
-            $this->ui->getWidget('front_matters')->values;
+        $selected_front_matter_ids
+            = $this->ui->getWidget('front_matters')->values;
 
         foreach ($this->credits_by_front_matter as $id => $array) {
             $front_matter = $array['front_matter'];

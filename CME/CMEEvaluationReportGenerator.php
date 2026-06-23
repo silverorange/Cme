@@ -111,8 +111,8 @@ class CMEEvaluationReportGenerator
         $question_binding_wrapper = SwatDBClassMap::get(InquisitionInquisitionQuestionBindingWrapper::class);
 
         // efficiently load response value question bindings
-        $question_binding_sql =
-            'select * from InquisitionInquisitionQuestionBinding
+        $question_binding_sql
+            = 'select * from InquisitionInquisitionQuestionBinding
 			where id in (%s)';
 
         $question_bindings = $values->loadAllSubDataObjects(

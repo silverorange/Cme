@@ -1,7 +1,7 @@
 <?php
 
 /**
- * @copyright 2011-2016 silverorange
+ * @copyright 2011-2026 silverorange
  * @license   http://www.opensource.org/licenses/mit-license.html MIT License
  */
 class CMEQuizReportGenerator
@@ -102,7 +102,7 @@ class CMEQuizReportGenerator
 
         // sort earned credits (sorting is application specific)
         $earned_credits_array = $earned_credits->getArray();
-        usort($earned_credits_array, [$this, 'compareEarnedCredit']);
+        usort($earned_credits_array, $this->compareEarnedCredit(...));
 
         return $earned_credits_array;
     }

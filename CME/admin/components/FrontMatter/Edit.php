@@ -92,19 +92,19 @@ abstract class CMEFrontMatterEdit extends AdminObjectEdit
         }
 
         if (count($this->ui->getWidget('providers')->values) === 0) {
-            $this->ui->getWidget('providers')->values[] =
-                $providers->getFirst()->id;
+            $this->ui->getWidget('providers')->values[]
+                = $providers->getFirst()->id;
         }
     }
 
     protected function setDefaultValues()
     {
         $this->ui->getWidget('enabled')->value = true;
-        $this->ui->getWidget('passing_grade')->value =
-            $this->getDefaultPassingGrade();
+        $this->ui->getWidget('passing_grade')->value
+            = $this->getDefaultPassingGrade();
 
-        $this->ui->getWidget('objectives')->value =
-            $this->getDefaultObjectives();
+        $this->ui->getWidget('objectives')->value
+            = $this->getDefaultObjectives();
     }
 
     protected function getDefaultPassingGrade()
@@ -160,17 +160,17 @@ abstract class CMEFrontMatterEdit extends AdminObjectEdit
 
         if ($this->isNew()) {
             $front_matter = $this->getObject();
-            $front_matter->planning_committee_no_disclosures =
-                $this->getPlanningCommitteeNoDisclosures();
+            $front_matter->planning_committee_no_disclosures
+                = $this->getPlanningCommitteeNoDisclosures();
 
-            $front_matter->planning_committee_with_disclosures =
-                $this->getPlanningCommitteeWithDisclosures();
+            $front_matter->planning_committee_with_disclosures
+                = $this->getPlanningCommitteeWithDisclosures();
 
-            $front_matter->support_staff_no_disclosures =
-                $this->getSupportStaffNoDisclosures();
+            $front_matter->support_staff_no_disclosures
+                = $this->getSupportStaffNoDisclosures();
 
-            $front_matter->support_staff_with_disclosures =
-                $this->getSupportStaffWithDisclosures();
+            $front_matter->support_staff_with_disclosures
+                = $this->getSupportStaffWithDisclosures();
 
             $evaluation = $this->createEvaluation();
             if ($evaluation instanceof CMEEvaluation) {
