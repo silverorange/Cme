@@ -40,8 +40,8 @@ class CMECreditDetails extends InquisitionInquisitionDetails
             $provider_titles[] = $provider->credit_title_plural;
         }
 
-        $local_ui->getWidget('details_view')->getField('hour')->title =
-            SwatString::toList($provider_titles);
+        $local_ui->getWidget('details_view')->getField('hour')->title
+            = SwatString::toList($provider_titles);
 
         $view = $this->ui->getWidget('details_view');
         foreach ($local_ui->getWidget('details_view')->getFields() as $field) {
@@ -97,8 +97,8 @@ class CMECreditDetails extends InquisitionInquisitionDetails
     {
         parent::buildInternal();
 
-        $this->ui->getWidget('details_frame')->title =
-            $this->credit->getTitle();
+        $this->ui->getWidget('details_frame')->title
+            = $this->credit->getTitle();
 
         $view = $this->ui->getWidget('details_view');
         $view->getField('title')->visible = false;
@@ -107,8 +107,8 @@ class CMECreditDetails extends InquisitionInquisitionDetails
         // set default time zone
         $expiry_date_field = $view->getField('expiry_date');
         $expiry_date_renderer = $expiry_date_field->getFirstRenderer();
-        $expiry_date_renderer->display_time_zone =
-            $this->app->default_time_zone;
+        $expiry_date_renderer->display_time_zone
+            = $this->app->default_time_zone;
     }
 
     protected function buildToolbars()

@@ -106,9 +106,9 @@ class CMEFrontMatterDisplay extends SwatControl
         );
 
         return sprintf(
-            "CMEFrontMatterDisplay.accept_text = %s;\n" .
-            "CMEFrontMatterDisplay.cancel_text = %s;\n" .
-            "CMEFrontMatterDisplay.confirm_text = %s;\n",
+            "CMEFrontMatterDisplay.accept_text = %s;\n"
+            . "CMEFrontMatterDisplay.cancel_text = %s;\n"
+            . "CMEFrontMatterDisplay.confirm_text = %s;\n",
             SwatString::quoteJavaScriptString($accept_text),
             SwatString::quoteJavaScriptString($cancel_text),
             SwatString::quoteJavaScriptString($confirm_text)

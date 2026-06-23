@@ -67,8 +67,8 @@ abstract class CMECreditEdit extends InquisitionInquisitionEdit
             }
             $this->credit->expiry_date->convertTZ($this->app->default_time_zone);
         } else {
-            $this->credit->is_free =
-                ($this->app->initVar('credit_type') === 'free');
+            $this->credit->is_free
+                = ($this->app->initVar('credit_type') === 'free');
         }
     }
 
@@ -81,8 +81,8 @@ abstract class CMECreditEdit extends InquisitionInquisitionEdit
             if (!$this->credit->front_matter->load($front_matter_id)) {
                 throw new AdminNotFoundException(
                     sprintf(
-                        'A CME front matter with the id of ‘%s’ does not ' .
-                        'exist.',
+                        'A CME front matter with the id of ‘%s’ does not '
+                        . 'exist.',
                         $front_matter_id
                     )
                 );
@@ -103,8 +103,8 @@ abstract class CMECreditEdit extends InquisitionInquisitionEdit
     protected function setDefaultValues()
     {
         $this->ui->getWidget('hours')->value = $this->getDefaultCreditHours();
-        $this->ui->getWidget('expiry_date')->value =
-            $this->getDefaultCreditExpiryDate();
+        $this->ui->getWidget('expiry_date')->value
+            = $this->getDefaultCreditExpiryDate();
     }
 
     // process phase
@@ -205,8 +205,8 @@ abstract class CMECreditEdit extends InquisitionInquisitionEdit
             $provider_titles[] = $provider->credit_title_plural;
         }
 
-        $this->ui->getWidget('hours_field')->title =
-            SwatString::toList($provider_titles);
+        $this->ui->getWidget('hours_field')->title
+            = SwatString::toList($provider_titles);
     }
 
     protected function buildNavBar()
